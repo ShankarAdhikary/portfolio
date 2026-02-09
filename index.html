@@ -11,6 +11,32 @@
     <meta name="author" content="Shankar Adhikary">
     <title>Shankar Adhikary Portfolio</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+    <link rel="apple-touch-icon" href="assets/icon.svg">
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#6A0DAD">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SA Portfolio">
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://shankaradhikary.github.io/portfolio/">
+    <meta property="og:title" content="Shankar Adhikary - Cybersecurity & Full Stack Developer">
+    <meta property="og:description"
+        content="Portfolio of Shankar Adhikary - Red Teaming, AI/ML, and Open Source Contributor from RRU">
+    <meta property="og:image" content="https://shankaradhikary.github.io/portfolio/assets/profile.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@SHANKARAD2006">
+    <meta name="twitter:title" content="Shankar Adhikary - Cybersecurity Portfolio">
+    <meta name="twitter:description" content="Cybersecurity & Full Stack Developer | राष्ट्रीय सुरक्षा सर्वोपरि">
+    <meta name="twitter:image" content="https://shankaradhikary.github.io/portfolio/assets/profile.png">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -66,6 +92,80 @@
             --text-primary: #ffffff;
             --text-secondary: #9ca3af;
             --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Preloader Styles */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050505;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .preloader-logo {
+            font-size: 4rem;
+            font-weight: bold;
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, #6A0DAD, #1E90FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse-glow 1.5s ease-in-out infinite;
+        }
+
+        .preloader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(106, 13, 173, 0.3);
+            border-top-color: #6A0DAD;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-top: 20px;
+        }
+
+        .preloader-text {
+            color: #9ca3af;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            margin-top: 20px;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 10px rgba(106, 13, 173, 0.5));
+            }
+
+            50% {
+                filter: drop-shadow(0 0 30px rgba(106, 13, 173, 0.8));
+            }
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
         }
 
         .light-mode {
@@ -400,6 +500,13 @@
 </head>
 
 <body class="text-white overflow-x-hidden">
+    <!-- Preloader -->
+    <div id="preloader" class="preloader">
+        <div class="preloader-logo">SA</div>
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Initializing Galaxy...</div>
+    </div>
+
     <!-- Three.js Starfield Canvas -->
     <canvas id="starfield"></canvas>
 
@@ -2489,6 +2596,30 @@ Mission: Hack into Shankar's portfolio`,
                 hackingGame.classList.remove('active');
             }
         });
+
+        // ==================== PRELOADER ====================
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.classList.add('hidden');
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 500);
+            }, 1500); // Show preloader for 1.5 seconds minimum
+        });
+
+        // ==================== SERVICE WORKER REGISTRATION (PWA) ====================
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('✅ Service Worker registered:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('❌ Service Worker registration failed:', error);
+                    });
+            });
+        }
 
     </script>
 </body>

@@ -1,0 +1,27 @@
+{
+  "name": "Shankar Adhikary Portfolio",
+  "short_name": "SA Portfolio",
+  "description": "Cybersecurity & Full Stack Developer Portfolio - Shankar Adhikary",
+  "start_url": "/portfolio/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#6A0DAD",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["portfolio", "technology", "cybersecurity"],
+  "lang": "en",
+  "dir": "ltr"
+}
