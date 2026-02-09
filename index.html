@@ -1900,67 +1900,417 @@ END:VCARD`;
         const sendChat = document.getElementById('send-chat');
         const chatMessages = document.getElementById('chat-messages');
 
+        // ============ ENHANCED AI CHATBOT DATA ============
         const shankarInfo = {
             name: "Shankar Adhikary",
-            education: "BTech in Cybersecurity at Rashtriya Raksha University (RRU)",
-            skills: ["Cybersecurity", "Penetration Testing", "Red Teaming", "Full Stack Development", "React", "Node.js", "Python", "AI/ML", "Machine Learning", "OSINT", "Cryptography"],
-            roles: ["OSCG Campus Lead", "Pre-Incubator at AIC RRU", "Vice President of Chaturanga Chess Club", "PR Head of EDGE Club"],
-            certifications: "25+ certifications including Cybersecurity, Networking, OSINT, Python, and more",
-            contact: "Email: adhikaryshankar04@gmail.com | LinkedIn: @adhikaryxshankar | GitHub: @ShankarAdhikary",
+            fullName: "Shankar Adhikary",
+            nickname: "Shankar",
+            age: "19",
+            location: "Rashtriya Raksha University, Gujarat, India",
+            nationality: "Indian",
+            languages: ["Hindi", "English", "Bengali"],
+
+            education: {
+                degree: "BTech in Cybersecurity",
+                university: "Rashtriya Raksha University (RRU)",
+                year: "2nd Year (2024-2028)",
+                description: "One of India's premier institutions focused on national security and defense studies"
+            },
+
+            skills: {
+                cybersecurity: ["Penetration Testing", "Red Teaming", "OSINT", "Cryptography", "Network Security", "Vulnerability Assessment", "Ethical Hacking", "Malware Analysis", "Incident Response"],
+                programming: ["Python", "JavaScript", "C", "C++", "Java", "Bash", "SQL"],
+                frontend: ["React", "Next.js", "HTML5", "CSS3", "Tailwind CSS", "Three.js"],
+                backend: ["Node.js", "Express.js", "Django", "Flask", "REST APIs"],
+                databases: ["MongoDB", "PostgreSQL", "MySQL", "Firebase"],
+                tools: ["Burp Suite", "Wireshark", "Nmap", "Metasploit", "Kali Linux", "Docker", "Git", "VS Code"],
+                ai_ml: ["Machine Learning", "Deep Learning", "TensorFlow", "NLP", "Computer Vision"],
+                other: ["Photography", "Videography", "Video Editing", "Content Creation"]
+            },
+
+            roles: [
+                { title: "Campus Lead", org: "Open Source Connect Global 2026", desc: "Leading open-source initiatives at RRU" },
+                { title: "Pre-Incubator", org: "AIC RRU (Atal Incubation Centre)", desc: "Working on innovative startup ideas" },
+                { title: "Vice President", org: "Chaturanga - Chess Club of RRU", desc: "Organizing tournaments and chess events" },
+                { title: "PR Head", org: "EDGE Club - RRU", desc: "Managing public relations and outreach" },
+                { title: "Contributor", org: "Open Source Connect", desc: "Contributing to security tools and frameworks" }
+            ],
+
+            certifications: {
+                count: "25+",
+                notable: ["MCP Fundamentals", "Cybersecurity (Tech Mahindra)", "Networking (NVIDIA)", "OSINT", "Python (NIELIT)", "C Programming", "Network Fundamentals (Cybrary)"]
+            },
+
+            projects: [
+                { name: "OSINT Framework", desc: "Open-source intelligence gathering tool for security researchers" },
+                { name: "Vulnerability Scanner", desc: "Automated security scanning for web applications" },
+                { name: "AI Threat Detector", desc: "ML-based system for detecting cyber threats" },
+                { name: "Network Monitor", desc: "Real-time network traffic analysis dashboard" },
+                { name: "Phishing Detector", desc: "AI-powered phishing email detection system" },
+                { name: "Cloud Security Tool", desc: "AWS security posture management" }
+            ],
+
+            contact: {
+                email: "adhikaryshankar04@gmail.com",
+                linkedin: "linkedin.com/in/adhikaryxshankar",
+                github: "github.com/ShankarAdhikary",
+                twitter: "x.com/SHANKARAD2006",
+                instagram: "instagram.com/the0xshankar"
+            },
+
+            achievements: ["Smart India Hackathon Participant", "CTF Competitions", "DevFest Gandhinagar", "IIT Madras CTF", "IIT Jodhpur Code Clash"],
+
+            interests: ["Cybersecurity", "Open Source", "Chess", "Photography", "AI/ML", "National Security", "Ethical Hacking", "CTF Competitions"],
+
             motto: "राष्ट्रीय सुरक्षा सर्वोपरि (National Security is Supreme)",
-            interests: ["Cybersecurity", "Open Source", "Chess", "Photography", "AI/ML"],
-            projects: ["OSINT Framework", "Vulnerability Scanner", "AI Threat Detector", "Network Monitor", "Phishing Detector", "Cloud Security Tool"]
+
+            funFacts: [
+                "Passionate about protecting India's digital infrastructure",
+                "Loves playing chess - thinks 10 moves ahead!",
+                "Can spend hours debugging code without getting tired",
+                "Believes in learning by doing",
+                "Open source enthusiast"
+            ]
         };
 
+        // Conversation context
+        let conversationHistory = [];
+
         function getAIResponse(question) {
-            const q = question.toLowerCase();
+            const q = question.toLowerCase().trim();
+            conversationHistory.push(q);
 
-            if (q.includes('name') || q.includes('who')) {
-                return `I'm the AI assistant for ${shankarInfo.name}, a cybersecurity enthusiast and full-stack developer! 🛡️`;
-            }
-            if (q.includes('education') || q.includes('study') || q.includes('college') || q.includes('university')) {
-                return `Shankar is pursuing ${shankarInfo.education}. It's one of India's premier institutions for security studies! 🎓`;
-            }
-            if (q.includes('skill') || q.includes('know') || q.includes('technology') || q.includes('tech')) {
-                return `Shankar's key skills include: ${shankarInfo.skills.slice(0, 6).join(', ')}, and more! He's a versatile developer with expertise in both offensive security and development. 💻`;
-            }
-            if (q.includes('role') || q.includes('position') || q.includes('experience') || q.includes('work')) {
-                return `Shankar holds several leadership positions:\n• ${shankarInfo.roles.join('\n• ')}\n\nHe's actively contributing to the tech community! 🚀`;
-            }
-            if (q.includes('certif') || q.includes('badge')) {
-                return `Shankar has earned ${shankarInfo.certifications}. He's constantly learning and growing! 📜`;
-            }
-            if (q.includes('contact') || q.includes('email') || q.includes('reach') || q.includes('hire')) {
-                return `You can reach Shankar at:\n📧 ${shankarInfo.contact.split('|')[0].trim()}\n💼 ${shankarInfo.contact.split('|')[1].trim()}\n🐙 ${shankarInfo.contact.split('|')[2].trim()}`;
-            }
-            if (q.includes('project')) {
-                return `Shankar has worked on exciting projects like: ${shankarInfo.projects.slice(0, 4).join(', ')}. Check out the Projects section for more! 🔧`;
-            }
-            if (q.includes('hobby') || q.includes('interest') || q.includes('like')) {
-                return `Shankar is passionate about: ${shankarInfo.interests.join(', ')}. A true polymath! 🎯`;
-            }
-            if (q.includes('motto') || q.includes('quote')) {
-                return `Shankar's motto: "${shankarInfo.motto}" - reflecting his commitment to national security through technology! 🇮🇳`;
-            }
-            if (q.includes('hello') || q.includes('hi') || q.includes('hey')) {
-                return `Hello! 👋 I'm Shankar's AI assistant. Ask me about his skills, projects, education, or how to contact him!`;
-            }
-            if (q.includes('thank')) {
-                return `You're welcome! Feel free to explore the portfolio or ask me anything else! 😊`;
+            // ============ GREETINGS ============
+            if (/^(hi|hello|hey|hola|namaste|namaskar|howdy|yo|sup|what'?s up)/.test(q)) {
+                const greetings = [
+                    `Hello! 👋 I'm Shankar's AI assistant. How can I help you today?`,
+                    `Hey there! 🌟 Welcome to Shankar's portfolio. What would you like to know?`,
+                    `Namaste! 🙏 I'm here to answer any questions about Shankar. Fire away!`,
+                    `Hi! 👋 Great to meet you! Ask me anything about Shankar's skills, projects, or experience.`
+                ];
+                return greetings[Math.floor(Math.random() * greetings.length)];
             }
 
-            return `Great question! Shankar is a ${shankarInfo.education.split(' at')[0]} student at RRU, with expertise in cybersecurity and full-stack development. Try asking about his skills, projects, or how to contact him! 💡`;
+            // ============ FAREWELLS ============
+            if (/^(bye|goodbye|see you|later|gtg|gotta go|farewell|take care)/.test(q)) {
+                return `Goodbye! 👋 Thanks for visiting Shankar's portfolio. Feel free to come back anytime! 🚀`;
+            }
+
+            // ============ THANKS ============
+            if (q.includes('thank') || q.includes('thanks') || q.includes('thx')) {
+                const thanks = [
+                    `You're welcome! 😊 Is there anything else you'd like to know?`,
+                    `Happy to help! 🌟 Feel free to ask more questions!`,
+                    `Anytime! 💜 Don't hesitate to reach out if you need more info.`
+                ];
+                return thanks[Math.floor(Math.random() * thanks.length)];
+            }
+
+            // ============ HOW ARE YOU ============
+            if (q.includes('how are you') || q.includes('how r u') || q.includes("how's it going") || q.includes('wassup')) {
+                return `I'm doing great, thanks for asking! 🤖 I'm always ready to help visitors learn about Shankar. How can I assist you?`;
+            }
+
+            // ============ WHO ARE YOU / ABOUT BOT ============
+            if ((q.includes('who are you') || q.includes('what are you') || q.includes('your name')) && !q.includes('shankar')) {
+                return `I'm Shankar's AI assistant! 🤖 I'm here to help you learn about Shankar Adhikary - his skills, projects, education, and how to contact him. Think of me as a smart guide to this portfolio!`;
+            }
+
+            // ============ ABOUT SHANKAR - NAME/WHO ============
+            if ((q.includes('who is') || q.includes('about') || q.includes('tell me about')) && (q.includes('shankar') || q.includes('him') || q.includes('owner'))) {
+                return `**Shankar Adhikary** is a cybersecurity enthusiast and full-stack developer from India! 🇮🇳
+
+🎓 Studying BTech in Cybersecurity at RRU
+🛡️ Skilled in Penetration Testing & Red Teaming
+💻 Full Stack Developer (React, Node.js, Python)
+🤖 Exploring AI/ML for security applications
+📸 Also into Photography & Content Creation
+
+His motto: "${shankarInfo.motto}"`;
+            }
+
+            // ============ NAME ============
+            if (q.includes('name') && (q.includes('your') || q.includes('his') || q.includes('what'))) {
+                return `His name is **Shankar Adhikary**! 👨‍💻 A cybersecurity enthusiast based in India, currently studying at Rashtriya Raksha University.`;
+            }
+
+            // ============ AGE ============
+            if (q.includes('age') || q.includes('old') || q.includes('born')) {
+                return `Shankar is ${shankarInfo.age} years old, currently in his 2nd year of BTech in Cybersecurity (2024-2028). Young but already making waves in the security community! 🚀`;
+            }
+
+            // ============ LOCATION ============
+            if (q.includes('where') && (q.includes('live') || q.includes('from') || q.includes('located') || q.includes('location') || q.includes('based'))) {
+                return `Shankar is based at **${shankarInfo.location}** 🇮🇳\n\nRRU is one of India's premier institutions focused on national security and defense studies!`;
+            }
+
+            // ============ EDUCATION ============
+            if (q.includes('education') || q.includes('study') || q.includes('college') || q.includes('university') || q.includes('degree') || q.includes('school') || q.includes('learning') || q.includes('btech')) {
+                return `🎓 **Education:**
+
+**${shankarInfo.education.degree}**
+📍 ${shankarInfo.education.university}
+📅 ${shankarInfo.education.year}
+
+${shankarInfo.education.description}. He's gaining hands-on experience in both offensive and defensive security! 🛡️`;
+            }
+
+            // ============ SKILLS - GENERAL ============
+            if ((q.includes('skill') || q.includes('know') || q.includes('good at') || q.includes('expertise') || q.includes('capable')) && !q.includes('cyber') && !q.includes('programming') && !q.includes('ai')) {
+                return `💪 **Shankar's Skills:**
+
+🛡️ **Cybersecurity:** ${shankarInfo.skills.cybersecurity.slice(0, 4).join(', ')}
+💻 **Programming:** ${shankarInfo.skills.programming.slice(0, 5).join(', ')}
+🎨 **Frontend:** ${shankarInfo.skills.frontend.slice(0, 4).join(', ')}
+⚙️ **Backend:** ${shankarInfo.skills.backend.slice(0, 3).join(', ')}
+🤖 **AI/ML:** ${shankarInfo.skills.ai_ml.slice(0, 3).join(', ')}
+
+Ask about a specific area for more details!`;
+            }
+
+            // ============ CYBERSECURITY SKILLS ============
+            if (q.includes('cyber') || q.includes('security') || q.includes('hacking') || q.includes('pentest') || q.includes('red team')) {
+                return `🛡️ **Cybersecurity Skills:**
+
+${shankarInfo.skills.cybersecurity.map(s => `• ${s}`).join('\n')}
+
+**Tools:** ${shankarInfo.skills.tools.slice(0, 6).join(', ')}
+
+Shankar specializes in offensive security and red teaming - finding vulnerabilities before the bad guys do! 🎯`;
+            }
+
+            // ============ PROGRAMMING SKILLS ============
+            if (q.includes('programming') || q.includes('coding') || q.includes('language') || q.includes('code')) {
+                return `💻 **Programming Languages:**
+
+${shankarInfo.skills.programming.map(s => `• ${s}`).join('\n')}
+
+**Frontend:** ${shankarInfo.skills.frontend.join(', ')}
+**Backend:** ${shankarInfo.skills.backend.join(', ')}
+
+He's a full-stack developer who can build complete applications from scratch! 🚀`;
+            }
+
+            // ============ AI/ML SKILLS ============
+            if (q.includes('ai') || q.includes('ml') || q.includes('machine learning') || q.includes('artificial intelligence') || q.includes('deep learning')) {
+                return `🤖 **AI/ML Skills:**
+
+${shankarInfo.skills.ai_ml.map(s => `• ${s}`).join('\n')}
+
+Shankar applies AI/ML to cybersecurity - building threat detection systems and intelligent security tools! 🧠`;
+            }
+
+            // ============ TOOLS ============
+            if (q.includes('tool') || q.includes('software') || q.includes('use') || q.includes('work with')) {
+                return `🔧 **Tools & Technologies:**
+
+**Security Tools:**
+• Burp Suite, Wireshark, Nmap, Metasploit, Kali Linux
+
+**Development:**
+• VS Code, Git, Docker, Firebase
+
+**Databases:**
+• ${shankarInfo.skills.databases.join(', ')}
+
+He's comfortable with both security and development tooling! 💪`;
+            }
+
+            // ============ ROLES/EXPERIENCE ============
+            if (q.includes('role') || q.includes('position') || q.includes('experience') || q.includes('work') || q.includes('job') || q.includes('leader')) {
+                const rolesText = shankarInfo.roles.map(r => `**${r.title}** @ ${r.org}\n   └─ ${r.desc}`).join('\n\n');
+                return `💼 **Current Roles:**\n\n${rolesText}\n\nHe's actively contributing to multiple communities! 🌟`;
+            }
+
+            // ============ CERTIFICATIONS ============
+            if (q.includes('certif') || q.includes('badge') || q.includes('credential') || q.includes('course')) {
+                return `📜 **Certifications: ${shankarInfo.certifications.count}**
+
+Notable ones include:
+${shankarInfo.certifications.notable.map(c => `✅ ${c}`).join('\n')}
+
+He's constantly learning and adding to his skillset! 📚`;
+            }
+
+            // ============ PROJECTS ============
+            if (q.includes('project') || q.includes('built') || q.includes('created') || q.includes('developed') || q.includes('portfolio work')) {
+                const projectsText = shankarInfo.projects.map(p => `🔹 **${p.name}**\n   ${p.desc}`).join('\n\n');
+                return `🚀 **Projects:**\n\n${projectsText}\n\nCheck out the Projects section for live demos! 👆`;
+            }
+
+            // ============ CONTACT ============
+            if (q.includes('contact') || q.includes('email') || q.includes('reach') || q.includes('hire') || q.includes('connect') || q.includes('message')) {
+                return `📬 **Contact Shankar:**
+
+📧 Email: ${shankarInfo.contact.email}
+💼 LinkedIn: ${shankarInfo.contact.linkedin}
+🐙 GitHub: ${shankarInfo.contact.github}
+🐦 Twitter: ${shankarInfo.contact.twitter}
+📸 Instagram: ${shankarInfo.contact.instagram}
+
+Feel free to reach out for collaborations, projects, or just to say hi! 👋`;
+            }
+
+            // ============ SOCIAL MEDIA ============
+            if (q.includes('social') || q.includes('linkedin') || q.includes('github') || q.includes('twitter') || q.includes('instagram')) {
+                return `📱 **Social Media:**
+
+💼 LinkedIn: ${shankarInfo.contact.linkedin}
+🐙 GitHub: ${shankarInfo.contact.github}
+🐦 X/Twitter: ${shankarInfo.contact.twitter}
+📸 Instagram: ${shankarInfo.contact.instagram}
+
+Follow for updates on cybersecurity, projects, and more! 🌟`;
+            }
+
+            // ============ ACHIEVEMENTS ============
+            if (q.includes('achievement') || q.includes('accomplish') || q.includes('award') || q.includes('competition') || q.includes('hackathon') || q.includes('ctf')) {
+                return `🏆 **Achievements & Competitions:**
+
+${shankarInfo.achievements.map(a => `🎯 ${a}`).join('\n')}
+
+He actively participates in CTFs and hackathons to sharpen his skills! 💪`;
+            }
+
+            // ============ INTERESTS/HOBBIES ============
+            if (q.includes('hobby') || q.includes('interest') || q.includes('passion') || q.includes('free time') || q.includes('fun')) {
+                return `🎯 **Interests & Hobbies:**
+
+${shankarInfo.interests.map(i => `• ${i}`).join('\n')}
+
+**Fun Facts:**
+${shankarInfo.funFacts.slice(0, 3).map(f => `💡 ${f}`).join('\n')}`;
+            }
+
+            // ============ CHESS ============
+            if (q.includes('chess')) {
+                return `♟️ Shankar is the **Vice President of Chaturanga** - the Chess Club of RRU! He organizes tournaments, coordinates inter-college competitions, and promotes strategic thinking through chess. A game that trains the mind for cybersecurity strategy! 🧠`;
+            }
+
+            // ============ PHOTOGRAPHY ============
+            if (q.includes('photo') || q.includes('camera') || q.includes('picture')) {
+                return `📸 Shankar is into **Photography & Videography**! He runs "Pixelverse Cinematography" - capturing cosmic moments through the lens. He's skilled in Portrait, Landscape, and Astro photography. A creative outlet alongside his technical work! 🎬`;
+            }
+
+            // ============ MOTTO ============
+            if (q.includes('motto') || q.includes('quote') || q.includes('believe') || q.includes('philosophy')) {
+                return `🇮🇳 **Shankar's Motto:**
+
+"${shankarInfo.motto}"
+
+This reflects his deep commitment to protecting India's digital infrastructure through technology. National security isn't just a career - it's a calling! 🛡️`;
+            }
+
+            // ============ RESUME/CV ============
+            if (q.includes('resume') || q.includes('cv')) {
+                return `📄 You can download Shankar's resume from the portfolio! Look for the "Download Resume" button in the hero section or contact area. It contains his complete professional profile! 📋`;
+            }
+
+            // ============ AVAILABLE/HIRE ============
+            if (q.includes('available') || q.includes('hiring') || q.includes('freelance') || q.includes('opportunity') || q.includes('intern')) {
+                return `✅ **Yes! Shankar is open to opportunities!**
+
+He's interested in:
+• Cybersecurity Internships
+• Red Team / Penetration Testing roles
+• Full Stack Development projects
+• Open Source collaborations
+• Security Research
+
+Contact him at: ${shankarInfo.contact.email} 📧`;
+            }
+
+            // ============ WHY CYBERSECURITY ============
+            if ((q.includes('why') && q.includes('cyber')) || q.includes('motivation')) {
+                return `🔥 **Why Cybersecurity?**
+
+Shankar's motto says it all: "${shankarInfo.motto}"
+
+He believes in protecting India's digital infrastructure and ensuring national security through technology. In today's digital age, cybersecurity is the frontline of defense! 🛡️🇮🇳`;
+            }
+
+            // ============ FAVORITE ============
+            if (q.includes('favorite') || q.includes('favourite') || q.includes('best')) {
+                if (q.includes('language') || q.includes('programming')) {
+                    return `💻 Shankar's favorite programming languages are **Python** for security scripts and automation, and **JavaScript** for full-stack development! Both are incredibly versatile. 🐍`;
+                }
+                if (q.includes('tool')) {
+                    return `🔧 Favorite tools? **Burp Suite** for web security testing, **Wireshark** for network analysis, and **VS Code** for development! The essentials of a security researcher. 🎯`;
+                }
+                return `⭐ Some of Shankar's favorites:\n• Language: Python & JavaScript\n• Tool: Burp Suite\n• Domain: Red Teaming\n• Hobby: Chess & Photography`;
+            }
+
+            // ============ HELP ============
+            if (q.includes('help') || q === '?') {
+                return `📚 **What can I help you with?**
+
+Try asking about:
+• 👤 "Who is Shankar?"
+• 🎓 "Education and university"
+• 💻 "Skills and technologies"
+• 🛡️ "Cybersecurity expertise"
+• 💼 "Roles and experience"
+• 🚀 "Projects"
+• 📜 "Certifications"
+• 📬 "How to contact"
+• ♟️ "Hobbies and interests"
+• 🏆 "Achievements"
+
+Just ask naturally - I understand many variations! 🤖`;
+            }
+
+            // ============ JOKES / FUN ============
+            if (q.includes('joke') || q.includes('funny') || q.includes('laugh')) {
+                const jokes = [
+                    `Why do programmers prefer dark mode? Because light attracts bugs! 🐛😄`,
+                    `Why did the hacker break up with the internet? Too many connection issues! 💔`,
+                    `What's a cybersecurity expert's favorite snack? Cookies... but only secure ones! 🍪🔒`,
+                    `Why was the JavaScript developer sad? Because he didn't Node how to Express himself! 😂`
+                ];
+                return jokes[Math.floor(Math.random() * jokes.length)];
+            }
+
+            // ============ COMPLIMENTS ============
+            if (q.includes('cool') || q.includes('awesome') || q.includes('great') || q.includes('amazing') || q.includes('nice portfolio')) {
+                return `Thank you so much! 🌟 I'll pass on your kind words to Shankar. He put a lot of effort into this portfolio! Feel free to connect with him on LinkedIn or GitHub. 💜`;
+            }
+
+            // ============ MEANING OF LIFE / RANDOM QUESTIONS ============
+            if (q.includes('meaning of life') || q.includes('42')) {
+                return `42! 🤖 But seriously, for Shankar, the meaning is clear: "${shankarInfo.motto}" - protecting and serving through technology! 🇮🇳`;
+            }
+
+            // ============ WEATHER / RANDOM ============
+            if (q.includes('weather') || q.includes('time')) {
+                return `I'm a portfolio assistant, so I don't have weather or time data! 😅 But I can tell you everything about Shankar. Try asking about his skills or projects! ⌨️`;
+            }
+
+            // ============ LOVE / RELATIONSHIP ============
+            if (q.includes('girlfriend') || q.includes('boyfriend') || q.includes('relationship') || q.includes('single')) {
+                return `That's personal info I don't have! 😄 But I know Shankar is definitely in a committed relationship with... CODING! 💻❤️ Ask me about his technical skills instead!`;
+            }
+
+            // ============ DEFAULT / FALLBACK ============
+            const fallbacks = [
+                `Interesting question! 🤔 While I may not have the exact answer, I can tell you about Shankar's skills, projects, education, or how to contact him. What interests you?`,
+                `Hmm, I'm not sure about that! 😅 I'm best at answering questions about Shankar's professional background. Try asking about his cybersecurity skills or projects!`,
+                `Great curiosity! 💡 I might not have that specific info, but I know a lot about Shankar's expertise in cybersecurity and development. What would you like to explore?`,
+                `That's outside my knowledge! 🤖 I'm specialized in Shankar's portfolio. Ask me about his certifications, roles, or technical skills!`
+            ];
+            return fallbacks[Math.floor(Math.random() * fallbacks.length)];
         }
 
         function addMessage(text, isUser = false) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `flex gap-2 ${isUser ? 'flex-row-reverse' : ''}`;
+            // Convert markdown-like **text** to bold
+            const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             messageDiv.innerHTML = `
                 <div class="w-8 h-8 rounded-full ${isUser ? 'bg-nebula-blue/30' : 'bg-cosmic-purple/30'} flex items-center justify-center flex-shrink-0">
                     <i data-lucide="${isUser ? 'user' : 'bot'}" class="w-4 h-4 ${isUser ? 'text-nebula-blue' : 'text-cosmic-purple'}"></i>
                 </div>
                 <div class="${isUser ? 'bg-nebula-blue/20 rounded-tr-none' : 'bg-gray-800 rounded-tl-none'} rounded-lg p-3 text-sm text-gray-300 max-w-[80%]" style="white-space: pre-line;">
-                    ${text}
+                    ${formattedText}
                 </div>
             `;
             chatMessages.appendChild(messageDiv);
