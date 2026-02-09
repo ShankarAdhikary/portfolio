@@ -697,18 +697,140 @@
             background-clip: text;
         }
 
-        /* Tilt Card Effect */
-        .tilt-card {
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease;
+        /* ==================== CUSTOM CURSOR ==================== */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #6A0DAD;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transition: transform 0.15s ease, border-color 0.3s ease, background-color 0.3s ease;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
         }
 
-        .tilt-card:hover {
-            transform: perspective(1000px) rotateX(var(--rotateX, 0deg)) rotateY(var(--rotateY, 0deg));
+        .custom-cursor.hover {
+            transform: translate(-50%, -50%) scale(1.5);
+            background-color: rgba(106, 13, 173, 0.3);
+            border-color: #39FF14;
         }
 
-        .tilt-card .tilt-content {
-            transform: translateZ(20px);
+        .custom-cursor.click {
+            transform: translate(-50%, -50%) scale(0.8);
+            background-color: #6A0DAD;
+        }
+
+        .cursor-trail {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, #6A0DAD, #1E90FF);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Hide default cursor */
+        body {
+            cursor: none;
+        }
+
+        a,
+        button,
+        input,
+        textarea,
+        select,
+        .clickable {
+            cursor: none;
+        }
+
+        /* Show default cursor on mobile/touch */
+        @media (hover: none) and (pointer: coarse) {
+
+            body,
+            a,
+            button,
+            input,
+            textarea,
+            select,
+            .clickable {
+                cursor: auto;
+            }
+
+            .custom-cursor,
+            .cursor-trail {
+                display: none !important;
+            }
+        }
+
+        /* ==================== BACK TO TOP BUTTON ==================== */
+        .back-to-top {
+            position: fixed;
+            bottom: 100px;
+            right: 25px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #6A0DAD, #1E90FF);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(106, 13, 173, 0.4);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 8px 30px rgba(106, 13, 173, 0.6);
+        }
+
+        .back-to-top svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .back-to-top::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: inherit;
+            z-index: -1;
+            animation: pulse-ring 2s ease-out infinite;
+            opacity: 0;
+        }
+
+        .back-to-top.visible::before {
+            opacity: 1;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
         }
 
         /* Chatbot Styles */
@@ -869,6 +991,18 @@
 </head>
 
 <body class="text-white overflow-x-hidden">
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="custom-cursor"></div>
+    <div class="cursor-trail" id="cursor-trail"></div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="back-to-top" aria-label="Back to top">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 15l-6-6-6 6" />
+        </svg>
+    </button>
+
     <!-- Ultra-Premium Cyberpunk Preloader -->
     <div id="preloader" class="preloader">
         <!-- Matrix Rain Canvas -->
@@ -2420,33 +2554,6 @@ END:VCARD`;
         `;
         document.head.appendChild(style);
 
-        // ============ TILT EFFECT ON CARDS ============
-        const tiltCards = document.querySelectorAll('.glass-card, .project-card');
-        tiltCards.forEach(card => {
-            // Skip chatbot elements
-            if (card.closest('.chatbot-container') || card.closest('#qr-modal')) return;
-
-            card.classList.add('tilt-card');
-
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = (y - centerY) / 10;
-                const rotateY = (centerX - x) / 10;
-
-                card.style.setProperty('--rotateX', `${rotateX}deg`);
-                card.style.setProperty('--rotateY', `${rotateY}deg`);
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-            });
-
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
-            });
-        });
-
         // ============ AI CHATBOT ============
         const chatbotBubble = document.getElementById('chatbot-bubble');
         const chatbotWindow = document.getElementById('chatbot-window');
@@ -3148,6 +3255,79 @@ Mission: Hack into Shankar's portfolio`,
                     });
             });
         }
+
+        // ==================== CUSTOM CURSOR ====================
+        (function () {
+            const cursor = document.getElementById('custom-cursor');
+            const trail = document.getElementById('cursor-trail');
+
+            if (!cursor || !trail) return;
+
+            let mouseX = 0, mouseY = 0;
+            let trailX = 0, trailY = 0;
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                cursor.style.left = mouseX + 'px';
+                cursor.style.top = mouseY + 'px';
+            });
+
+            // Smooth trail animation
+            function animateTrail() {
+                trailX += (mouseX - trailX) * 0.15;
+                trailY += (mouseY - trailY) * 0.15;
+                trail.style.left = trailX + 'px';
+                trail.style.top = trailY + 'px';
+                requestAnimationFrame(animateTrail);
+            }
+            animateTrail();
+
+            // Hover effect on interactive elements
+            const interactiveElements = document.querySelectorAll('a, button, input, textarea, select, .glass-card, .project-card, .nav-link');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+            });
+
+            // Click effect
+            document.addEventListener('mousedown', () => cursor.classList.add('click'));
+            document.addEventListener('mouseup', () => cursor.classList.remove('click'));
+
+            // Hide cursor when leaving window
+            document.addEventListener('mouseleave', () => {
+                cursor.style.opacity = '0';
+                trail.style.opacity = '0';
+            });
+            document.addEventListener('mouseenter', () => {
+                cursor.style.opacity = '1';
+                trail.style.opacity = '0.6';
+            });
+        })();
+
+        // ==================== BACK TO TOP BUTTON ====================
+        (function () {
+            const backToTop = document.getElementById('back-to-top');
+
+            if (!backToTop) return;
+
+            // Show/hide based on scroll position
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 500) {
+                    backToTop.classList.add('visible');
+                } else {
+                    backToTop.classList.remove('visible');
+                }
+            });
+
+            // Scroll to top on click
+            backToTop.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        })();
 
     </script>
 </body>
