@@ -1146,7 +1146,7 @@
         <div class="max-w-7xl mx-auto px-6 text-center">
             <!-- Floating Badge -->
             <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass-card mb-8">
-                <span class="w-2 h-2 bg-cyber-lime rounded-full animate-pulse"></span>
+                <span class="w-2 h-2 bg-cyber-lime rounded-full"></span>
                 <span class="text-sm text-gray-300">Available for Opportunities</span>
             </div>
 
@@ -1183,7 +1183,7 @@
             <!-- CTA Buttons -->
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a href="#work"
-                    class="group relative px-8 py-4 rounded-lg font-semibold text-white overflow-hidden animate-glow-pulse">
+                    class="group relative px-8 py-4 rounded-lg font-semibold text-white overflow-hidden">
                     <span class="absolute inset-0 bg-gradient-to-r from-cosmic-purple to-nebula-blue"></span>
                     <span class="relative flex items-center space-x-2">
                         <span>Explore My Universe</span>
@@ -1197,7 +1197,7 @@
             </div>
 
             <!-- Scroll Indicator -->
-            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2">
                 <i data-lucide="chevron-down" class="w-8 h-8 text-gray-500"></i>
             </div>
         </div>
@@ -1932,7 +1932,7 @@
                                 placeholder="Your message..."></textarea>
                         </div>
                         <button type="submit"
-                            class="w-full py-4 rounded-lg font-semibold text-white bg-gradient-to-r from-cosmic-purple to-nebula-blue hover:opacity-90 transition-opacity animate-glow-pulse">
+                            class="w-full py-4 rounded-lg font-semibold text-white bg-gradient-to-r from-cosmic-purple to-nebula-blue hover:opacity-90 transition-opacity">
                             <span class="flex items-center justify-center space-x-2">
                                 <span>Transmit Message</span>
                                 <i data-lucide="send" class="w-5 h-5"></i>
@@ -2130,7 +2130,7 @@
     <button id="open-game"
         class="fixed bottom-24 right-6 z-50 w-12 h-12 rounded-full bg-cyber-lime/20 border border-cyber-lime/50 flex items-center justify-center hover:bg-cyber-lime/30 transition-colors group"
         title="Play Hacking Game">
-        <i data-lucide="terminal" class="w-6 h-6 text-cyber-lime group-hover:animate-pulse"></i>
+        <i data-lucide="terminal" class="w-6 h-6 text-cyber-lime "></i>
     </button>
 
     <!-- Footer -->
@@ -2494,40 +2494,8 @@ END:VCARD`;
             }
         });
 
-        // Intersection Observer for scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-fade-in');
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        // Observe all sections
-        document.querySelectorAll('section').forEach(section => {
-            section.style.opacity = '0';
-            section.style.transform = 'translateY(20px)';
-            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(section);
-        });
-
-        // Hero section should be visible immediately
+        // Hero section visible
         document.getElementById('home').style.opacity = '1';
-        document.getElementById('home').style.transform = 'translateY(0)';
-
-        // Typing effect for tagline (optional enhancement)
-        const taglineSpans = document.querySelectorAll('#home p.font-mono span');
-        taglineSpans.forEach((span, index) => {
-            span.style.opacity = '0';
-            span.style.animation = `fadeIn 0.5s ease ${index * 0.2 + 0.5}s forwards`;
-        });
 
         // Add fadeIn keyframes
         const style = document.createElement('style');
