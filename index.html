@@ -451,10 +451,16 @@
 
         /* Glassmorphism Card */
         .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
         }
 
         /* Neon Glow Border */
@@ -478,10 +484,24 @@
 
         /* Gradient Text */
         .gradient-text {
-            background: linear-gradient(135deg, #6A0DAD, #1E90FF);
+            background: linear-gradient(135deg, #6A0DAD 0%, #1E90FF 50%, #6A0DAD 100%);
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: gradientText 8s ease infinite;
+        }
+
+        @keyframes gradientText {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
         /* ==================== CUSTOM CURSOR ==================== */
@@ -582,8 +602,8 @@
         }
 
         .back-to-top:hover {
-            transform: translateY(-5px) scale(1.1);
-            box-shadow: 0 8px 30px rgba(106, 13, 173, 0.6);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(106, 13, 173, 0.5), 0 0 50px rgba(30, 144, 255, 0.2);
         }
 
         .back-to-top svg {
@@ -721,18 +741,36 @@
 
         /* Section Styles */
         .section-padding {
-            padding: 100px 0;
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .section-padding::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(106, 13, 173, 0.3), rgba(30, 144, 255, 0.3), transparent);
         }
 
         /* Skill Bar */
         .skill-bar {
             background: linear-gradient(90deg, #6A0DAD, #1E90FF);
-            box-shadow: 0 0 10px rgba(106, 13, 173, 0.5);
+            box-shadow: 0 0 15px rgba(106, 13, 173, 0.4), 0 0 30px rgba(30, 144, 255, 0.2);
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Project Card Hover */
+        .project-card {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         .project-card:hover {
-            box-shadow: 0 10px 30px rgba(106, 13, 173, 0.3);
+            box-shadow: 0 20px 40px rgba(106, 13, 173, 0.25), 0 0 60px rgba(30, 144, 255, 0.1);
+            transform: translateY(-8px);
         }
 
         /* Nav Link Underline */
@@ -740,11 +778,13 @@
             content: '';
             position: absolute;
             bottom: -4px;
-            left: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 0;
             height: 2px;
             background: linear-gradient(90deg, #6A0DAD, #1E90FF);
-            transition: width 0.3s ease;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 2px;
         }
 
         .nav-link:hover::after {
@@ -938,23 +978,29 @@
             </p>
 
             <!-- CTA Buttons -->
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="#work" class="group relative px-8 py-4 rounded-lg font-semibold text-white overflow-hidden">
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-5">
+                <a href="#work"
+                    class="group relative px-8 py-4 rounded-xl font-semibold text-white overflow-hidden shadow-lg shadow-cosmic-purple/25 hover:shadow-cosmic-purple/40 transition-shadow">
                     <span class="absolute inset-0 bg-gradient-to-r from-cosmic-purple to-nebula-blue"></span>
+                    <span
+                        class="absolute inset-0 bg-gradient-to-r from-nebula-blue to-cosmic-purple opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
                     <span class="relative flex items-center space-x-2">
                         <span>Explore My Universe</span>
-                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
                     </span>
                 </a>
                 <a href="#contact"
-                    class="px-8 py-4 rounded-lg font-semibold text-white border border-gray-700 hover:border-cosmic-purple transition-colors glass-card">
+                    class="px-8 py-4 rounded-xl font-semibold text-white border border-gray-700 hover:border-cosmic-purple/70 hover:bg-cosmic-purple/10 transition-all glass-card">
                     Initiate Contact
                 </a>
             </div>
 
             <!-- Scroll Indicator -->
             <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2">
-                <i data-lucide="chevron-down" class="w-8 h-8 text-gray-500"></i>
+                <div class="flex flex-col items-center space-y-2">
+                    <span class="text-gray-600 text-xs font-mono tracking-widest">SCROLL</span>
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-gray-500"></i>
+                </div>
             </div>
         </div>
     </section>
@@ -963,9 +1009,13 @@
     <section id="about" class="section-padding relative">
         <div class="max-w-7xl mx-auto px-6">
             <!-- Section Header -->
-            <div class="text-center mb-16">
-                <span class="text-cosmic-purple font-mono text-sm tracking-wider">01 // THE ORIGIN</span>
+            <div class="text-center mb-20">
+                <span
+                    class="inline-block px-4 py-1.5 rounded-full bg-cosmic-purple/10 border border-cosmic-purple/30 text-cosmic-purple font-mono text-sm tracking-wider mb-4">01
+                    // THE ORIGIN</span>
                 <h2 class="text-4xl md:text-5xl font-space font-bold mt-4 gradient-text">About Me</h2>
+                <div class="w-20 h-1 bg-gradient-to-r from-cosmic-purple to-nebula-blue mx-auto mt-6 rounded-full">
+                </div>
             </div>
 
             <div class="grid lg:grid-cols-2 gap-12 items-center">
@@ -1033,9 +1083,13 @@
     <section id="experience" class="section-padding relative">
         <div class="max-w-7xl mx-auto px-6">
             <!-- Section Header -->
-            <div class="text-center mb-16">
-                <span class="text-nebula-blue font-mono text-sm tracking-wider">02 // EXPERIENCE</span>
+            <div class="text-center mb-20">
+                <span
+                    class="inline-block px-4 py-1.5 rounded-full bg-nebula-blue/10 border border-nebula-blue/30 text-nebula-blue font-mono text-sm tracking-wider mb-4">02
+                    // EXPERIENCE</span>
                 <h2 class="text-4xl md:text-5xl font-space font-bold mt-4 gradient-text">My Journey</h2>
+                <div class="w-20 h-1 bg-gradient-to-r from-nebula-blue to-cosmic-purple mx-auto mt-6 rounded-full">
+                </div>
             </div>
 
             <!-- Experience Timeline -->
@@ -1263,9 +1317,12 @@
     <section id="skills" class="section-padding relative">
         <div class="max-w-7xl mx-auto px-6">
             <!-- Section Header -->
-            <div class="text-center mb-16">
-                <span class="text-cyber-lime font-mono text-sm tracking-wider">03 // THE TOOLKIT</span>
+            <div class="text-center mb-20">
+                <span
+                    class="inline-block px-4 py-1.5 rounded-full bg-cyber-lime/10 border border-cyber-lime/30 text-cyber-lime font-mono text-sm tracking-wider mb-4">03
+                    // THE TOOLKIT</span>
                 <h2 class="text-4xl md:text-5xl font-space font-bold mt-4 gradient-text">Skills & Expertise</h2>
+                <div class="w-20 h-1 bg-gradient-to-r from-cyber-lime to-nebula-blue mx-auto mt-6 rounded-full"></div>
             </div>
 
             <!-- Skills Grid -->
@@ -1449,199 +1506,197 @@
     <section id="work" class="section-padding relative">
         <div class="max-w-7xl mx-auto px-6">
             <!-- Section Header -->
-            <div class="text-center mb-16">
-                <span class="text-cosmic-purple font-mono text-sm tracking-wider">04 // THE CONSTELLATIONS</span>
+            <div class="text-center mb-20">
+                <span
+                    class="inline-block px-4 py-1.5 rounded-full bg-cosmic-purple/10 border border-cosmic-purple/30 text-cosmic-purple font-mono text-sm tracking-wider mb-4">04
+                    // THE CONSTELLATIONS</span>
                 <h2 class="text-4xl md:text-5xl font-space font-bold mt-4 gradient-text">Featured Projects</h2>
                 <p class="text-gray-500 mt-4 max-w-2xl mx-auto">Exploring the cosmos of code, security, and innovation
                 </p>
+                <div class="w-20 h-1 bg-gradient-to-r from-cosmic-purple to-nebula-blue mx-auto mt-6 rounded-full">
+                </div>
             </div>
+        </div>
 
-            <!-- Projects Grid -->
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Project 1 -->
-                <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
-                    <div
-                        class="h-48 bg-gradient-to-br from-cosmic-purple/30 to-nebula-blue/30 flex items-center justify-center">
-                        <i data-lucide="globe"
-                            class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-cosmic-purple font-mono text-xs">Featured</span>
-                            <div class="flex space-x-2">
-                                <a href="#" class="text-gray-500 hover:text-white transition-colors">
-                                    <i data-lucide="github" class="w-5 h-5"></i>
-                                </a>
-                                <a href="#" class="text-gray-500 hover:text-white transition-colors">
-                                    <i data-lucide="external-link" class="w-5 h-5"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <h3 class="text-xl font-space font-semibold text-white mb-2">Open Source Connect</h3>
-                        <p class="text-gray-400 text-sm mb-4">Platform connecting developers with open-source projects
-                            worldwide. Built for OSC Global 2026.</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span
-                                class="px-2 py-1 rounded text-xs font-mono bg-cosmic-purple/20 text-cosmic-purple">React</span>
-                            <span
-                                class="px-2 py-1 rounded text-xs font-mono bg-nebula-blue/20 text-nebula-blue">Node.js</span>
-                            <span
-                                class="px-2 py-1 rounded text-xs font-mono bg-cyber-lime/20 text-cyber-lime">MongoDB</span>
-                        </div>
-                    </div>
+        <!-- Projects Grid -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Project 1 -->
+            <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
+                <div
+                    class="h-48 bg-gradient-to-br from-cosmic-purple/30 to-nebula-blue/30 flex items-center justify-center">
+                    <i data-lucide="globe"
+                        class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
                 </div>
-
-                <!-- Project 2 -->
-                <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
-                    <div
-                        class="h-48 bg-gradient-to-br from-red-500/30 to-orange-500/30 flex items-center justify-center">
-                        <i data-lucide="bug"
-                            class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-red-500 font-mono text-xs">Security</span>
-                            <div class="flex space-x-2">
-                                <a href="#" class="text-gray-500 hover:text-white transition-colors">
-                                    <i data-lucide="github" class="w-5 h-5"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <h3 class="text-xl font-space font-semibold text-white mb-2">RedTeam Toolkit</h3>
-                        <p class="text-gray-400 text-sm mb-4">Comprehensive suite of penetration testing tools for
-                            security assessments and vulnerability research.</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-2 py-1 rounded text-xs font-mono bg-red-500/20 text-red-400">Python</span>
-                            <span
-                                class="px-2 py-1 rounded text-xs font-mono bg-orange-500/20 text-orange-400">Bash</span>
-                            <span class="px-2 py-1 rounded text-xs font-mono bg-gray-700 text-gray-300">Kali</span>
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-cosmic-purple font-mono text-xs">Featured</span>
+                        <div class="flex space-x-2">
+                            <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                                <i data-lucide="github" class="w-5 h-5"></i>
+                            </a>
+                            <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                                <i data-lucide="external-link" class="w-5 h-5"></i>
+                            </a>
                         </div>
                     </div>
-                </div>
-
-                <!-- Project 3 -->
-                <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
-                    <div
-                        class="h-48 bg-gradient-to-br from-cyber-lime/30 to-teal-500/30 flex items-center justify-center">
-                        <i data-lucide="brain"
-                            class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-cyber-lime font-mono text-xs">AI/ML</span>
-                            <div class="flex space-x-2">
-                                <a href="#" class="text-gray-500 hover:text-white transition-colors">
-                                    <i data-lucide="github" class="w-5 h-5"></i>
-                                </a>
-                                <a href="#" class="text-gray-500 hover:text-white transition-colors">
-                                    <i data-lucide="external-link" class="w-5 h-5"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <h3 class="text-xl font-space font-semibold text-white mb-2">Threat Detector AI</h3>
-                        <p class="text-gray-400 text-sm mb-4">Machine learning model for real-time threat detection and
-                            anomaly analysis in network traffic.</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span
-                                class="px-2 py-1 rounded text-xs font-mono bg-cyber-lime/20 text-cyber-lime">TensorFlow</span>
-                            <span class="px-2 py-1 rounded text-xs font-mono bg-teal-500/20 text-teal-400">Python</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 4 -->
-                <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
-                    <div
-                        class="h-48 bg-gradient-to-br from-nebula-blue/30 to-indigo-500/30 flex items-center justify-center">
-                        <i data-lucide="lock"
-                            class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-nebula-blue font-mono text-xs">Cryptography</span>
-                            <div class="flex space-x-2">
-                                <a href="#" class="text-gray-500 hover:text-white transition-colors">
-                                    <i data-lucide="github" class="w-5 h-5"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <h3 class="text-xl font-space font-semibold text-white mb-2">SecureVault</h3>
-                        <p class="text-gray-400 text-sm mb-4">End-to-end encrypted password manager with zero-knowledge
-                            architecture and multi-factor auth.</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span
-                                class="px-2 py-1 rounded text-xs font-mono bg-nebula-blue/20 text-nebula-blue">Rust</span>
-                            <span
-                                class="px-2 py-1 rounded text-xs font-mono bg-indigo-500/20 text-indigo-400">WebAssembly</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 5 -->
-                <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
-                    <div
-                        class="h-48 bg-gradient-to-br from-pink-500/30 to-purple-500/30 flex items-center justify-center">
-                        <i data-lucide="camera"
-                            class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-pink-500 font-mono text-xs">Creative</span>
-                            <div class="flex space-x-2">
-                                <a href="#" class="text-gray-500 hover:text-white transition-colors">
-                                    <i data-lucide="external-link" class="w-5 h-5"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <h3 class="text-xl font-space font-semibold text-white mb-2">Pixelverse Gallery</h3>
-                        <p class="text-gray-400 text-sm mb-4">Photography portfolio showcasing cosmic landscapes and
-                            urban cinematography captures.</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span
-                                class="px-2 py-1 rounded text-xs font-mono bg-pink-500/20 text-pink-400">Photography</span>
-                            <span
-                                class="px-2 py-1 rounded text-xs font-mono bg-purple-500/20 text-purple-400">Lightroom</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 6 -->
-                <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
-                    <div
-                        class="h-48 bg-gradient-to-br from-yellow-500/30 to-amber-500/30 flex items-center justify-center">
-                        <i data-lucide="server"
-                            class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-yellow-500 font-mono text-xs">DevOps</span>
-                            <div class="flex space-x-2">
-                                <a href="#" class="text-gray-500 hover:text-white transition-colors">
-                                    <i data-lucide="github" class="w-5 h-5"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <h3 class="text-xl font-space font-semibold text-white mb-2">CloudGuard</h3>
-                        <p class="text-gray-400 text-sm mb-4">Automated cloud security posture management tool with
-                            real-time compliance monitoring.</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span
-                                class="px-2 py-1 rounded text-xs font-mono bg-yellow-500/20 text-yellow-400">AWS</span>
-                            <span
-                                class="px-2 py-1 rounded text-xs font-mono bg-amber-500/20 text-amber-400">Terraform</span>
-                        </div>
+                    <h3 class="text-xl font-space font-semibold text-white mb-2">Open Source Connect</h3>
+                    <p class="text-gray-400 text-sm mb-4">Platform connecting developers with open-source projects
+                        worldwide. Built for OSC Global 2026.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="px-2 py-1 rounded text-xs font-mono bg-cosmic-purple/20 text-cosmic-purple">React</span>
+                        <span
+                            class="px-2 py-1 rounded text-xs font-mono bg-nebula-blue/20 text-nebula-blue">Node.js</span>
+                        <span
+                            class="px-2 py-1 rounded text-xs font-mono bg-cyber-lime/20 text-cyber-lime">MongoDB</span>
                     </div>
                 </div>
             </div>
 
-            <!-- View More Button -->
-            <div class="text-center mt-12">
-                <a href="https://github.com/ShankarAdhikary" target="_blank"
-                    class="inline-flex items-center space-x-2 px-6 py-3 rounded-lg font-medium text-white border border-gray-700 hover:border-cosmic-purple transition-colors glass-card">
-                    <i data-lucide="github" class="w-5 h-5"></i>
-                    <span>View All on GitHub</span>
-                </a>
+            <!-- Project 2 -->
+            <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
+                <div class="h-48 bg-gradient-to-br from-red-500/30 to-orange-500/30 flex items-center justify-center">
+                    <i data-lucide="bug"
+                        class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-red-500 font-mono text-xs">Security</span>
+                        <div class="flex space-x-2">
+                            <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                                <i data-lucide="github" class="w-5 h-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-space font-semibold text-white mb-2">RedTeam Toolkit</h3>
+                    <p class="text-gray-400 text-sm mb-4">Comprehensive suite of penetration testing tools for
+                        security assessments and vulnerability research.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 rounded text-xs font-mono bg-red-500/20 text-red-400">Python</span>
+                        <span class="px-2 py-1 rounded text-xs font-mono bg-orange-500/20 text-orange-400">Bash</span>
+                        <span class="px-2 py-1 rounded text-xs font-mono bg-gray-700 text-gray-300">Kali</span>
+                    </div>
+                </div>
             </div>
+
+            <!-- Project 3 -->
+            <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
+                <div class="h-48 bg-gradient-to-br from-cyber-lime/30 to-teal-500/30 flex items-center justify-center">
+                    <i data-lucide="brain"
+                        class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-cyber-lime font-mono text-xs">AI/ML</span>
+                        <div class="flex space-x-2">
+                            <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                                <i data-lucide="github" class="w-5 h-5"></i>
+                            </a>
+                            <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                                <i data-lucide="external-link" class="w-5 h-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-space font-semibold text-white mb-2">Threat Detector AI</h3>
+                    <p class="text-gray-400 text-sm mb-4">Machine learning model for real-time threat detection and
+                        anomaly analysis in network traffic.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="px-2 py-1 rounded text-xs font-mono bg-cyber-lime/20 text-cyber-lime">TensorFlow</span>
+                        <span class="px-2 py-1 rounded text-xs font-mono bg-teal-500/20 text-teal-400">Python</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 4 -->
+            <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
+                <div
+                    class="h-48 bg-gradient-to-br from-nebula-blue/30 to-indigo-500/30 flex items-center justify-center">
+                    <i data-lucide="lock"
+                        class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-nebula-blue font-mono text-xs">Cryptography</span>
+                        <div class="flex space-x-2">
+                            <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                                <i data-lucide="github" class="w-5 h-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-space font-semibold text-white mb-2">SecureVault</h3>
+                    <p class="text-gray-400 text-sm mb-4">End-to-end encrypted password manager with zero-knowledge
+                        architecture and multi-factor auth.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 rounded text-xs font-mono bg-nebula-blue/20 text-nebula-blue">Rust</span>
+                        <span
+                            class="px-2 py-1 rounded text-xs font-mono bg-indigo-500/20 text-indigo-400">WebAssembly</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 5 -->
+            <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
+                <div class="h-48 bg-gradient-to-br from-pink-500/30 to-purple-500/30 flex items-center justify-center">
+                    <i data-lucide="camera"
+                        class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-pink-500 font-mono text-xs">Creative</span>
+                        <div class="flex space-x-2">
+                            <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                                <i data-lucide="external-link" class="w-5 h-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-space font-semibold text-white mb-2">Pixelverse Gallery</h3>
+                    <p class="text-gray-400 text-sm mb-4">Photography portfolio showcasing cosmic landscapes and
+                        urban cinematography captures.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="px-2 py-1 rounded text-xs font-mono bg-pink-500/20 text-pink-400">Photography</span>
+                        <span
+                            class="px-2 py-1 rounded text-xs font-mono bg-purple-500/20 text-purple-400">Lightroom</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 6 -->
+            <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
+                <div class="h-48 bg-gradient-to-br from-yellow-500/30 to-amber-500/30 flex items-center justify-center">
+                    <i data-lucide="server"
+                        class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-yellow-500 font-mono text-xs">DevOps</span>
+                        <div class="flex space-x-2">
+                            <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                                <i data-lucide="github" class="w-5 h-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-space font-semibold text-white mb-2">CloudGuard</h3>
+                    <p class="text-gray-400 text-sm mb-4">Automated cloud security posture management tool with
+                        real-time compliance monitoring.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 rounded text-xs font-mono bg-yellow-500/20 text-yellow-400">AWS</span>
+                        <span
+                            class="px-2 py-1 rounded text-xs font-mono bg-amber-500/20 text-amber-400">Terraform</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View More Button -->
+        <div class="text-center mt-12">
+            <a href="https://github.com/ShankarAdhikary" target="_blank"
+                class="inline-flex items-center space-x-2 px-6 py-3 rounded-lg font-medium text-white border border-gray-700 hover:border-cosmic-purple transition-colors glass-card">
+                <i data-lucide="github" class="w-5 h-5"></i>
+                <span>View All on GitHub</span>
+            </a>
+        </div>
         </div>
     </section>
 
@@ -1649,11 +1704,15 @@
     <section id="contact" class="section-padding relative">
         <div class="max-w-7xl mx-auto px-6">
             <!-- Section Header -->
-            <div class="text-center mb-16">
-                <span class="text-nebula-blue font-mono text-sm tracking-wider">05 // THE UPLINK</span>
+            <div class="text-center mb-20">
+                <span
+                    class="inline-block px-4 py-1.5 rounded-full bg-nebula-blue/10 border border-nebula-blue/30 text-nebula-blue font-mono text-sm tracking-wider mb-4">05
+                    // THE UPLINK</span>
                 <h2 class="text-4xl md:text-5xl font-space font-bold mt-4 gradient-text">Get In Touch</h2>
                 <p class="text-gray-500 mt-4 max-w-2xl mx-auto">Ready to collaborate on your next mission? Let's connect
                     across the digital frontier.</p>
+                <div class="w-20 h-1 bg-gradient-to-r from-nebula-blue to-cosmic-purple mx-auto mt-6 rounded-full">
+                </div>
             </div>
 
             <div class="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
@@ -1885,36 +1944,36 @@
     </button>
 
     <!-- Footer -->
-    <footer class="py-8 border-t border-gray-800/50">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="flex items-center space-x-2">
+    <footer class="py-12 border-t border-gray-800/30 relative overflow-hidden">
+        <!-- Subtle gradient background -->
+        <div class="absolute inset-0 bg-gradient-to-t from-cosmic-purple/5 to-transparent pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center space-x-3">
                     <span class="text-2xl font-mono font-bold gradient-text">SA</span>
+                    <div class="h-6 w-px bg-gray-700"></div>
                     <span class="text-gray-500 text-sm">© 2026 Shankar Adhikary. All rights reserved.</span>
                 </div>
-                <div class="flex items-center space-x-6">
+                <div class="flex items-center space-x-5">
                     <a href="https://github.com/ShankarAdhikary" target="_blank"
-                        class="text-gray-500 hover:text-white transition-colors">
+                        class="w-10 h-10 rounded-lg bg-gray-800/50 flex items-center justify-center text-gray-400 hover:text-white hover:bg-cosmic-purple/20 transition-all">
                         <i data-lucide="github" class="w-5 h-5"></i>
                     </a>
                     <a href="https://www.linkedin.com/in/adhikaryxshankar/" target="_blank"
-                        class="text-gray-500 hover:text-white transition-colors">
+                        class="w-10 h-10 rounded-lg bg-gray-800/50 flex items-center justify-center text-gray-400 hover:text-white hover:bg-nebula-blue/20 transition-all">
                         <i data-lucide="linkedin" class="w-5 h-5"></i>
                     </a>
                     <a href="https://x.com/SHANKARAD2006" target="_blank"
-                        class="text-gray-500 hover:text-white transition-colors">
+                        class="w-10 h-10 rounded-lg bg-gray-800/50 flex items-center justify-center text-gray-400 hover:text-white hover:bg-sky-500/20 transition-all">
                         <i data-lucide="twitter" class="w-5 h-5"></i>
                     </a>
                     <a href="https://www.instagram.com/the0xshankar/" target="_blank"
-                        class="text-gray-500 hover:text-white transition-colors">
+                        class="w-10 h-10 rounded-lg bg-gray-800/50 flex items-center justify-center text-gray-400 hover:text-white hover:bg-pink-500/20 transition-all">
                         <i data-lucide="instagram" class="w-5 h-5"></i>
                     </a>
                 </div>
-                <p class="text-gray-600 text-sm font-mono">
-                    <!-- Built with <span class="text-cosmic-purple">♥</span> in the Grok Galaxy
-                </p>
                 <!-- Visitor Counter -->
-                <div class="flex items-center space-x-2 text-gray-500 text-sm">
+                <div class="flex items-center space-x-2 text-gray-500 text-sm glass-card px-4 py-2 rounded-lg">
                     <i data-lucide="eye" class="w-4 h-4"></i>
                     <span>Visitors: </span>
                     <a href="https://github.com/ShankarAdhikary" target="_blank">
