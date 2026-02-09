@@ -27,9 +27,6 @@
     <!-- Three.js for Starfield -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    <!-- QR Code Generator -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-
     <!-- TagCloud for 3D Globe -->
     <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js"></script>
 
@@ -1334,7 +1331,7 @@
             html.classList.toggle('light-mode');
             const isLight = html.classList.contains('light-mode');
             localStorage.setItem('theme', isLight ? 'light' : 'dark');
-            
+
             if (isLight) {
                 sunIcon.classList.remove('hidden');
                 moonIcon.classList.add('hidden');
@@ -1377,21 +1374,12 @@ END:VCARD`;
         const closeQrBtn = document.getElementById('close-qr');
         const qrContainer = document.getElementById('qr-code');
 
-        // Generate QR code on page load
-        if (typeof QRCode !== 'undefined') {
-            QRCode.toCanvas(document.createElement('canvas'), 'https://shankaradhikary.github.io/portfolio', {
-                width: 200,
-                margin: 2,
-                color: {
-                    dark: '#6A0DAD',
-                    light: '#FFFFFF'
-                }
-            }, (error, canvas) => {
-                if (!error) {
-                    qrContainer.appendChild(canvas);
-                }
-            });
-        }
+        // Generate QR code using API
+        const qrImg = document.createElement('img');
+        qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://shankaradhikary.github.io/portfolio&color=6A0DAD&bgcolor=FFFFFF';
+        qrImg.alt = 'Portfolio QR Code';
+        qrImg.style.borderRadius = '8px';
+        qrContainer.appendChild(qrImg);
 
         showQrBtn.addEventListener('click', () => {
             qrModal.classList.remove('hidden');
