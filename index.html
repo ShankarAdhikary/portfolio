@@ -1868,8 +1868,11 @@ END:VCARD`;
         // ============ TILT EFFECT ON CARDS ============
         const tiltCards = document.querySelectorAll('.glass-card, .project-card');
         tiltCards.forEach(card => {
+            // Skip chatbot elements
+            if (card.closest('.chatbot-container') || card.closest('#qr-modal')) return;
+
             card.classList.add('tilt-card');
-            
+
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
@@ -1878,12 +1881,12 @@ END:VCARD`;
                 const centerY = rect.height / 2;
                 const rotateX = (y - centerY) / 10;
                 const rotateY = (centerX - x) / 10;
-                
+
                 card.style.setProperty('--rotateX', `${rotateX}deg`);
                 card.style.setProperty('--rotateY', `${rotateY}deg`);
                 card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
             });
-            
+
             card.addEventListener('mouseleave', () => {
                 card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
             });
@@ -1911,7 +1914,7 @@ END:VCARD`;
 
         function getAIResponse(question) {
             const q = question.toLowerCase();
-            
+
             if (q.includes('name') || q.includes('who')) {
                 return `I'm the AI assistant for ${shankarInfo.name}, a cybersecurity enthusiast and full-stack developer! 🛡️`;
             }
@@ -1945,7 +1948,7 @@ END:VCARD`;
             if (q.includes('thank')) {
                 return `You're welcome! Feel free to explore the portfolio or ask me anything else! 😊`;
             }
-            
+
             return `Great question! Shankar is a ${shankarInfo.education.split(' at')[0]} student at RRU, with expertise in cybersecurity and full-stack development. Try asking about his skills, projects, or how to contact him! 💡`;
         }
 
@@ -1978,7 +1981,7 @@ END:VCARD`;
             if (message) {
                 addMessage(message, true);
                 chatInput.value = '';
-                
+
                 setTimeout(() => {
                     const response = getAIResponse(message);
                     addMessage(response);
@@ -2088,21 +2091,21 @@ Mission: Hack into Shankar's portfolio`,
 
         function processCommand(cmd) {
             const command = cmd.toLowerCase().trim();
-            
+
             if (command === '') return;
-            
+
             addTerminalLine(`<span class="text-blue-400">$</span> ${cmd}`);
-            
+
             if (command === 'clear') {
                 terminalOutput.innerHTML = '';
                 return;
             }
-            
+
             if (command === 'exit') {
                 hackingGame.classList.remove('active');
                 return;
             }
-            
+
             const response = hackingCommands[command];
             if (response) {
                 const output = typeof response === 'function' ? response() : response;
