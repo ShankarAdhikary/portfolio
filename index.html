@@ -94,249 +94,194 @@
             --border-color: rgba(255, 255, 255, 0.1);
         }
 
-        /* Developer Preloader Styles */
+        /* ===== Cosmic Galaxy Preloader ===== */
         .preloader {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a0a0a;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(ellipse at 50% 50%, #0d0015 0%, #030008 60%, #000000 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 9999;
             overflow: hidden;
-            font-family: 'JetBrains Mono', monospace;
         }
-
         .preloader.hidden {
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
+            transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1), visibility 0.8s;
         }
 
-        /* Subtle grid background */
-        .preloader::before {
-            content: '';
+        /* Stars canvas */
+        #preloader-stars {
             position: absolute;
             inset: 0;
-            background-image:
-                linear-gradient(rgba(106, 13, 173, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(106, 13, 173, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
+            width: 100%; height: 100%;
         }
 
-        .preloader-shell {
-            width: 520px;
-            max-width: 90vw;
-            z-index: 10;
-        }
-
-        /* Terminal window */
-        .terminal-window {
-            background: rgba(15, 15, 20, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 25px 80px rgba(106, 13, 173, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.03);
-        }
-
-        /* Title bar */
-        .terminal-titlebar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .terminal-dots {
-            display: flex;
-            gap: 8px;
-        }
-
-        .terminal-dots span {
-            width: 12px;
-            height: 12px;
+        /* Nebula glow layers */
+        .nebula {
+            position: absolute;
             border-radius: 50%;
-        }
-
-        .terminal-dots span:nth-child(1) {
-            background: #ff5f57;
-        }
-
-        .terminal-dots span:nth-child(2) {
-            background: #febc2e;
-        }
-
-        .terminal-dots span:nth-child(3) {
-            background: #28c840;
-        }
-
-        .terminal-title {
-            font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.35);
-            letter-spacing: 1px;
-        }
-
-        .terminal-titlebar-spacer {
-            width: 52px;
-        }
-
-        /* Terminal body */
-        .terminal-body {
-            padding: 20px;
-            min-height: 220px;
-        }
-
-        .term-line {
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            margin-bottom: 6px;
-            font-size: 0.8rem;
-            line-height: 1.6;
+            filter: blur(80px);
             opacity: 0;
-            animation: termFadeIn 0.3s ease forwards;
+            animation: nebulaBreath 4s ease-in-out infinite;
+        }
+        .nebula-1 {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(106,13,173,0.35) 0%, transparent 70%);
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            animation-delay: 0s;
+        }
+        .nebula-2 {
+            width: 350px; height: 350px;
+            background: radial-gradient(circle, rgba(30,144,255,0.25) 0%, transparent 70%);
+            top: 40%; left: 55%;
+            transform: translate(-50%,-50%);
+            animation-delay: 1.5s;
+        }
+        .nebula-3 {
+            width: 280px; height: 280px;
+            background: radial-gradient(circle, rgba(57,255,20,0.12) 0%, transparent 70%);
+            top: 60%; left: 42%;
+            transform: translate(-50%,-50%);
+            animation-delay: 3s;
+        }
+        @keyframes nebulaBreath {
+            0%, 100% { opacity: 0.4; transform: translate(-50%,-50%) scale(1); }
+            50%      { opacity: 0.9; transform: translate(-50%,-50%) scale(1.15); }
         }
 
-        .term-prompt {
-            color: #6A0DAD;
-            flex-shrink: 0;
-            user-select: none;
+        /* Orbital rings */
+        .orbit-ring {
+            position: absolute;
+            top: 50%; left: 50%;
+            border-radius: 50%;
+            border: 1px solid rgba(106,13,173,0.12);
         }
-
-        .term-cmd {
-            color: #39FF14;
+        .orbit-ring-1 {
+            width: 220px; height: 220px;
+            margin: -110px 0 0 -110px;
+            animation: orbitSpin 12s linear infinite;
         }
-
-        .term-flag {
-            color: #1E90FF;
+        .orbit-ring-2 {
+            width: 340px; height: 340px;
+            margin: -170px 0 0 -170px;
+            border-color: rgba(30,144,255,0.08);
+            animation: orbitSpin 20s linear infinite reverse;
         }
-
-        .term-path {
-            color: #C9A227;
+        .orbit-ring-3 {
+            width: 460px; height: 460px;
+            margin: -230px 0 0 -230px;
+            border-color: rgba(57,255,20,0.05);
+            animation: orbitSpin 30s linear infinite;
         }
-
-        .term-output {
-            color: rgba(255, 255, 255, 0.5);
-            padding-left: 20px;
+        @keyframes orbitSpin {
+            to { transform: rotate(360deg); }
         }
-
-        .term-success {
-            color: #39FF14;
-            padding-left: 20px;
-        }
-
-        .term-info {
-            color: #1E90FF;
-            padding-left: 20px;
-        }
-
-        .term-white {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .term-comment {
-            color: rgba(255, 255, 255, 0.2);
-            font-style: italic;
-        }
-
-        .term-cursor {
-            display: inline-block;
-            width: 8px;
-            height: 16px;
+        /* Tiny dots on orbits */
+        .orbit-dot {
+            position: absolute;
+            width: 4px; height: 4px;
+            border-radius: 50%;
             background: #6A0DAD;
-            animation: cursorBlink 1s step-end infinite;
-            vertical-align: middle;
-            margin-left: 2px;
+            box-shadow: 0 0 6px #6A0DAD;
+            top: -2px; left: 50%;
+            margin-left: -2px;
+        }
+        .orbit-ring-2 .orbit-dot { background: #1E90FF; box-shadow: 0 0 6px #1E90FF; }
+        .orbit-ring-3 .orbit-dot { background: #39FF14; box-shadow: 0 0 6px #39FF14; }
+
+        /* Center content */
+        .preloader-core {
+            position: relative;
+            z-index: 10;
+            text-align: center;
         }
 
-        @keyframes cursorBlink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0;
-            }
+        /* Initials */
+        .preloader-initials {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 700;
+            letter-spacing: 8px;
+            background: linear-gradient(135deg, #6A0DAD, #1E90FF, #39FF14);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0;
+            animation: cosmicReveal 1.2s ease-out 0.5s forwards;
+            text-shadow: none;
+            position: relative;
+        }
+        .preloader-initials::after {
+            content: '';
+            position: absolute;
+            inset: -20px;
+            background: radial-gradient(circle, rgba(106,13,173,0.2) 0%, transparent 70%);
+            filter: blur(20px);
+            z-index: -1;
         }
 
-        @keyframes termFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(4px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes cosmicReveal {
+            0%   { opacity: 0; transform: scale(0.6); filter: blur(10px); }
+            60%  { opacity: 1; transform: scale(1.05); filter: blur(0); }
+            100% { opacity: 1; transform: scale(1); filter: blur(0); }
         }
 
-        /* Progress bar inside terminal */
-        .term-progress {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding-left: 20px;
-            margin-top: 2px;
+        /* Name text */
+        .preloader-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            margin-top: 16px;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease 1.4s forwards;
         }
 
-        .term-progress-bar {
+        /* Loading bar */
+        .preloader-bar-wrap {
             width: 180px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 4px;
+            height: 2px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 2px;
+            margin: 28px auto 0;
             overflow: hidden;
+            opacity: 0;
+            animation: fadeSlideUp 0.6s ease 1.8s forwards;
         }
-
-        .term-progress-fill {
+        .preloader-bar-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #6A0DAD, #1E90FF);
-            border-radius: 4px;
-            transition: width 0.1s linear;
+            border-radius: 2px;
+            background: linear-gradient(90deg, #6A0DAD, #1E90FF, #39FF14);
+            animation: cosmicBarFill 2.5s ease-in-out 2s forwards;
+        }
+        @keyframes cosmicBarFill {
+            0%   { width: 0%; }
+            30%  { width: 40%; }
+            60%  { width: 70%; }
+            85%  { width: 92%; }
+            100% { width: 100%; }
         }
 
-        .term-progress-pct {
-            font-size: 0.7rem;
-            color: #1E90FF;
-            width: 35px;
-            text-align: right;
-        }
-
-        /* Signature below terminal */
-        .preloader-sig {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 24px;
-            opacity: 0.4;
-        }
-
-        .sig-line {
-            width: 30px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(106, 13, 173, 0.5));
-        }
-
-        .sig-text {
+        /* Tagline */
+        .preloader-tagline {
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.6rem;
-            color: rgba(255, 255, 255, 0.3);
-            letter-spacing: 4px;
-            text-transform: uppercase;
+            color: rgba(255,255,255,0.2);
+            letter-spacing: 3px;
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeSlideUp 0.6s ease 2.2s forwards;
         }
 
-        .sig-line-r {
-            width: 30px;
-            height: 1px;
-            background: linear-gradient(90deg, rgba(30, 144, 255, 0.5), transparent);
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
         .light-mode {
@@ -831,24 +776,22 @@
         </svg>
     </button>
 
-    <!-- Developer Terminal Preloader -->
+    <!-- Cosmic Galaxy Preloader -->
     <div id="preloader" class="preloader">
-        <div class="preloader-shell">
-            <div class="terminal-window">
-                <div class="terminal-titlebar">
-                    <div class="terminal-dots">
-                        <span></span><span></span><span></span>
-                    </div>
-                    <span class="terminal-title">shankar@grok-galaxy — zsh</span>
-                    <div class="terminal-titlebar-spacer"></div>
-                </div>
-                <div class="terminal-body" id="terminal-boot"></div>
+        <canvas id="preloader-stars"></canvas>
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+        <div class="nebula nebula-3"></div>
+        <div class="orbit-ring orbit-ring-1"><span class="orbit-dot"></span></div>
+        <div class="orbit-ring orbit-ring-2"><span class="orbit-dot"></span></div>
+        <div class="orbit-ring orbit-ring-3"><span class="orbit-dot"></span></div>
+        <div class="preloader-core">
+            <div class="preloader-initials">SA</div>
+            <div class="preloader-name">Shankar Adhikary</div>
+            <div class="preloader-bar-wrap">
+                <div class="preloader-bar-fill"></div>
             </div>
-            <div class="preloader-sig">
-                <div class="sig-line"></div>
-                <span class="sig-text">Shankar Adhikary</span>
-                <div class="sig-line-r"></div>
-            </div>
+            <div class="preloader-tagline">Entering the Grok Galaxy</div>
         </div>
     </div>
 
@@ -2895,70 +2838,63 @@ Mission: Hack into Shankar's portfolio`,
             }
         });
 
-        // ==================== DEVELOPER TERMINAL PRELOADER ====================
+        // ==================== COSMIC GALAXY PRELOADER ====================
         (function () {
             const preloader = document.getElementById('preloader');
-            const termBody = document.getElementById('terminal-boot');
+            const canvas = document.getElementById('preloader-stars');
+            const ctx = canvas.getContext('2d');
 
-            const bootSequence = [
-                { delay: 100, html: '<span class="term-prompt">❯</span> <span class="term-cmd">cd</span> <span class="term-path">~/shankar-adhikary/portfolio</span>' },
-                { delay: 400, html: '<span class="term-prompt">❯</span> <span class="term-cmd">node</span> <span class="term-flag">--version</span>' },
-                { delay: 200, html: '<span class="term-output">v22.1.0</span>' },
-                { delay: 300, html: '<span class="term-prompt">❯</span> <span class="term-cmd">npm run</span> <span class="term-flag">init:portfolio</span>' },
-                { delay: 200, html: '<span class="term-comment"># loading modules...</span>' },
-                { delay: 400, html: '<span class="term-success">✓</span> <span class="term-white">Three.js starfield</span> <span class="term-output">loaded</span>' },
-                { delay: 250, html: '<span class="term-success">✓</span> <span class="term-white">Cybersecurity toolkit</span> <span class="term-output">armed</span>' },
-                { delay: 250, html: '<span class="term-success">✓</span> <span class="term-white">AI/ML modules</span> <span class="term-output">initialized</span>' },
-                { delay: 250, html: '<span class="term-success">✓</span> <span class="term-white">Full-stack engine</span> <span class="term-output">ready</span>' },
-                { delay: 300, type: 'progress' },
-                { delay: 600, html: '<span class="term-info">◆</span> <span class="term-white">Portfolio compiled successfully</span>' },
-                { delay: 300, html: '<span class="term-prompt">❯</span> <span class="term-cmd">echo</span> <span class="term-path">"Welcome to Grok Galaxy"</span><span class="term-cursor"></span>' },
-            ];
+            // Star field
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
 
-            let totalDelay = 0;
+            const stars = [];
+            for (let i = 0; i < 200; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 1.5 + 0.3,
+                    a: Math.random(),
+                    da: (Math.random() - 0.5) * 0.02,
+                    dx: (Math.random() - 0.5) * 0.15,
+                    dy: (Math.random() - 0.5) * 0.15
+                });
+            }
 
-            bootSequence.forEach((step) => {
-                totalDelay += step.delay;
+            let animId;
+            function drawStars() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                stars.forEach(s => {
+                    s.x += s.dx;
+                    s.y += s.dy;
+                    s.a += s.da;
+                    if (s.a > 1 || s.a < 0.1) s.da *= -1;
+                    if (s.x < 0) s.x = canvas.width;
+                    if (s.x > canvas.width) s.x = 0;
+                    if (s.y < 0) s.y = canvas.height;
+                    if (s.y > canvas.height) s.y = 0;
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255,255,255,${s.a})`;
+                    ctx.fill();
+                });
+                animId = requestAnimationFrame(drawStars);
+            }
+            drawStars();
 
-                if (step.type === 'progress') {
-                    setTimeout(() => {
-                        const line = document.createElement('div');
-                        line.className = 'term-line';
-                        line.innerHTML = '<div class="term-progress"><div class="term-progress-bar"><div class="term-progress-fill" id="boot-progress"></div></div><span class="term-progress-pct" id="boot-pct">0%</span></div>';
-                        line.style.animationDelay = '0s';
-                        termBody.appendChild(line);
-                        termBody.scrollTop = termBody.scrollHeight;
-
-                        // Animate progress
-                        let pct = 0;
-                        const pctEl = document.getElementById('boot-pct');
-                        const fillEl = document.getElementById('boot-progress');
-                        const pInterval = setInterval(() => {
-                            pct += Math.random() * 15 + 5;
-                            if (pct >= 100) { pct = 100; clearInterval(pInterval); }
-                            pctEl.textContent = Math.floor(pct) + '%';
-                            fillEl.style.width = pct + '%';
-                        }, 40);
-                    }, totalDelay);
-                } else {
-                    setTimeout(() => {
-                        const line = document.createElement('div');
-                        line.className = 'term-line';
-                        line.innerHTML = step.html;
-                        line.style.animationDelay = '0s';
-                        termBody.appendChild(line);
-                        termBody.scrollTop = termBody.scrollHeight;
-                    }, totalDelay);
-                }
-            });
-
-            // Hide preloader after sequence
+            // Hide preloader
             window.addEventListener('load', () => {
-                const minTime = totalDelay + 600;
                 setTimeout(() => {
                     preloader.classList.add('hidden');
-                    setTimeout(() => { preloader.style.display = 'none'; }, 600);
-                }, minTime);
+                    setTimeout(() => {
+                        preloader.style.display = 'none';
+                        cancelAnimationFrame(animId);
+                    }, 800);
+                }, 4800);
             });
         })();
 
