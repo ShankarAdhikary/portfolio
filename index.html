@@ -228,6 +228,119 @@
             background-clip: text;
         }
 
+        /* Tilt Card Effect */
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease;
+        }
+
+        .tilt-card:hover {
+            transform: perspective(1000px) rotateX(var(--rotateX, 0deg)) rotateY(var(--rotateY, 0deg));
+        }
+
+        .tilt-card .tilt-content {
+            transform: translateZ(20px);
+        }
+
+        /* Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .chatbot-bubble {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6A0DAD, #1E90FF);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(106, 13, 173, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .chatbot-bubble:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(106, 13, 173, 0.7);
+        }
+
+        .chatbot-window {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            max-height: 500px;
+            border-radius: 16px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .chatbot-window.active {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Hacking Game Styles */
+        .hacking-game-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hacking-game-overlay.active {
+            display: flex;
+        }
+
+        .terminal-screen {
+            background: #0a0a0a;
+            border: 2px solid #39FF14;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            color: #39FF14;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 0 50px rgba(57, 255, 20, 0.3);
+        }
+
+        .terminal-line {
+            margin: 5px 0;
+            opacity: 0;
+            animation: typeLine 0.5s ease forwards;
+        }
+
+        @keyframes typeLine {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         /* Section Styles */
         .section-padding {
             padding: 100px 0;
@@ -1268,6 +1381,84 @@
         </div>
     </section>
 
+    <!-- AI Chatbot -->
+    <div class="chatbot-container">
+        <div id="chatbot-window" class="chatbot-window glass-card">
+            <div class="bg-gradient-to-r from-cosmic-purple to-nebula-blue p-4 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <i data-lucide="bot" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold">Shankar's AI</h4>
+                        <p class="text-white/70 text-xs">Ask me anything!</p>
+                    </div>
+                </div>
+                <button id="close-chat" class="text-white/70 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div id="chat-messages" class="p-4 h-64 overflow-y-auto space-y-3 bg-true-black/90">
+                <div class="flex gap-2">
+                    <div
+                        class="w-8 h-8 rounded-full bg-cosmic-purple/30 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="bot" class="w-4 h-4 text-cosmic-purple"></i>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg rounded-tl-none p-3 text-sm text-gray-300 max-w-[80%]">
+                        Hi! 👋 I'm Shankar's AI assistant. Ask me about his skills, projects, education, or how to
+                        contact him!
+                    </div>
+                </div>
+            </div>
+            <div class="p-3 border-t border-gray-800 bg-true-black">
+                <div class="flex gap-2">
+                    <input type="text" id="chat-input" placeholder="Type your question..."
+                        class="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-cosmic-purple">
+                    <button id="send-chat" class="px-4 py-2 bg-cosmic-purple rounded-lg text-white hover:opacity-90">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="chatbot-bubble" class="chatbot-bubble">
+            <i data-lucide="message-circle" class="w-7 h-7 text-white"></i>
+        </div>
+    </div>
+
+    <!-- Hacking Simulation Game -->
+    <div id="hacking-game" class="hacking-game-overlay">
+        <div class="terminal-screen">
+            <div class="flex items-center justify-between mb-4 pb-2 border-b border-green-500/30">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                    <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                    <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                </div>
+                <span class="text-xs opacity-70">root@grok-galaxy:~#</span>
+                <button id="close-game" class="text-green-500 hover:text-green-300">✕</button>
+            </div>
+            <div id="terminal-output" class="text-sm space-y-1 max-h-60 overflow-y-auto mb-4">
+                <p class="terminal-line" style="animation-delay: 0.1s">[SYSTEM] Initializing Grok Galaxy Security
+                    Protocol...</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-green-400">$</span>
+                <input type="text" id="terminal-input" placeholder="Enter command..."
+                    class="flex-1 bg-transparent border-none outline-none text-green-400 font-mono">
+            </div>
+            <div class="mt-4 text-xs opacity-50">
+                <p>Available commands: help, scan, hack, decrypt, whoami, skills, contact, exit</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Game Button -->
+    <button id="open-game"
+        class="fixed bottom-24 right-6 z-50 w-12 h-12 rounded-full bg-cyber-lime/20 border border-cyber-lime/50 flex items-center justify-center hover:bg-cyber-lime/30 transition-colors group"
+        title="Play Hacking Game">
+        <i data-lucide="terminal" class="w-6 h-6 text-cyber-lime group-hover:animate-pulse"></i>
+    </button>
+
     <!-- Footer -->
     <footer class="py-8 border-t border-gray-800/50">
         <div class="max-w-7xl mx-auto px-6">
@@ -1301,8 +1492,10 @@
                 <div class="flex items-center space-x-2 text-gray-500 text-sm">
                     <i data-lucide="eye" class="w-4 h-4"></i>
                     <span>Visitors: </span>
-                    <img src="https://komarev.com/ghpvc/?username=ShankarAdhikary-portfolio&label=&color=6A0DAD&style=flat"
-                        alt="visitor count" class="h-5" />
+                    <a href="https://github.com/ShankarAdhikary" target="_blank">
+                        <img src="https://visitor-badge.laobi.icu/badge?page_id=ShankarAdhikary.portfolio&left_color=%23050505&right_color=%236A0DAD&left_text=Total"
+                            alt="visitor count" class="h-5" />
+                    </a>
                 </div>
             </div>
         </div>
@@ -1671,6 +1864,279 @@ END:VCARD`;
             }
         `;
         document.head.appendChild(style);
+
+        // ============ TILT EFFECT ON CARDS ============
+        const tiltCards = document.querySelectorAll('.glass-card, .project-card');
+        tiltCards.forEach(card => {
+            card.classList.add('tilt-card');
+            
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+                
+                card.style.setProperty('--rotateX', `${rotateX}deg`);
+                card.style.setProperty('--rotateY', `${rotateY}deg`);
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+            });
+        });
+
+        // ============ AI CHATBOT ============
+        const chatbotBubble = document.getElementById('chatbot-bubble');
+        const chatbotWindow = document.getElementById('chatbot-window');
+        const closeChat = document.getElementById('close-chat');
+        const chatInput = document.getElementById('chat-input');
+        const sendChat = document.getElementById('send-chat');
+        const chatMessages = document.getElementById('chat-messages');
+
+        const shankarInfo = {
+            name: "Shankar Adhikary",
+            education: "BTech in Cybersecurity at Rashtriya Raksha University (RRU)",
+            skills: ["Cybersecurity", "Penetration Testing", "Red Teaming", "Full Stack Development", "React", "Node.js", "Python", "AI/ML", "Machine Learning", "OSINT", "Cryptography"],
+            roles: ["OSCG Campus Lead", "Pre-Incubator at AIC RRU", "Vice President of Chaturanga Chess Club", "PR Head of EDGE Club"],
+            certifications: "25+ certifications including Cybersecurity, Networking, OSINT, Python, and more",
+            contact: "Email: adhikaryshankar04@gmail.com | LinkedIn: @adhikaryxshankar | GitHub: @ShankarAdhikary",
+            motto: "राष्ट्रीय सुरक्षा सर्वोपरि (National Security is Supreme)",
+            interests: ["Cybersecurity", "Open Source", "Chess", "Photography", "AI/ML"],
+            projects: ["OSINT Framework", "Vulnerability Scanner", "AI Threat Detector", "Network Monitor", "Phishing Detector", "Cloud Security Tool"]
+        };
+
+        function getAIResponse(question) {
+            const q = question.toLowerCase();
+            
+            if (q.includes('name') || q.includes('who')) {
+                return `I'm the AI assistant for ${shankarInfo.name}, a cybersecurity enthusiast and full-stack developer! 🛡️`;
+            }
+            if (q.includes('education') || q.includes('study') || q.includes('college') || q.includes('university')) {
+                return `Shankar is pursuing ${shankarInfo.education}. It's one of India's premier institutions for security studies! 🎓`;
+            }
+            if (q.includes('skill') || q.includes('know') || q.includes('technology') || q.includes('tech')) {
+                return `Shankar's key skills include: ${shankarInfo.skills.slice(0, 6).join(', ')}, and more! He's a versatile developer with expertise in both offensive security and development. 💻`;
+            }
+            if (q.includes('role') || q.includes('position') || q.includes('experience') || q.includes('work')) {
+                return `Shankar holds several leadership positions:\n• ${shankarInfo.roles.join('\n• ')}\n\nHe's actively contributing to the tech community! 🚀`;
+            }
+            if (q.includes('certif') || q.includes('badge')) {
+                return `Shankar has earned ${shankarInfo.certifications}. He's constantly learning and growing! 📜`;
+            }
+            if (q.includes('contact') || q.includes('email') || q.includes('reach') || q.includes('hire')) {
+                return `You can reach Shankar at:\n📧 ${shankarInfo.contact.split('|')[0].trim()}\n💼 ${shankarInfo.contact.split('|')[1].trim()}\n🐙 ${shankarInfo.contact.split('|')[2].trim()}`;
+            }
+            if (q.includes('project')) {
+                return `Shankar has worked on exciting projects like: ${shankarInfo.projects.slice(0, 4).join(', ')}. Check out the Projects section for more! 🔧`;
+            }
+            if (q.includes('hobby') || q.includes('interest') || q.includes('like')) {
+                return `Shankar is passionate about: ${shankarInfo.interests.join(', ')}. A true polymath! 🎯`;
+            }
+            if (q.includes('motto') || q.includes('quote')) {
+                return `Shankar's motto: "${shankarInfo.motto}" - reflecting his commitment to national security through technology! 🇮🇳`;
+            }
+            if (q.includes('hello') || q.includes('hi') || q.includes('hey')) {
+                return `Hello! 👋 I'm Shankar's AI assistant. Ask me about his skills, projects, education, or how to contact him!`;
+            }
+            if (q.includes('thank')) {
+                return `You're welcome! Feel free to explore the portfolio or ask me anything else! 😊`;
+            }
+            
+            return `Great question! Shankar is a ${shankarInfo.education.split(' at')[0]} student at RRU, with expertise in cybersecurity and full-stack development. Try asking about his skills, projects, or how to contact him! 💡`;
+        }
+
+        function addMessage(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex gap-2 ${isUser ? 'flex-row-reverse' : ''}`;
+            messageDiv.innerHTML = `
+                <div class="w-8 h-8 rounded-full ${isUser ? 'bg-nebula-blue/30' : 'bg-cosmic-purple/30'} flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="${isUser ? 'user' : 'bot'}" class="w-4 h-4 ${isUser ? 'text-nebula-blue' : 'text-cosmic-purple'}"></i>
+                </div>
+                <div class="${isUser ? 'bg-nebula-blue/20 rounded-tr-none' : 'bg-gray-800 rounded-tl-none'} rounded-lg p-3 text-sm text-gray-300 max-w-[80%]" style="white-space: pre-line;">
+                    ${text}
+                </div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            lucide.createIcons();
+        }
+
+        chatbotBubble.addEventListener('click', () => {
+            chatbotWindow.classList.toggle('active');
+        });
+
+        closeChat.addEventListener('click', () => {
+            chatbotWindow.classList.remove('active');
+        });
+
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (message) {
+                addMessage(message, true);
+                chatInput.value = '';
+                
+                setTimeout(() => {
+                    const response = getAIResponse(message);
+                    addMessage(response);
+                }, 500);
+            }
+        }
+
+        sendChat.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // ============ HACKING SIMULATION GAME ============
+        const hackingGame = document.getElementById('hacking-game');
+        const openGame = document.getElementById('open-game');
+        const closeGame = document.getElementById('close-game');
+        const terminalInput = document.getElementById('terminal-input');
+        const terminalOutput = document.getElementById('terminal-output');
+
+        let gameProgress = 0;
+        const targetIP = '192.168.' + Math.floor(Math.random() * 255) + '.' + Math.floor(Math.random() * 255);
+
+        const hackingCommands = {
+            help: `Available commands:
+  help     - Show this help message
+  scan     - Scan for vulnerable targets
+  hack     - Attempt to breach the system
+  decrypt  - Decrypt intercepted data
+  whoami   - Display current user info
+  skills   - Show Shankar's skills
+  contact  - Display contact information
+  clear    - Clear terminal
+  exit     - Exit the simulation`,
+            scan: () => {
+                gameProgress = 1;
+                return `[SCANNING] Network scan initiated...
+[+] Found target: ${targetIP}
+[+] Port 22 (SSH) - OPEN
+[+] Port 80 (HTTP) - OPEN  
+[+] Port 443 (HTTPS) - OPEN
+[!] Vulnerability detected: Weak authentication
+[*] Ready to hack. Type 'hack' to proceed.`;
+            },
+            hack: () => {
+                if (gameProgress < 1) return '[ERROR] No target found. Run "scan" first.';
+                gameProgress = 2;
+                return `[HACKING] Initiating breach on ${targetIP}...
+[+] Exploiting weak authentication...
+[+] Bypassing firewall... 
+[+] Injecting payload...
+[✓] ACCESS GRANTED!
+[*] Encrypted data found. Type 'decrypt' to decode.`;
+            },
+            decrypt: () => {
+                if (gameProgress < 2) return '[ERROR] No data to decrypt. Complete the hack first.';
+                gameProgress = 3;
+                return `[DECRYPTING] Running decryption algorithm...
+[+] Breaking cipher...
+[+] Reconstructing data...
+[✓] DECRYPTION COMPLETE!
+
+╔════════════════════════════════════════╗
+║  CLASSIFIED INFORMATION RETRIEVED:     ║
+║                                        ║
+║  Name: Shankar Adhikary                ║
+║  Clearance: TOP SECRET                 ║
+║  Status: Cybersecurity Expert          ║
+║  Mission: Secure the Digital Frontier  ║
+║                                        ║
+║  🇮🇳 राष्ट्रीय सुरक्षा सर्वोपरि 🇮🇳      ║
+╚════════════════════════════════════════╝
+
+[*] Congratulations! You completed the simulation! 🎉`;
+            },
+            whoami: `root@grok-galaxy
+User: Guest Hacker
+Level: Script Kiddie → Elite (Complete the simulation!)
+Mission: Hack into Shankar's portfolio`,
+            skills: `[SHANKAR'S SKILL MATRIX]
+╔══════════════════════════════════════╗
+║ 🛡️ Cybersecurity       ████████░░ 90%║
+║ 💻 Full Stack Dev      ████████░░ 85%║
+║ 🤖 AI/ML               ███████░░░ 75%║
+║ 📸 Photography         ██████░░░░ 70%║
+║ 🎬 Videography         ██████░░░░ 65%║
+╚══════════════════════════════════════╝`,
+            contact: `[CONTACT INFORMATION]
+📧 Email: adhikaryshankar04@gmail.com
+💼 LinkedIn: linkedin.com/in/adhikaryxshankar
+🐙 GitHub: github.com/ShankarAdhikary
+🐦 X: x.com/SHANKARAD2006
+📸 Instagram: instagram.com/the0xshankar`,
+            clear: 'CLEAR',
+            exit: 'EXIT'
+        };
+
+        function addTerminalLine(text, delay = 0) {
+            setTimeout(() => {
+                const line = document.createElement('p');
+                line.className = 'terminal-line';
+                line.style.animationDelay = '0s';
+                line.innerHTML = text;
+                terminalOutput.appendChild(line);
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            }, delay);
+        }
+
+        function processCommand(cmd) {
+            const command = cmd.toLowerCase().trim();
+            
+            if (command === '') return;
+            
+            addTerminalLine(`<span class="text-blue-400">$</span> ${cmd}`);
+            
+            if (command === 'clear') {
+                terminalOutput.innerHTML = '';
+                return;
+            }
+            
+            if (command === 'exit') {
+                hackingGame.classList.remove('active');
+                return;
+            }
+            
+            const response = hackingCommands[command];
+            if (response) {
+                const output = typeof response === 'function' ? response() : response;
+                output.split('\n').forEach((line, i) => {
+                    addTerminalLine(line, i * 100);
+                });
+            } else {
+                addTerminalLine(`<span class="text-red-400">[ERROR]</span> Command not found: ${cmd}. Type 'help' for available commands.`);
+            }
+        }
+
+        openGame.addEventListener('click', () => {
+            hackingGame.classList.add('active');
+            terminalInput.focus();
+        });
+
+        closeGame.addEventListener('click', () => {
+            hackingGame.classList.remove('active');
+        });
+
+        terminalInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                processCommand(terminalInput.value);
+                terminalInput.value = '';
+            }
+        });
+
+        // Close game on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && hackingGame.classList.contains('active')) {
+                hackingGame.classList.remove('active');
+            }
+        });
+
     </script>
 </body>
 
