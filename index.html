@@ -94,247 +94,249 @@
             --border-color: rgba(255, 255, 255, 0.1);
         }
 
-        /* Premium Royal Preloader Styles */
+        /* Developer Preloader Styles */
         .preloader {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(ellipse at center, #0a0612 0%, #050208 50%, #000000 100%);
+            background: #0a0a0a;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 9999;
             overflow: hidden;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .preloader.hidden {
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
         }
 
-        /* Ambient glow background */
+        /* Subtle grid background */
         .preloader::before {
             content: '';
             position: absolute;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(106, 13, 173, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: ambientPulse 4s ease-in-out infinite;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(106, 13, 173, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(106, 13, 173, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
         }
 
-        @keyframes ambientPulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 0.5;
-            }
-
-            50% {
-                transform: scale(1.2);
-                opacity: 0.8;
-            }
-        }
-
-        .preloader-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px;
+        .preloader-shell {
+            width: 520px;
+            max-width: 90vw;
             z-index: 10;
         }
 
-        /* Crown icon */
-        .preloader-crown {
-            width: 40px;
-            height: 40px;
-            opacity: 0.8;
-            animation: crownFloat 3s ease-in-out infinite;
+        /* Terminal window */
+        .terminal-window {
+            background: rgba(15, 15, 20, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(106, 13, 173, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.03);
         }
 
-        @keyframes crownFloat {
+        /* Title bar */
+        .terminal-titlebar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .terminal-dots span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dots span:nth-child(1) {
+            background: #ff5f57;
+        }
+
+        .terminal-dots span:nth-child(2) {
+            background: #febc2e;
+        }
+
+        .terminal-dots span:nth-child(3) {
+            background: #28c840;
+        }
+
+        .terminal-title {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 1px;
+        }
+
+        .terminal-titlebar-spacer {
+            width: 52px;
+        }
+
+        /* Terminal body */
+        .terminal-body {
+            padding: 20px;
+            min-height: 220px;
+        }
+
+        .term-line {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            opacity: 0;
+            animation: termFadeIn 0.3s ease forwards;
+        }
+
+        .term-prompt {
+            color: #6A0DAD;
+            flex-shrink: 0;
+            user-select: none;
+        }
+
+        .term-cmd {
+            color: #39FF14;
+        }
+
+        .term-flag {
+            color: #1E90FF;
+        }
+
+        .term-path {
+            color: #C9A227;
+        }
+
+        .term-output {
+            color: rgba(255, 255, 255, 0.5);
+            padding-left: 20px;
+        }
+
+        .term-success {
+            color: #39FF14;
+            padding-left: 20px;
+        }
+
+        .term-info {
+            color: #1E90FF;
+            padding-left: 20px;
+        }
+
+        .term-white {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .term-comment {
+            color: rgba(255, 255, 255, 0.2);
+            font-style: italic;
+        }
+
+        .term-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: #6A0DAD;
+            animation: cursorBlink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+
+        @keyframes cursorBlink {
 
             0%,
             100% {
-                transform: translateY(0);
+                opacity: 1;
             }
 
             50% {
-                transform: translateY(-8px);
+                opacity: 0;
             }
         }
 
-        /* Elegant ring around logo */
-        .preloader-ring {
-            position: relative;
-            width: 160px;
-            height: 160px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .preloader-ring::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 1px solid rgba(106, 13, 173, 0.3);
-            border-radius: 50%;
-            animation: ringRotate 8s linear infinite;
-        }
-
-        .preloader-ring::after {
-            content: '';
-            position: absolute;
-            width: 130px;
-            height: 130px;
-            border: 1px solid rgba(30, 144, 255, 0.2);
-            border-radius: 50%;
-            animation: ringRotate 12s linear infinite reverse;
-        }
-
-        @keyframes ringRotate {
+        @keyframes termFadeIn {
             from {
-                transform: rotate(0deg);
+                opacity: 0;
+                transform: translateY(4px);
             }
 
             to {
-                transform: rotate(360deg);
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        /* Decorative dots on ring */
-        .ring-dot {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: linear-gradient(135deg, #6A0DAD, #1E90FF);
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(106, 13, 173, 0.8);
+        /* Progress bar inside terminal */
+        .term-progress {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 20px;
+            margin-top: 2px;
         }
 
-        .ring-dot:nth-child(1) {
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .ring-dot:nth-child(2) {
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .ring-dot:nth-child(3) {
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .ring-dot:nth-child(4) {
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .preloader-logo {
-            font-size: 3.5rem;
-            font-weight: 700;
-            font-family: 'Space Grotesk', sans-serif;
-            background: linear-gradient(135deg, #C9A227 0%, #FFD700 25%, #C9A227 50%, #FFD700 75%, #C9A227 100%);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 8px;
-            animation: goldShimmer 3s ease infinite;
-            text-shadow: 0 0 30px rgba(201, 162, 39, 0.3);
-        }
-
-        @keyframes goldShimmer {
-
-            0%,
-            100% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-        }
-
-        /* Tagline */
-        .preloader-tagline {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.5);
-            letter-spacing: 6px;
-            text-transform: uppercase;
-            margin-top: -10px;
-        }
-
-        /* Elegant loading bar */
-        .preloader-bar-container {
-            width: 200px;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.1);
-            position: relative;
+        .term-progress-bar {
+            width: 180px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
             overflow: hidden;
         }
 
-        .preloader-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .term-progress-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #6A0DAD, #C9A227, #1E90FF);
-            animation: barFill 2s ease-out forwards;
+            background: linear-gradient(90deg, #6A0DAD, #1E90FF);
+            border-radius: 4px;
+            transition: width 0.1s linear;
         }
 
-        @keyframes barFill {
-            0% {
-                width: 0%;
-            }
-
-            100% {
-                width: 100%;
-            }
+        .term-progress-pct {
+            font-size: 0.7rem;
+            color: #1E90FF;
+            width: 35px;
+            text-align: right;
         }
 
-        /* Decorative lines */
-        .preloader-decor {
+        /* Signature below terminal */
+        .preloader-sig {
             display: flex;
             align-items: center;
-            gap: 15px;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 24px;
+            opacity: 0.4;
         }
 
-        .decor-line {
-            width: 40px;
+        .sig-line {
+            width: 30px;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.5), transparent);
+            background: linear-gradient(90deg, transparent, rgba(106, 13, 173, 0.5));
         }
 
-        .decor-diamond {
-            width: 6px;
-            height: 6px;
-            background: #C9A227;
-            transform: rotate(45deg);
-            opacity: 0.6;
-        }
-
-        .preloader-text {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
+        .sig-text {
+            font-size: 0.6rem;
             color: rgba(255, 255, 255, 0.3);
             letter-spacing: 4px;
             text-transform: uppercase;
+        }
+
+        .sig-line-r {
+            width: 30px;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(30, 144, 255, 0.5), transparent);
         }
 
         .light-mode {
@@ -829,46 +831,24 @@
         </svg>
     </button>
 
-    <!-- Royal Premium Preloader -->
+    <!-- Developer Terminal Preloader -->
     <div id="preloader" class="preloader">
-        <div class="preloader-content">
-            <!-- Crown Icon -->
-            <svg class="preloader-crown" viewBox="0 0 24 24" fill="none" stroke="url(#crownGradient)"
-                stroke-width="1.5">
-                <defs>
-                    <linearGradient id="crownGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#C9A227" />
-                        <stop offset="50%" style="stop-color:#FFD700" />
-                        <stop offset="100%" style="stop-color:#C9A227" />
-                    </linearGradient>
-                </defs>
-                <path d="M2 20h20M4 20V10l4 4 4-8 4 8 4-4v10" />
-            </svg>
-
-            <!-- Logo with Ring -->
-            <div class="preloader-ring">
-                <span class="ring-dot"></span>
-                <span class="ring-dot"></span>
-                <span class="ring-dot"></span>
-                <span class="ring-dot"></span>
-                <div class="preloader-logo">SA</div>
+        <div class="preloader-shell">
+            <div class="terminal-window">
+                <div class="terminal-titlebar">
+                    <div class="terminal-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <span class="terminal-title">shankar@grok-galaxy — zsh</span>
+                    <div class="terminal-titlebar-spacer"></div>
+                </div>
+                <div class="terminal-body" id="terminal-boot"></div>
             </div>
-
-            <div class="preloader-tagline">Cybersecurity Specialist</div>
-
-            <!-- Decorative Element -->
-            <div class="preloader-decor">
-                <div class="decor-line"></div>
-                <div class="decor-diamond"></div>
-                <div class="decor-line"></div>
+            <div class="preloader-sig">
+                <div class="sig-line"></div>
+                <span class="sig-text">Shankar Adhikary</span>
+                <div class="sig-line-r"></div>
             </div>
-
-            <!-- Loading Bar -->
-            <div class="preloader-bar-container">
-                <div class="preloader-bar"></div>
-            </div>
-
-            <div class="preloader-text">Initializing</div>
         </div>
     </div>
 
@@ -2915,17 +2895,70 @@ Mission: Hack into Shankar's portfolio`,
             }
         });
 
-        // ==================== MINIMAL PRELOADER ====================
+        // ==================== DEVELOPER TERMINAL PRELOADER ====================
         (function () {
             const preloader = document.getElementById('preloader');
+            const termBody = document.getElementById('terminal-boot');
 
+            const bootSequence = [
+                { delay: 100, html: '<span class="term-prompt">❯</span> <span class="term-cmd">cd</span> <span class="term-path">~/shankar-adhikary/portfolio</span>' },
+                { delay: 400, html: '<span class="term-prompt">❯</span> <span class="term-cmd">node</span> <span class="term-flag">--version</span>' },
+                { delay: 200, html: '<span class="term-output">v22.1.0</span>' },
+                { delay: 300, html: '<span class="term-prompt">❯</span> <span class="term-cmd">npm run</span> <span class="term-flag">init:portfolio</span>' },
+                { delay: 200, html: '<span class="term-comment"># loading modules...</span>' },
+                { delay: 400, html: '<span class="term-success">✓</span> <span class="term-white">Three.js starfield</span> <span class="term-output">loaded</span>' },
+                { delay: 250, html: '<span class="term-success">✓</span> <span class="term-white">Cybersecurity toolkit</span> <span class="term-output">armed</span>' },
+                { delay: 250, html: '<span class="term-success">✓</span> <span class="term-white">AI/ML modules</span> <span class="term-output">initialized</span>' },
+                { delay: 250, html: '<span class="term-success">✓</span> <span class="term-white">Full-stack engine</span> <span class="term-output">ready</span>' },
+                { delay: 300, type: 'progress' },
+                { delay: 600, html: '<span class="term-info">◆</span> <span class="term-white">Portfolio compiled successfully</span>' },
+                { delay: 300, html: '<span class="term-prompt">❯</span> <span class="term-cmd">echo</span> <span class="term-path">"Welcome to Grok Galaxy"</span><span class="term-cursor"></span>' },
+            ];
+
+            let totalDelay = 0;
+
+            bootSequence.forEach((step) => {
+                totalDelay += step.delay;
+
+                if (step.type === 'progress') {
+                    setTimeout(() => {
+                        const line = document.createElement('div');
+                        line.className = 'term-line';
+                        line.innerHTML = '<div class="term-progress"><div class="term-progress-bar"><div class="term-progress-fill" id="boot-progress"></div></div><span class="term-progress-pct" id="boot-pct">0%</span></div>';
+                        line.style.animationDelay = '0s';
+                        termBody.appendChild(line);
+                        termBody.scrollTop = termBody.scrollHeight;
+
+                        // Animate progress
+                        let pct = 0;
+                        const pctEl = document.getElementById('boot-pct');
+                        const fillEl = document.getElementById('boot-progress');
+                        const pInterval = setInterval(() => {
+                            pct += Math.random() * 15 + 5;
+                            if (pct >= 100) { pct = 100; clearInterval(pInterval); }
+                            pctEl.textContent = Math.floor(pct) + '%';
+                            fillEl.style.width = pct + '%';
+                        }, 40);
+                    }, totalDelay);
+                } else {
+                    setTimeout(() => {
+                        const line = document.createElement('div');
+                        line.className = 'term-line';
+                        line.innerHTML = step.html;
+                        line.style.animationDelay = '0s';
+                        termBody.appendChild(line);
+                        termBody.scrollTop = termBody.scrollHeight;
+                    }, totalDelay);
+                }
+            });
+
+            // Hide preloader after sequence
             window.addEventListener('load', () => {
+                const minTime = totalDelay + 600;
                 setTimeout(() => {
                     preloader.classList.add('hidden');
-                    setTimeout(() => {
-                        preloader.style.display = 'none';
-                    }, 600);
-                }, 1500);
+                    setTimeout(() => { preloader.style.display = 'none'; }, 600);
+                }, minTime);
             });
         })();
 
