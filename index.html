@@ -74,7 +74,6 @@
                         'space': ['Space Grotesk', 'sans-serif'],
                     },
                     animation: {
-                        'float': 'float 6s ease-in-out infinite',
                         'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
                         'twinkle': 'twinkle 3s ease-in-out infinite',
                         'gradient-shift': 'gradient-shift 8s ease infinite',
@@ -610,19 +609,6 @@
             z-index: -1;
         }
 
-        /* Float Animation */
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-20px);
-            }
-        }
-
         /* Glow Pulse Animation */
         @keyframes glow-pulse {
 
@@ -945,8 +931,7 @@
 
         /* Project Card Hover */
         .project-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(106, 13, 173, 0.3);
+            box-shadow: 0 10px 30px rgba(106, 13, 173, 0.3);
         }
 
         /* Nav Link Underline */
@@ -1160,7 +1145,7 @@
     <section id="home" class="min-h-screen flex items-center justify-center relative">
         <div class="max-w-7xl mx-auto px-6 text-center">
             <!-- Floating Badge -->
-            <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass-card mb-8 animate-float">
+            <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass-card mb-8">
                 <span class="w-2 h-2 bg-cyber-lime rounded-full animate-pulse"></span>
                 <span class="text-sm text-gray-300">Available for Opportunities</span>
             </div>
