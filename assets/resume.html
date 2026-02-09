@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shankar Adhikary - Resume</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fff;
+            color: #1a1a1a;
+            line-height: 1.6;
+            padding: 40px;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        @media print {
+            body {
+                padding: 20px;
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #6A0DAD;
+        }
+
+        .name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+        }
+
+        .name span {
+            color: #6A0DAD;
+        }
+
+        .tagline {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 0.9rem;
+        }
+
+        .contact-info a {
+            color: #1E90FF;
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #6A0DAD;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .item {
+            margin-bottom: 15px;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 5px;
+        }
+
+        .item-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1a1a1a;
+        }
+
+        .item-subtitle {
+            color: #1E90FF;
+            font-weight: 500;
+        }
+
+        .item-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .item-description {
+            font-size: 0.9rem;
+            color: #444;
+        }
+
+        .item-description ul {
+            margin-left: 20px;
+            margin-top: 5px;
+        }
+
+        .item-description li {
+            margin-bottom: 3px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .skill-category h4 {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+        }
+
+        .skill-list {
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .certifications-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .cert-item {
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            background: #f8f8f8;
+            border-left: 3px solid #6A0DAD;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .project-item {
+            padding: 12px;
+            background: #f8f8f8;
+            border-radius: 5px;
+        }
+
+        .project-item h4 {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+        }
+
+        .project-item p {
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .tech-tags {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .tech-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            background: #6A0DAD;
+            color: white;
+            border-radius: 3px;
+        }
+
+        .summary {
+            font-size: 0.95rem;
+            color: #444;
+            text-align: justify;
+        }
+
+        @media print {
+            .section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <h1 class="name">Shankar <span>Adhikary</span></h1>
+        <p class="tagline">Cybersecurity || Full Stack Development || AI/ML</p>
+        <div class="contact-info">
+            <span>📧 <a href="mailto:adhikaryshankar04@gmail.com">adhikaryshankar04@gmail.com</a></span>
+            <span>🔗 <a href="https://www.linkedin.com/in/adhikaryxshankar/">LinkedIn</a></span>
+            <span>💻 <a href="https://github.com/ShankarAdhikary">GitHub</a></span>
+            <span>📍 Rashtriya Raksha University, India</span>
+        </div>
+    </header>
+
+    <!-- Summary -->
+    <section class="section">
+        <h2 class="section-title">Professional Summary</h2>
+        <p class="summary">
+            Passionate cybersecurity enthusiast and aspiring Red Team specialist pursuing BTech in Cybersecurity at
+            Rashtriya Raksha University.
+            Experienced in penetration testing, full-stack development, and AI/ML applications for security.
+            Active open-source contributor and Campus Lead at Open Source Connect Global 2026, dedicated to fostering
+            innovation
+            and collaboration within the developer community.
+        </p>
+    </section>
+
+    <!-- Education -->
+    <section class="section">
+        <h2 class="section-title">Education</h2>
+        <div class="item">
+            <div class="item-header">
+                <div>
+                    <div class="item-title">Bachelor of Technology in Cybersecurity</div>
+                    <div class="item-subtitle">Rashtriya Raksha University (RRU)</div>
+                </div>
+                <span class="item-date">2025 - 2029</span>
+            </div>
+            <p class="item-description">
+                Specializing in Red Team operations, Network Security, Cryptography, and Security Research.
+            </p>
+        </div>
+    </section>
+
+    <!-- Experience -->
+    <section class="section">
+        <h2 class="section-title">Experience</h2>
+        <div class="item">
+            <div class="item-header">
+                <div>
+                    <div class="item-title">Campus Lead</div>
+                    <div class="item-subtitle">Open Source Connect Global 2026</div>
+                </div>
+                <span class="item-date">2025 - Present</span>
+            </div>
+            <div class="item-description">
+                <ul>
+                    <li>Leading open-source initiatives at RRU, organizing workshops and hackathons</li>
+                    <li>Mentoring aspiring developers in contributing to global open-source projects</li>
+                    <li>Fostering a culture of collaboration and innovation within the campus community</li>
+                </ul>
+            </div>
+        </div>
+        <div class="item">
+            <div class="item-header">
+                <div>
+                    <div class="item-title">Open Source Contributor</div>
+                    <div class="item-subtitle">Open Source Connect</div>
+                </div>
+                <span class="item-date">2025 - Present</span>
+            </div>
+            <div class="item-description">
+                <ul>
+                    <li>Active contributor to security tools and frameworks</li>
+                    <li>Developing security-first solutions for community-driven projects</li>
+                    <li>Implementing best practices in cybersecurity across open-source repositories</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills -->
+    <section class="section">
+        <h2 class="section-title">Technical Skills</h2>
+        <div class="skills-grid">
+            <div class="skill-category">
+                <h4>🛡️ Cybersecurity</h4>
+                <p class="skill-list">Red Teaming, Penetration Testing, Vulnerability Assessment, Cryptography, Network
+                    Security, OSINT</p>
+            </div>
+            <div class="skill-category">
+                <h4>💻 Development</h4>
+                <p class="skill-list">Python, JavaScript, React, Next.js, Node.js, HTML/CSS, REST APIs, MongoDB, SQL</p>
+            </div>
+            <div class="skill-category">
+                <h4>🧠 AI/ML</h4>
+                <p class="skill-list">Machine Learning, Deep Learning, TensorFlow, NLP, LLM Integration</p>
+            </div>
+            <div class="skill-category">
+                <h4>🔧 Tools</h4>
+                <p class="skill-list">Burp Suite, Wireshark, Metasploit, Nmap, Kali Linux, Git, Docker, VS Code</p>
+            </div>
+            <div class="skill-category">
+                <h4>📸 Creative</h4>
+                <p class="skill-list">Photography, Videography, Adobe Lightroom, Video Editing, Color Grading</p>
+            </div>
+            <div class="skill-category">
+                <h4>🌐 Platforms</h4>
+                <p class="skill-list">Linux, Windows, AWS, Vercel, GitHub Actions, CI/CD</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects -->
+    <section class="section">
+        <h2 class="section-title">Featured Projects</h2>
+        <div class="projects-grid">
+            <div class="project-item">
+                <h4>Open Source Connect Platform</h4>
+                <p>Platform connecting developers with open-source projects worldwide. Built for OSC Global 2026.</p>
+                <div class="tech-tags">
+                    <span class="tech-tag">React</span>
+                    <span class="tech-tag">Node.js</span>
+                    <span class="tech-tag">MongoDB</span>
+                </div>
+            </div>
+            <div class="project-item">
+                <h4>RedTeam Toolkit</h4>
+                <p>Comprehensive suite of penetration testing tools for security assessments.</p>
+                <div class="tech-tags">
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">Bash</span>
+                    <span class="tech-tag">Kali</span>
+                </div>
+            </div>
+            <div class="project-item">
+                <h4>Threat Detector AI</h4>
+                <p>ML model for real-time threat detection and anomaly analysis in network traffic.</p>
+                <div class="tech-tags">
+                    <span class="tech-tag">TensorFlow</span>
+                    <span class="tech-tag">Python</span>
+                </div>
+            </div>
+            <div class="project-item">
+                <h4>SecureVault</h4>
+                <p>End-to-end encrypted password manager with zero-knowledge architecture.</p>
+                <div class="tech-tags">
+                    <span class="tech-tag">Rust</span>
+                    <span class="tech-tag">WebAssembly</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications -->
+    <section class="section">
+        <h2 class="section-title">Certifications & Achievements</h2>
+        <div class="certifications-list">
+            <div class="cert-item">
+                <strong>Fundamentals of MCP</strong> - Model Context Protocol Certification
+            </div>
+            <div class="cert-item">
+                <strong>Shaastra 2026</strong> - Cybersecurity Participation, IIT Madras
+            </div>
+            <div class="cert-item">
+                <strong>Open Source Contributor</strong> - OSC Global 2026 Recognition
+            </div>
+            <div class="cert-item">
+                <strong>Campus Lead</strong> - Open Source Connect Global 2026
+            </div>
+        </div>
+    </section>
+
+    <!-- Interests -->
+    <section class="section">
+        <h2 class="section-title">Interests</h2>
+        <p class="summary">
+            Cybersecurity Research • CTF Competitions • Open Source Development • Photography (Pixelverse
+            Cinematography) •
+            Astrophotography • AI Ethics • Tech Community Building
+        </p>
+    </section>
+</body>
+
+</html>

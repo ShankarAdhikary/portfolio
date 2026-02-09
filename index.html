@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Shankar Adhikary - Cybersecurity & Full Stack Developer | Red Teaming, AI/ML, and Open Source Contributor">
+    <meta name="keywords"
+        content="Shankar Adhikary, Cybersecurity, Full Stack Developer, AI/ML, Red Teaming, Portfolio">
+    <meta name="author" content="Shankar Adhikary">
+    <title>Shankar Adhikary Portfolio</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Three.js for Starfield -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cosmic-purple': '#6A0DAD',
+                        'nebula-blue': '#1E90FF',
+                        'cyber-lime': '#39FF14',
+                        'neon-white': '#F0F0F0',
+                        'true-black': '#050505',
+                        'deep-charcoal': '#0A0A0A',
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace'],
+                        'space': ['Space Grotesk', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
+                        'twinkle': 'twinkle 3s ease-in-out infinite',
+                        'gradient-shift': 'gradient-shift 8s ease infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #6A0DAD, #1E90FF);
+            border-radius: 4px;
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #050505;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Starfield Canvas */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Float Animation */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Glow Pulse Animation */
+        @keyframes glow-pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(106, 13, 173, 0.5), 0 0 40px rgba(30, 144, 255, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 30px rgba(106, 13, 173, 0.8), 0 0 60px rgba(30, 144, 255, 0.5);
+            }
+        }
+
+        /* Twinkle Animation for Stars */
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Gradient Shift */
+        @keyframes gradient-shift {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Neon Glow Border */
+        .neon-border {
+            position: relative;
+        }
+
+        .neon-border::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #6A0DAD, #1E90FF, #6A0DAD);
+            background-size: 200% 200%;
+            animation: gradient-shift 3s ease infinite;
+            border-radius: inherit;
+            z-index: -1;
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #6A0DAD, #1E90FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Section Styles */
+        .section-padding {
+            padding: 100px 0;
+        }
+
+        /* Skill Bar */
+        .skill-bar {
+            background: linear-gradient(90deg, #6A0DAD, #1E90FF);
+            box-shadow: 0 0 10px rgba(106, 13, 173, 0.5);
+        }
+
+        /* Project Card Hover */
+        .project-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(106, 13, 173, 0.3);
+        }
+
+        /* Nav Link Underline */
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #6A0DAD, #1E90FF);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        /* CSS Stars Background Fallback */
+        .stars-bg {
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255, 255, 255, 0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(2px 2px at 160px 120px, rgba(255, 255, 255, 0.9), transparent),
+                radial-gradient(1px 1px at 230px 80px, #eee, transparent),
+                radial-gradient(2px 2px at 300px 150px, #fff, transparent);
+            background-repeat: repeat;
+            background-size: 350px 350px;
+        }
+    </style>
+</head>
+
+<body class="text-white overflow-x-hidden">
+    <!-- Three.js Starfield Canvas -->
+    <canvas id="starfield"></canvas>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="#home" class="flex items-center space-x-2">
+                    <span class="text-2xl font-mono font-bold gradient-text">SA</span>
+                    <span class="hidden sm:block text-sm font-mono text-gray-400"></span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home"
+                        class="nav-link relative text-gray-300 hover:text-white transition-colors font-medium">The Event
+                        Horizon</a>
+                    <a href="#about"
+                        class="nav-link relative text-gray-300 hover:text-white transition-colors font-medium">The
+                        Origin</a>
+                    <a href="#skills"
+                        class="nav-link relative text-gray-300 hover:text-white transition-colors font-medium">The
+                        Toolkit</a>
+                    <a href="#work"
+                        class="nav-link relative text-gray-300 hover:text-white transition-colors font-medium">The
+                        Constellations</a>
+                    <a href="#contact"
+                        class="nav-link relative text-gray-300 hover:text-white transition-colors font-medium">The
+                        Uplink</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-white p-2">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu"
+            class="mobile-menu fixed top-0 right-0 w-64 h-full bg-true-black/95 backdrop-blur-lg z-50 md:hidden">
+            <div class="p-6">
+                <button id="mobile-menu-close" class="text-white mb-8">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+                <div class="flex flex-col space-y-6">
+                    <a href="#home" class="text-gray-300 hover:text-white transition-colors font-medium">The Event
+                        Horizon</a>
+                    <a href="#about" class="text-gray-300 hover:text-white transition-colors font-medium">The Origin</a>
+                    <a href="#skills" class="text-gray-300 hover:text-white transition-colors font-medium">The
+                        Toolkit</a>
+                    <a href="#work" class="text-gray-300 hover:text-white transition-colors font-medium">The
+                        Constellations</a>
+                    <a href="#contact" class="text-gray-300 hover:text-white transition-colors font-medium">The
+                        Uplink</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section - The Event Horizon -->
+    <section id="home" class="min-h-screen flex items-center justify-center relative">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <!-- Floating Badge -->
+            <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass-card mb-8 animate-float">
+                <span class="w-2 h-2 bg-cyber-lime rounded-full animate-pulse"></span>
+                <span class="text-sm text-gray-300">Available for Opportunities</span>
+            </div>
+
+            <!-- Main Title -->
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-space font-bold mb-6">
+                <span class="text-white">Shankar</span>
+                <span class="gradient-text"> Adhikary</span>
+            </h1>
+
+            <!-- Tagline -->
+            <p class="text-xl md:text-2xl text-gray-400 font-mono mb-8">
+                <span class="text-cosmic-purple">Cybersecurity</span> ||
+                <span class="text-nebula-blue">Full Stack</span> ||
+                <span class="text-cyber-lime">AI/ML</span>
+            </p>
+
+            <!-- Motto -->
+            <div class="mb-8">
+                <span
+                    class="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-cosmic-purple/20 to-nebula-blue/20 border border-cosmic-purple/50 backdrop-blur-sm">
+                    <span class="text-lg md:text-xl font-bold">
+                        🇮🇳 <span class="text-orange-500">राष्ट्रीय</span> <span class="text-white">सुरक्षा</span>
+                        <span class="text-green-500">सर्वोपरि</span> 🇮🇳
+                    </span>
+                </span>
+            </div>
+
+            <!-- Subtitle -->
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto mb-12">
+                Securing the Digital Frontier. Red Team Specialist, Open Source Contributor,
+                and aspiring innovator from Rashtriya Raksha University.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#work"
+                    class="group relative px-8 py-4 rounded-lg font-semibold text-white overflow-hidden animate-glow-pulse">
+                    <span class="absolute inset-0 bg-gradient-to-r from-cosmic-purple to-nebula-blue"></span>
+                    <span class="relative flex items-center space-x-2">
+                        <span>Explore My Universe</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                    </span>
+                </a>
+                <a href="#contact"
+                    class="px-8 py-4 rounded-lg font-semibold text-white border border-gray-700 hover:border-cosmic-purple transition-colors glass-card">
+                    Initiate Contact
+                </a>
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+                <i data-lucide="chevron-down" class="w-8 h-8 text-gray-500"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section - The Origin -->
+    <section id="about" class="section-padding relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center mb-16">
+                <span class="text-cosmic-purple font-mono text-sm tracking-wider">01 // THE ORIGIN</span>
+                <h2 class="text-4xl md:text-5xl font-space font-bold mt-4 gradient-text">About Me</h2>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Image/Visual Side -->
+                <div class="relative">
+                    <div class="relative w-full max-w-md mx-auto">
+                        <!-- Decorative Elements -->
+                        <div class="absolute -top-4 -left-4 w-24 h-24 border border-cosmic-purple/30 rounded-lg"></div>
+                        <div class="absolute -bottom-4 -right-4 w-24 h-24 border border-nebula-blue/30 rounded-lg">
+                        </div>
+
+                        <!-- Profile Image -->
+                        <div class="relative z-10 aspect-square rounded-2xl overflow-hidden glass-card p-1">
+                            <img src="assets/profile.png" alt="Shankar Adhikary"
+                                class="w-full h-full rounded-xl object-cover object-top grayscale hover:grayscale-0 transition-all duration-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Side -->
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-space font-semibold text-white">
+                        BTech in Cybersecurity <span class="text-cosmic-purple">@ RRU</span>
+                    </h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        I'm Shankar Adhikary, a passionate cybersecurity enthusiast currently pursuing my BTech in
+                        Cybersecurity
+                        (2025–2029) at Rashtriya Raksha University. My journey spans across Red Team operations,
+                        Full-stack development, and cutting-edge AI/ML research.
+                    </p>
+                    <p class="text-gray-400 leading-relaxed">
+                        As a Campus Lead at Open Source Connect Global 2026, I actively contribute to the open-source
+                        ecosystem while fostering innovation among fellow developers. My work bridges the gap between
+                        security research and practical implementation.
+                    </p>
+
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-3 gap-4 pt-6">
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <span class="text-3xl font-bold gradient-text">10+</span>
+                            <p class="text-gray-500 text-sm mt-1">Projects</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <span class="text-3xl font-bold gradient-text">25+</span>
+                            <p class="text-gray-500 text-sm mt-1">Certifications</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <span class="text-3xl font-bold gradient-text">0</span>
+                            <p class="text-gray-500 text-sm mt-1">Years Exp</p>
+                        </div>
+                    </div>
+
+                    <!-- Resume Download -->
+                    <a href="assets/resume.pdf" download="Shankar_Adhikary_Resume.pdf"
+                        class="inline-flex items-center space-x-2 text-cosmic-purple hover:text-nebula-blue transition-colors mt-4">
+                        <i data-lucide="download" class="w-5 h-5"></i>
+                        <span class="font-medium">Download Resume</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="section-padding relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center mb-16">
+                <span class="text-nebula-blue font-mono text-sm tracking-wider">02 // EXPERIENCE</span>
+                <h2 class="text-4xl md:text-5xl font-space font-bold mt-4 gradient-text">My Journey</h2>
+            </div>
+
+            <!-- Experience Timeline -->
+            <div class="max-w-3xl mx-auto space-y-8">
+                <!-- Experience Card 1 -->
+                <div
+                    class="glass-card rounded-2xl p-6 md:p-8 hover:border-cosmic-purple/50 transition-all duration-300">
+                    <div class="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                        <div>
+                            <h3 class="text-xl font-space font-semibold text-white">Campus Lead</h3>
+                            <p class="text-cosmic-purple font-medium">Open Source Connect Global 2026</p>
+                        </div>
+                        <span class="text-gray-500 font-mono text-sm mt-2 md:mt-0">2025 - Present</span>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed">
+                        Leading open-source initiatives at RRU, organizing workshops, hackathons, and mentoring
+                        aspiring developers in contributing to global open-source projects. Fostering a culture
+                        of collaboration and innovation within the campus community.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mt-4">
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-cosmic-purple/20 text-cosmic-purple">Leadership</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-nebula-blue/20 text-nebula-blue">Open
+                            Source</span>
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-cyber-lime/20 text-cyber-lime">Community</span>
+                    </div>
+                </div>
+
+                <!-- Experience Card 2 -->
+                <div class="glass-card rounded-2xl p-6 md:p-8 hover:border-nebula-blue/50 transition-all duration-300">
+                    <div class="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                        <div>
+                            <h3 class="text-xl font-space font-semibold text-white">Contributor</h3>
+                            <p class="text-nebula-blue font-medium">Open Source Connect</p>
+                        </div>
+                        <span class="text-gray-500 font-mono text-sm mt-2 md:mt-0">2025 - Present</span>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed">
+                        Active contributor to various open-source security tools and frameworks. Focused on
+                        developing security-first solutions and implementing best practices in cybersecurity
+                        for community-driven projects.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mt-4">
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-cosmic-purple/20 text-cosmic-purple">Security</span>
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-nebula-blue/20 text-nebula-blue">Development</span>
+                    </div>
+                </div>
+
+                <!-- Experience Card 3 -->
+                <div class="glass-card rounded-2xl p-6 md:p-8 hover:border-cyber-lime/50 transition-all duration-300">
+                    <div class="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                        <div>
+                            <h3 class="text-xl font-space font-semibold text-white">Pre-Incubator</h3>
+                            <p class="text-cyber-lime font-medium">AIC RRU (Atal Incubation Centre)</p>
+                        </div>
+                        <span class="text-gray-500 font-mono text-sm mt-2 md:mt-0">2025 - Present</span>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed">
+                        Selected for the Pre-Incubation program at AIC RRU, working on innovative startup ideas
+                        and receiving mentorship on entrepreneurship, product development, and business strategy
+                        in the cybersecurity and tech domain.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mt-4">
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-cyber-lime/20 text-cyber-lime">Startup</span>
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-cosmic-purple/20 text-cosmic-purple">Innovation</span>
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-nebula-blue/20 text-nebula-blue">Entrepreneurship</span>
+                    </div>
+                </div>
+
+                <!-- Experience Card 4 -->
+                <div
+                    class="glass-card rounded-2xl p-6 md:p-8 hover:border-cosmic-purple/50 transition-all duration-300">
+                    <div class="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                        <div>
+                            <h3 class="text-xl font-space font-semibold text-white">Vice President</h3>
+                            <p class="text-cosmic-purple font-medium">Chaturanga - Chess Club of RRU</p>
+                        </div>
+                        <span class="text-gray-500 font-mono text-sm mt-2 md:mt-0">2025 - Present</span>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed">
+                        Leading the chess community at RRU as Vice President, organizing tournaments,
+                        coordinating inter-college competitions, and promoting strategic thinking through
+                        chess workshops and training sessions for students.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mt-4">
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-cosmic-purple/20 text-cosmic-purple">Leadership</span>
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-nebula-blue/20 text-nebula-blue">Strategy</span>
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-cyber-lime/20 text-cyber-lime">Events</span>
+                    </div>
+                </div>
+
+                <!-- Experience Card 5 -->
+                <div class="glass-card rounded-2xl p-6 md:p-8 hover:border-nebula-blue/50 transition-all duration-300">
+                    <div class="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                        <div>
+                            <h3 class="text-xl font-space font-semibold text-white">PR Head</h3>
+                            <p class="text-nebula-blue font-medium">EDGE Club - RRU</p>
+                        </div>
+                        <span class="text-gray-500 font-mono text-sm mt-2 md:mt-0">2025 - Present</span>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed">
+                        Heading Public Relations for EDGE Club, managing outreach strategies, building
+                        partnerships with industry and academia, and amplifying club activities through
+                        effective communication and social media engagement.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mt-4">
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-nebula-blue/20 text-nebula-blue">PR</span>
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-cosmic-purple/20 text-cosmic-purple">Networking</span>
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-cyber-lime/20 text-cyber-lime">Communication</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certifications -->
+            <div class="mt-16">
+                <h3 class="text-2xl font-space font-semibold text-center mb-8 text-white">Certifications & Achievements
+                </h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                    <!-- MCP Certification -->
+                    <a href="assets/certificates/MCP unit 1.webp" target="_blank"
+                        class="glass-card rounded-xl p-6 text-center hover:scale-105 transition-transform cursor-pointer hover:border-cosmic-purple/50">
+                        <i data-lucide="award" class="w-10 h-10 text-cosmic-purple mx-auto mb-3"></i>
+                        <h4 class="font-semibold text-white text-sm">Fundamentals of MCP</h4>
+                        <p class="text-gray-500 text-xs mt-1">Model Context Protocol</p>
+                    </a>
+                    <!-- OSCG Campus Lead -->
+                    <a href="assets/certificates/Documents/OSCG/" target="_blank"
+                        class="glass-card rounded-xl p-6 text-center hover:scale-105 transition-transform cursor-pointer hover:border-nebula-blue/50">
+                        <i data-lucide="users" class="w-10 h-10 text-nebula-blue mx-auto mb-3"></i>
+                        <h4 class="font-semibold text-white text-sm">OSCG Campus Lead</h4>
+                        <p class="text-gray-500 text-xs mt-1">Open Source Connect Global</p>
+                    </a>
+                    <!-- OSCG Contributor -->
+                    <a href="assets/certificates/Documents/OSCG/" target="_blank"
+                        class="glass-card rounded-xl p-6 text-center hover:scale-105 transition-transform cursor-pointer hover:border-cyber-lime/50">
+                        <i data-lucide="code-2" class="w-10 h-10 text-cyber-lime mx-auto mb-3"></i>
+                        <h4 class="font-semibold text-white text-sm">OSC Contributor</h4>
+                        <p class="text-gray-500 text-xs mt-1">Open Source Connect 2026</p>
+                    </a>
+                    <!-- Cybersecurity Tech Mahindra -->
+                    <a href="assets/certificates/" target="_blank"
+                        class="glass-card rounded-xl p-6 text-center hover:scale-105 transition-transform cursor-pointer hover:border-red-500/50">
+                        <i data-lucide="shield-check" class="w-10 h-10 text-red-500 mx-auto mb-3"></i>
+                        <h4 class="font-semibold text-white text-sm">Cybersecurity</h4>
+                        <p class="text-gray-500 text-xs mt-1">Tech Mahindra</p>
+                    </a>
+                    <!-- Networking Nvidia -->
+                    <a href="assets/certificates/Networking/Nvidia Networking.jpeg" target="_blank"
+                        class="glass-card rounded-xl p-6 text-center hover:scale-105 transition-transform cursor-pointer hover:border-green-500/50">
+                        <i data-lucide="network" class="w-10 h-10 text-green-500 mx-auto mb-3"></i>
+                        <h4 class="font-semibold text-white text-sm">Networking</h4>
+                        <p class="text-gray-500 text-xs mt-1">NVIDIA</p>
+                    </a>
+                    <!-- Networking Cybrary -->
+                    <a href="assets/certificates/Networking/" target="_blank"
+                        class="glass-card rounded-xl p-6 text-center hover:scale-105 transition-transform cursor-pointer hover:border-teal-500/50">
+                        <i data-lucide="wifi" class="w-10 h-10 text-teal-500 mx-auto mb-3"></i>
+                        <h4 class="font-semibold text-white text-sm">Network Fundamentals</h4>
+                        <p class="text-gray-500 text-xs mt-1">Cybrary</p>
+                    </a>
+                    <!-- OSINT -->
+                    <a href="assets/certificates/OSINT/" target="_blank"
+                        class="glass-card rounded-xl p-6 text-center hover:scale-105 transition-transform cursor-pointer hover:border-yellow-500/50">
+                        <i data-lucide="search" class="w-10 h-10 text-yellow-500 mx-auto mb-3"></i>
+                        <h4 class="font-semibold text-white text-sm">OSINT Basics</h4>
+                        <p class="text-gray-500 text-xs mt-1">Cybrary</p>
+                    </a>
+                    <!-- Python NIELIT -->
+                    <a href="assets/certificates/Programming/Pyhton_NIELIT.pdf" target="_blank"
+                        class="glass-card rounded-xl p-6 text-center hover:scale-105 transition-transform cursor-pointer hover:border-blue-500/50">
+                        <i data-lucide="file-code" class="w-10 h-10 text-blue-500 mx-auto mb-3"></i>
+                        <h4 class="font-semibold text-white text-sm">Python Programming</h4>
+                        <p class="text-gray-500 text-xs mt-1">NIELIT</p>
+                    </a>
+                    <!-- C Language -->
+                    <a href="assets/certificates/Programming/C language.pdf" target="_blank"
+                        class="glass-card rounded-xl p-6 text-center hover:scale-105 transition-transform cursor-pointer hover:border-indigo-500/50">
+                        <i data-lucide="terminal" class="w-10 h-10 text-indigo-500 mx-auto mb-3"></i>
+                        <h4 class="font-semibold text-white text-sm">C Programming</h4>
+                        <p class="text-gray-500 text-xs mt-1">Certification</p>
+                    </a>
+                    <!-- CTF -->
+                    <a href="assets/certificates/Participation Certificates/" target="_blank"
+                        class="glass-card rounded-xl p-6 text-center hover:scale-105 transition-transform cursor-pointer hover:border-orange-500/50">
+                        <i data-lucide="flag" class="w-10 h-10 text-orange-500 mx-auto mb-3"></i>
+                        <h4 class="font-semibold text-white text-sm">CTF Participation</h4>
+                        <p class="text-gray-500 text-xs mt-1">Capture The Flag</p>
+                    </a>
+                    <!-- SIH -->
+                    <a href="assets/certificates/Participation Certificates/" target="_blank"
+                        class="glass-card rounded-xl p-6 text-center hover:scale-105 transition-transform cursor-pointer hover:border-pink-500/50">
+                        <i data-lucide="lightbulb" class="w-10 h-10 text-pink-500 mx-auto mb-3"></i>
+                        <h4 class="font-semibold text-white text-sm">Smart India Hackathon</h4>
+                        <p class="text-gray-500 text-xs mt-1">SIH Participation</p>
+                    </a>
+                    <!-- AI Certificate -->
+                    <a href="assets/certificates/Participation Certificates/" target="_blank"
+                        class="glass-card rounded-xl p-6 text-center hover:scale-105 transition-transform cursor-pointer hover:border-purple-500/50">
+                        <i data-lucide="brain" class="w-10 h-10 text-purple-500 mx-auto mb-3"></i>
+                        <h4 class="font-semibold text-white text-sm">AI Fundamentals</h4>
+                        <p class="text-gray-500 text-xs mt-1">AI Certification</p>
+                    </a>
+                </div>
+                <!-- View All Certificates -->
+                <div class="text-center mt-8">
+                    <a href="assets/certificates/" target="_blank"
+                        class="inline-flex items-center space-x-2 text-cosmic-purple hover:text-nebula-blue transition-colors">
+                        <span class="font-medium">View All 25+ Certificates</span>
+                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section - The Toolkit -->
+    <section id="skills" class="section-padding relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center mb-16">
+                <span class="text-cyber-lime font-mono text-sm tracking-wider">03 // THE TOOLKIT</span>
+                <h2 class="text-4xl md:text-5xl font-space font-bold mt-4 gradient-text">Skills & Expertise</h2>
+            </div>
+
+            <!-- Skills Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Cybersecurity -->
+                <div class="glass-card rounded-2xl p-6 hover:scale-105 transition-all duration-300 group">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-gradient-to-br from-cosmic-purple/20 to-cosmic-purple/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i data-lucide="shield" class="w-6 h-6 text-cosmic-purple"></i>
+                        </div>
+                        <h3 class="text-xl font-space font-semibold text-white">Cybersecurity</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">Red Teaming</span>
+                            <span class="text-cosmic-purple">90%</span>
+                        </div>
+                        <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="skill-bar h-full rounded-full" style="width: 90%"></div>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">Penetration Testing</span>
+                            <span class="text-cosmic-purple">85%</span>
+                        </div>
+                        <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="skill-bar h-full rounded-full" style="width: 85%"></div>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">Cryptography</span>
+                            <span class="text-cosmic-purple">80%</span>
+                        </div>
+                        <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="skill-bar h-full rounded-full" style="width: 80%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Full Stack Development -->
+                <div class="glass-card rounded-2xl p-6 hover:scale-105 transition-all duration-300 group">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-gradient-to-br from-nebula-blue/20 to-nebula-blue/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i data-lucide="code" class="w-6 h-6 text-nebula-blue"></i>
+                        </div>
+                        <h3 class="text-xl font-space font-semibold text-white">Full Stack</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">React / Next.js</span>
+                            <span class="text-nebula-blue">85%</span>
+                        </div>
+                        <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="skill-bar h-full rounded-full" style="width: 85%"></div>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">Node.js / Python</span>
+                            <span class="text-nebula-blue">80%</span>
+                        </div>
+                        <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="skill-bar h-full rounded-full" style="width: 80%"></div>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">Databases</span>
+                            <span class="text-nebula-blue">75%</span>
+                        </div>
+                        <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="skill-bar h-full rounded-full" style="width: 75%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI/ML -->
+                <div class="glass-card rounded-2xl p-6 hover:scale-105 transition-all duration-300 group">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyber-lime/20 to-cyber-lime/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i data-lucide="brain" class="w-6 h-6 text-cyber-lime"></i>
+                        </div>
+                        <h3 class="text-xl font-space font-semibold text-white">AI / ML</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">Machine Learning</span>
+                            <span class="text-cyber-lime">75%</span>
+                        </div>
+                        <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="skill-bar h-full rounded-full" style="width: 75%"></div>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">Deep Learning</span>
+                            <span class="text-cyber-lime">70%</span>
+                        </div>
+                        <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="skill-bar h-full rounded-full" style="width: 70%"></div>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">LLM / NLP</span>
+                            <span class="text-cyber-lime">65%</span>
+                        </div>
+                        <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="skill-bar h-full rounded-full" style="width: 65%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Creative Skills -->
+                <div class="glass-card rounded-2xl p-6 hover:scale-105 transition-all duration-300 group">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500/20 to-pink-500/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i data-lucide="camera" class="w-6 h-6 text-pink-500"></i>
+                        </div>
+                        <h3 class="text-xl font-space font-semibold text-white">Photography</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-4">Pixelverse Cinematography - Capturing cosmic moments through
+                        the lens</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-pink-500/20 text-pink-400">Portrait</span>
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-pink-500/20 text-pink-400">Landscape</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-pink-500/20 text-pink-400">Astro</span>
+                    </div>
+                </div>
+
+                <!-- Videography -->
+                <div class="glass-card rounded-2xl p-6 hover:scale-105 transition-all duration-300 group">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-orange-500/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i data-lucide="video" class="w-6 h-6 text-orange-500"></i>
+                        </div>
+                        <h3 class="text-xl font-space font-semibold text-white">Videography</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-4">Visual storytelling through cinematic video production</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-orange-500/20 text-orange-400">Editing</span>
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-orange-500/20 text-orange-400">Motion</span>
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-orange-500/20 text-orange-400">Color</span>
+                    </div>
+                </div>
+
+                <!-- Tools & Technologies -->
+                <div class="glass-card rounded-2xl p-6 hover:scale-105 transition-all duration-300 group">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-400/20 to-gray-400/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i data-lucide="wrench" class="w-6 h-6 text-gray-400"></i>
+                        </div>
+                        <h3 class="text-xl font-space font-semibold text-white">Tools</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-gray-700 text-gray-300">Git</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-gray-700 text-gray-300">Docker</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-gray-700 text-gray-300">Linux</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-gray-700 text-gray-300">VS Code</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-gray-700 text-gray-300">Burp
+                            Suite</span>
+                        <span
+                            class="px-3 py-1 rounded-full text-xs font-mono bg-gray-700 text-gray-300">Wireshark</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Work Section - The Constellations -->
+    <section id="work" class="section-padding relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center mb-16">
+                <span class="text-cosmic-purple font-mono text-sm tracking-wider">04 // THE CONSTELLATIONS</span>
+                <h2 class="text-4xl md:text-5xl font-space font-bold mt-4 gradient-text">Featured Projects</h2>
+                <p class="text-gray-500 mt-4 max-w-2xl mx-auto">Exploring the cosmos of code, security, and innovation
+                </p>
+            </div>
+
+            <!-- Projects Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project 1 -->
+                <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
+                    <div
+                        class="h-48 bg-gradient-to-br from-cosmic-purple/30 to-nebula-blue/30 flex items-center justify-center">
+                        <i data-lucide="globe"
+                            class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-cosmic-purple font-mono text-xs">Featured</span>
+                            <div class="flex space-x-2">
+                                <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                                    <i data-lucide="github" class="w-5 h-5"></i>
+                                </a>
+                                <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                                    <i data-lucide="external-link" class="w-5 h-5"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-space font-semibold text-white mb-2">Open Source Connect</h3>
+                        <p class="text-gray-400 text-sm mb-4">Platform connecting developers with open-source projects
+                            worldwide. Built for OSC Global 2026.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span
+                                class="px-2 py-1 rounded text-xs font-mono bg-cosmic-purple/20 text-cosmic-purple">React</span>
+                            <span
+                                class="px-2 py-1 rounded text-xs font-mono bg-nebula-blue/20 text-nebula-blue">Node.js</span>
+                            <span
+                                class="px-2 py-1 rounded text-xs font-mono bg-cyber-lime/20 text-cyber-lime">MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
+                    <div
+                        class="h-48 bg-gradient-to-br from-red-500/30 to-orange-500/30 flex items-center justify-center">
+                        <i data-lucide="bug"
+                            class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-red-500 font-mono text-xs">Security</span>
+                            <div class="flex space-x-2">
+                                <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                                    <i data-lucide="github" class="w-5 h-5"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-space font-semibold text-white mb-2">RedTeam Toolkit</h3>
+                        <p class="text-gray-400 text-sm mb-4">Comprehensive suite of penetration testing tools for
+                            security assessments and vulnerability research.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 rounded text-xs font-mono bg-red-500/20 text-red-400">Python</span>
+                            <span
+                                class="px-2 py-1 rounded text-xs font-mono bg-orange-500/20 text-orange-400">Bash</span>
+                            <span class="px-2 py-1 rounded text-xs font-mono bg-gray-700 text-gray-300">Kali</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
+                    <div
+                        class="h-48 bg-gradient-to-br from-cyber-lime/30 to-teal-500/30 flex items-center justify-center">
+                        <i data-lucide="brain"
+                            class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-cyber-lime font-mono text-xs">AI/ML</span>
+                            <div class="flex space-x-2">
+                                <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                                    <i data-lucide="github" class="w-5 h-5"></i>
+                                </a>
+                                <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                                    <i data-lucide="external-link" class="w-5 h-5"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-space font-semibold text-white mb-2">Threat Detector AI</h3>
+                        <p class="text-gray-400 text-sm mb-4">Machine learning model for real-time threat detection and
+                            anomaly analysis in network traffic.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span
+                                class="px-2 py-1 rounded text-xs font-mono bg-cyber-lime/20 text-cyber-lime">TensorFlow</span>
+                            <span class="px-2 py-1 rounded text-xs font-mono bg-teal-500/20 text-teal-400">Python</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
+                    <div
+                        class="h-48 bg-gradient-to-br from-nebula-blue/30 to-indigo-500/30 flex items-center justify-center">
+                        <i data-lucide="lock"
+                            class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-nebula-blue font-mono text-xs">Cryptography</span>
+                            <div class="flex space-x-2">
+                                <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                                    <i data-lucide="github" class="w-5 h-5"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-space font-semibold text-white mb-2">SecureVault</h3>
+                        <p class="text-gray-400 text-sm mb-4">End-to-end encrypted password manager with zero-knowledge
+                            architecture and multi-factor auth.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span
+                                class="px-2 py-1 rounded text-xs font-mono bg-nebula-blue/20 text-nebula-blue">Rust</span>
+                            <span
+                                class="px-2 py-1 rounded text-xs font-mono bg-indigo-500/20 text-indigo-400">WebAssembly</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
+                    <div
+                        class="h-48 bg-gradient-to-br from-pink-500/30 to-purple-500/30 flex items-center justify-center">
+                        <i data-lucide="camera"
+                            class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-pink-500 font-mono text-xs">Creative</span>
+                            <div class="flex space-x-2">
+                                <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                                    <i data-lucide="external-link" class="w-5 h-5"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-space font-semibold text-white mb-2">Pixelverse Gallery</h3>
+                        <p class="text-gray-400 text-sm mb-4">Photography portfolio showcasing cosmic landscapes and
+                            urban cinematography captures.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span
+                                class="px-2 py-1 rounded text-xs font-mono bg-pink-500/20 text-pink-400">Photography</span>
+                            <span
+                                class="px-2 py-1 rounded text-xs font-mono bg-purple-500/20 text-purple-400">Lightroom</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 6 -->
+                <div class="project-card glass-card rounded-2xl overflow-hidden transition-all duration-500 group">
+                    <div
+                        class="h-48 bg-gradient-to-br from-yellow-500/30 to-amber-500/30 flex items-center justify-center">
+                        <i data-lucide="server"
+                            class="w-16 h-16 text-white/50 group-hover:text-white/80 transition-colors"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-yellow-500 font-mono text-xs">DevOps</span>
+                            <div class="flex space-x-2">
+                                <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                                    <i data-lucide="github" class="w-5 h-5"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-space font-semibold text-white mb-2">CloudGuard</h3>
+                        <p class="text-gray-400 text-sm mb-4">Automated cloud security posture management tool with
+                            real-time compliance monitoring.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span
+                                class="px-2 py-1 rounded text-xs font-mono bg-yellow-500/20 text-yellow-400">AWS</span>
+                            <span
+                                class="px-2 py-1 rounded text-xs font-mono bg-amber-500/20 text-amber-400">Terraform</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View More Button -->
+            <div class="text-center mt-12">
+                <a href="https://github.com/ShankarAdhikary" target="_blank"
+                    class="inline-flex items-center space-x-2 px-6 py-3 rounded-lg font-medium text-white border border-gray-700 hover:border-cosmic-purple transition-colors glass-card">
+                    <i data-lucide="github" class="w-5 h-5"></i>
+                    <span>View All on GitHub</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section - The Uplink -->
+    <section id="contact" class="section-padding relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center mb-16">
+                <span class="text-nebula-blue font-mono text-sm tracking-wider">05 // THE UPLINK</span>
+                <h2 class="text-4xl md:text-5xl font-space font-bold mt-4 gradient-text">Get In Touch</h2>
+                <p class="text-gray-500 mt-4 max-w-2xl mx-auto">Ready to collaborate on your next mission? Let's connect
+                    across the digital frontier.</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
+                <!-- Contact Form -->
+                <div class="glass-card rounded-2xl p-8">
+                    <form id="contact-form" action="https://formspree.io/f/xeeloron" method="POST" class="space-y-6">
+                        <!-- Formspree hidden fields -->
+                        <input type="hidden" name="_subject" value="New message from Grok Galaxy Portfolio">
+                        <input type="hidden" name="_next" value="#contact">
+                        <div>
+                            <label class="block text-gray-400 text-sm font-medium mb-2">Name</label>
+                            <input type="text" name="name" required
+                                class="w-full px-4 py-3 bg-true-black border border-gray-800 rounded-lg focus:border-cosmic-purple focus:outline-none focus:ring-2 focus:ring-cosmic-purple/20 text-white placeholder-gray-600 transition-all"
+                                placeholder="Your name">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 text-sm font-medium mb-2">Email</label>
+                            <input type="email" name="email" required
+                                class="w-full px-4 py-3 bg-true-black border border-gray-800 rounded-lg focus:border-cosmic-purple focus:outline-none focus:ring-2 focus:ring-cosmic-purple/20 text-white placeholder-gray-600 transition-all"
+                                placeholder="your@email.com">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 text-sm font-medium mb-2">Subject</label>
+                            <input type="text" name="subject"
+                                class="w-full px-4 py-3 bg-true-black border border-gray-800 rounded-lg focus:border-cosmic-purple focus:outline-none focus:ring-2 focus:ring-cosmic-purple/20 text-white placeholder-gray-600 transition-all"
+                                placeholder="What's this about?">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 text-sm font-medium mb-2">Message</label>
+                            <textarea name="message" rows="5" required
+                                class="w-full px-4 py-3 bg-true-black border border-gray-800 rounded-lg focus:border-cosmic-purple focus:outline-none focus:ring-2 focus:ring-cosmic-purple/20 text-white placeholder-gray-600 transition-all resize-none"
+                                placeholder="Your message..."></textarea>
+                        </div>
+                        <button type="submit"
+                            class="w-full py-4 rounded-lg font-semibold text-white bg-gradient-to-r from-cosmic-purple to-nebula-blue hover:opacity-90 transition-opacity animate-glow-pulse">
+                            <span class="flex items-center justify-center space-x-2">
+                                <span>Transmit Message</span>
+                                <i data-lucide="send" class="w-5 h-5"></i>
+                            </span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-2xl font-space font-semibold text-white mb-4">Connect With Me</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            Whether you're looking for a security consultant, a full-stack developer, or just want to
+                            chat about the latest in cybersecurity, I'm always open to new opportunities and
+                            conversations.
+                        </p>
+                    </div>
+
+                    <!-- Contact Links -->
+                    <div class="space-y-4">
+                        <a href="mailto:adhikaryshankar04@gmail.com"
+                            class="flex items-center space-x-4 p-4 rounded-xl glass-card hover:border-cosmic-purple/50 transition-all group">
+                            <div
+                                class="w-12 h-12 rounded-lg bg-cosmic-purple/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i data-lucide="mail" class="w-6 h-6 text-cosmic-purple"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">Email</p>
+                                <p class="text-white font-medium">adhikaryshankar04@gmail.com</p>
+                            </div>
+                        </a>
+
+                        <a href="https://www.linkedin.com/in/adhikaryxshankar/" target="_blank"
+                            class="flex items-center space-x-4 p-4 rounded-xl glass-card hover:border-nebula-blue/50 transition-all group">
+                            <div
+                                class="w-12 h-12 rounded-lg bg-nebula-blue/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i data-lucide="linkedin" class="w-6 h-6 text-nebula-blue"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">LinkedIn</p>
+                                <p class="text-white font-medium">@adhikaryxshankar</p>
+                            </div>
+                        </a>
+
+                        <a href="https://github.com/ShankarAdhikary" target="_blank"
+                            class="flex items-center space-x-4 p-4 rounded-xl glass-card hover:border-gray-600 transition-all group">
+                            <div
+                                class="w-12 h-12 rounded-lg bg-gray-700/50 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i data-lucide="github" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">GitHub</p>
+                                <p class="text-white font-medium">@ShankarAdhikary</p>
+                            </div>
+                        </a>
+
+                        <a href="https://x.com/SHANKARAD2006" target="_blank"
+                            class="flex items-center space-x-4 p-4 rounded-xl glass-card hover:border-sky-500/50 transition-all group">
+                            <div
+                                class="w-12 h-12 rounded-lg bg-sky-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i data-lucide="twitter" class="w-6 h-6 text-sky-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">X (Twitter)</p>
+                                <p class="text-white font-medium">@SHANKARAD2006</p>
+                            </div>
+                        </a>
+
+                        <a href="https://www.instagram.com/the0xshankar/" target="_blank"
+                            class="flex items-center space-x-4 p-4 rounded-xl glass-card hover:border-pink-500/50 transition-all group">
+                            <div
+                                class="w-12 h-12 rounded-lg bg-pink-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i data-lucide="instagram" class="w-6 h-6 text-pink-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">Instagram</p>
+                                <p class="text-white font-medium">@the0xshankar</p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="flex items-center space-x-3 text-gray-500">
+                        <i data-lucide="map-pin" class="w-5 h-5"></i>
+                        <span>Rashtriya Raksha University, India</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 border-t border-gray-800/50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl font-mono font-bold gradient-text">SA</span>
+                    <span class="text-gray-500 text-sm">© 2026 Shankar Adhikary. All rights reserved.</span>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="https://github.com/ShankarAdhikary" target="_blank"
+                        class="text-gray-500 hover:text-white transition-colors">
+                        <i data-lucide="github" class="w-5 h-5"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/adhikaryxshankar/" target="_blank"
+                        class="text-gray-500 hover:text-white transition-colors">
+                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                    </a>
+                    <a href="https://x.com/SHANKARAD2006" target="_blank"
+                        class="text-gray-500 hover:text-white transition-colors">
+                        <i data-lucide="twitter" class="w-5 h-5"></i>
+                    </a>
+                    <a href="https://www.instagram.com/the0xshankar/" target="_blank"
+                        class="text-gray-500 hover:text-white transition-colors">
+                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                    </a>
+                </div>
+                <p class="text-gray-600 text-sm font-mono">
+                    <!-- Built with <span class="text-cosmic-purple">♥</span> in the Grok Galaxy
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+                    <script>
+                        // Initialize Lucide Icons
+                        lucide.createIcons();
+
+                        // Three.js Starfield
+                        function initStarfield() {
+                            const canvas = document.getElementById('starfield');
+                            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+                            renderer.setSize(window.innerWidth, window.innerHeight);
+                            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+                            const scene = new THREE.Scene();
+                            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                            camera.position.z = 5;
+
+                            // Create stars
+                            const starsGeometry = new THREE.BufferGeometry();
+                            const starsCount = 5000;
+                            const positions = new Float32Array(starsCount * 3);
+                            const colors = new Float32Array(starsCount * 3);
+
+                            for (let i = 0; i < starsCount; i++) {
+                                const i3 = i * 3;
+                                positions[i3] = (Math.random() - 0.5) * 100;
+                                positions[i3 + 1] = (Math.random() - 0.5) * 100;
+                                positions[i3 + 2] = (Math.random() - 0.5) * 100;
+
+                                // Random star colors (white, purple, blue)
+                                const colorChoice = Math.random();
+                                if (colorChoice < 0.7) {
+                                    // White
+                                    colors[i3] = 1;
+                                    colors[i3 + 1] = 1;
+                                    colors[i3 + 2] = 1;
+                                } else if (colorChoice < 0.85) {
+                                    // Purple
+                                    colors[i3] = 0.416;
+                                    colors[i3 + 1] = 0.051;
+                                    colors[i3 + 2] = 0.678;
+                                } else {
+                                    // Blue
+                                    colors[i3] = 0.118;
+                                    colors[i3 + 1] = 0.565;
+                                    colors[i3 + 2] = 1;
+                                }
+                            }
+
+                            starsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                            starsGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+                            const starsMaterial = new THREE.PointsMaterial({
+                                size: 0.05,
+                                vertexColors: true,
+                                transparent: true,
+                                opacity: 0.8,
+                                sizeAttenuation: true
+                            });
+
+                            const stars = new THREE.Points(starsGeometry, starsMaterial);
+                            scene.add(stars);
+
+                            // Mouse interaction
+                            let mouseX = 0;
+                            let mouseY = 0;
+
+                            document.addEventListener('mousemove', (event) => {
+                                mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+                                mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+                            });
+
+                            // Animation loop
+                            function animate() {
+                                requestAnimationFrame(animate);
+
+                                // Slow rotation
+                                stars.rotation.x += 0.0002;
+                                stars.rotation.y += 0.0003;
+
+                                // Mouse-based parallax
+                                stars.rotation.x += mouseY * 0.0005;
+                                stars.rotation.y += mouseX * 0.0005;
+
+                                renderer.render(scene, camera);
+                            }
+
+                            animate();
+
+                            // Handle resize
+                            window.addEventListener('resize', () => {
+                                camera.aspect = window.innerWidth / window.innerHeight;
+                                camera.updateProjectionMatrix();
+                                renderer.setSize(window.innerWidth, window.innerHeight);
+                            });
+                        }
+
+                        // Initialize starfield when DOM is loaded
+                        document.addEventListener('DOMContentLoaded', initStarfield);
+
+                        // Navbar scroll effect
+                        const navbar = document.getElementById('navbar');
+                        let lastScrollY = window.scrollY;
+
+                        window.addEventListener('scroll', () => {
+                            if (window.scrollY > 100) {
+                                navbar.classList.add('bg-true-black/80', 'backdrop-blur-lg', 'shadow-lg');
+                            } else {
+                                navbar.classList.remove('bg-true-black/80', 'backdrop-blur-lg', 'shadow-lg');
+                            }
+                            lastScrollY = window.scrollY;
+                        });
+
+                        // Mobile menu toggle
+                        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+                        const mobileMenuClose = document.getElementById('mobile-menu-close');
+                        const mobileMenu = document.getElementById('mobile-menu');
+
+                        mobileMenuBtn.addEventListener('click', () => {
+                            mobileMenu.classList.add('active');
+                        });
+
+                        mobileMenuClose.addEventListener('click', () => {
+                            mobileMenu.classList.remove('active');
+                        });
+
+                        // Close mobile menu when clicking a link
+                        mobileMenu.querySelectorAll('a').forEach(link => {
+                            link.addEventListener('click', () => {
+                                mobileMenu.classList.remove('active');
+                            });
+                        });
+
+                        // Smooth scroll for navigation links
+                        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                            anchor.addEventListener('click', function (e) {
+                                e.preventDefault();
+                                const target = document.querySelector(this.getAttribute('href'));
+                                if (target) {
+                                    target.scrollIntoView({
+                                        behavior: 'smooth',
+                                        block: 'start'
+                                    });
+                                }
+                            });
+                        });
+
+                        // Contact form handling with Formspree
+                        const contactForm = document.getElementById('contact-form');
+                        const submitBtn = contactForm.querySelector('button[type="submit"]');
+                        const originalBtnText = submitBtn.innerHTML;
+
+                        contactForm.addEventListener('submit', async (e) => {
+                            e.preventDefault();
+
+                            // Show loading state
+                            submitBtn.innerHTML = '<span class="flex items-center justify-center space-x-2"><span>Transmitting...</span><svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></span>';
+                            submitBtn.disabled = true;
+
+                            try {
+                                const formData = new FormData(contactForm);
+                                const response = await fetch(contactForm.action, {
+                                    method: 'POST',
+                                    body: formData,
+                                    headers: {
+                                        'Accept': 'application/json'
+                                    }
+                                });
+
+                                if (response.ok) {
+                                    // Success - show success message
+                                    submitBtn.innerHTML = '<span class="flex items-center justify-center space-x-2"><span>Message Sent! ✓</span></span>';
+                                    submitBtn.classList.remove('from-cosmic-purple', 'to-nebula-blue');
+                                    submitBtn.classList.add('bg-green-600');
+                                    contactForm.reset();
+
+                                    // Reset button after 3 seconds
+                                    setTimeout(() => {
+                                        submitBtn.innerHTML = originalBtnText;
+                                        submitBtn.classList.add('from-cosmic-purple', 'to-nebula-blue');
+                                        submitBtn.classList.remove('bg-green-600');
+                                        submitBtn.disabled = false;
+                                    }, 3000);
+                                } else {
+                                    throw new Error('Form submission failed');
+                                }
+                            } catch (error) {
+                                // Error - show error message
+                                submitBtn.innerHTML = '<span class="flex items-center justify-center space-x-2"><span>Error! Try Again</span></span>';
+                                submitBtn.classList.remove('from-cosmic-purple', 'to-nebula-blue');
+                                submitBtn.classList.add('bg-red-600');
+
+                                // Reset button after 3 seconds
+                                setTimeout(() => {
+                                    submitBtn.innerHTML = originalBtnText;
+                                    submitBtn.classList.add('from-cosmic-purple', 'to-nebula-blue');
+                                    submitBtn.classList.remove('bg-red-600');
+                                    submitBtn.disabled = false;
+                                }, 3000);
+                            }
+                        });
+
+                        // Intersection Observer for scroll animations
+                        const observerOptions = {
+                            threshold: 0.1,
+                            rootMargin: '0px 0px -50px 0px'
+                        };
+
+                        const observer = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                if (entry.isIntersecting) {
+                                    entry.target.classList.add('animate-fade-in');
+                                    entry.target.style.opacity = '1';
+                                    entry.target.style.transform = 'translateY(0)';
+                                }
+                            });
+                        }, observerOptions);
+
+                        // Observe all sections
+                        document.querySelectorAll('section').forEach(section => {
+                            section.style.opacity = '0';
+                            section.style.transform = 'translateY(20px)';
+                            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                            observer.observe(section);
+                        });
+
+                        // Hero section should be visible immediately
+                        document.getElementById('home').style.opacity = '1';
+                        document.getElementById('home').style.transform = 'translateY(0)';
+
+                        // Typing effect for tagline (optional enhancement)
+                        const taglineSpans = document.querySelectorAll('#home p.font-mono span');
+                        taglineSpans.forEach((span, index) => {
+                            span.style.opacity = '0';
+                            span.style.animation = `fadeIn 0.5s ease ${index * 0.2 + 0.5}s forwards`;
+                        });
+
+                        // Add fadeIn keyframes
+                        const style = document.createElement('style');
+                        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+                        document.head.appendChild(style);
+                    </script>
+</body>
+
+</html>
