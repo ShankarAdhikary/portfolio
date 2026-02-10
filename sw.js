@@ -1,7 +1,8 @@
-const CACHE_NAME = 'shankar-portfolio-v5';
+const CACHE_NAME = 'shankar-portfolio-v6';
 const urlsToCache = [
   '/portfolio/',
   '/portfolio/index.html',
+  '/portfolio/terminal.js',
   '/portfolio/assets/profile.png',
   '/portfolio/assets/resume.pdf',
   '/portfolio/manifest.json'
