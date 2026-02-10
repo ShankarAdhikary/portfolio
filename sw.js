@@ -1,4 +1,4 @@
-const CACHE_NAME = 'shankar-portfolio-v2';
+const CACHE_NAME = 'shankar-portfolio-v3';
 const urlsToCache = [
   '/portfolio/',
   '/portfolio/index.html',
@@ -20,38 +20,48 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - Network-first for HTML, cache-first for assets
 self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+
+  // Only handle same-origin requests
+  if (url.origin !== location.origin) return;
+
+  // Network-first for HTML pages (ensures fresh content on deploy)
+  if (event.request.mode === 'navigate' || (event.request.headers.get('accept') && event.request.headers.get('accept').includes('text/html'))) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          if (response && response.status === 200) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, responseClone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request).then(r => r || caches.match('/portfolio/index.html')))
+    );
+    return;
+  }
+
+  // Cache-first for static assets (images, fonts, etc.)
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // Return cached version or fetch from network
-        if (response) {
-          return response;
-        }
-        return fetch(event.request)
-          .then(response => {
-            // Don't cache if not a valid response
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-            // Clone the response
-            const responseToCache = response.clone();
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, responseToCache);
-              });
-            return response;
-          });
+        if (response) return response;
+        return fetch(event.request).then(networkResponse => {
+          if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+            return networkResponse;
+          }
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, responseToCache));
+          return networkResponse;
+        });
       })
-      .catch(() => {
-        // Offline fallback
-        return caches.match('/portfolio/index.html');
-      })
+      .catch(() => caches.match('/portfolio/index.html'))
   );
 });
 
-// Activate event - clean old caches
+// Activate event - clean old caches immediately
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {

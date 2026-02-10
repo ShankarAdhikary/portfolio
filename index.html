@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v2.1.0 - All animations removed - Feb 2026 -->
+<!-- v3.0.0 - Security Hardened Edition - Feb 2026 -->
 <html lang="en">
 
 <head>
@@ -11,6 +11,14 @@
         content="Shankar Adhikary, Cybersecurity, Full Stack Developer, AI/ML, Red Teaming, Portfolio">
     <meta name="author" content="Shankar Adhikary">
     <title>Shankar Adhikary Portfolio</title>
+
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://unpkg.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://formspree.io https://api.countapi.xyz https://visitor-badge.laobi.icu; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://formspree.io;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
@@ -49,13 +57,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@latest" crossorigin="anonymous"></script>
 
     <!-- Three.js for Starfield -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
 
     <!-- TagCloud for 3D Globe -->
-    <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
 
     <script>
         tailwind.config = {
@@ -97,8 +107,10 @@
         /* ===== Cosmic Galaxy Preloader ===== */
         .preloader {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: radial-gradient(ellipse at 50% 50%, #0d0015 0%, #030008 60%, #000000 100%);
             display: flex;
             align-items: center;
@@ -106,17 +118,19 @@
             z-index: 9999;
             overflow: hidden;
         }
+
         .preloader.hidden {
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1), visibility 0.8s;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
         }
 
         /* Stars canvas */
         #preloader-stars {
             position: absolute;
             inset: 0;
-            width: 100%; height: 100%;
+            width: 100%;
+            height: 100%;
         }
 
         /* Nebula glow layers */
@@ -127,71 +141,111 @@
             opacity: 0;
             animation: nebulaBreath 4s ease-in-out infinite;
         }
+
         .nebula-1 {
-            width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(106,13,173,0.35) 0%, transparent 70%);
-            top: 50%; left: 50%;
-            transform: translate(-50%,-50%);
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(106, 13, 173, 0.35) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             animation-delay: 0s;
         }
+
         .nebula-2 {
-            width: 350px; height: 350px;
-            background: radial-gradient(circle, rgba(30,144,255,0.25) 0%, transparent 70%);
-            top: 40%; left: 55%;
-            transform: translate(-50%,-50%);
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(30, 144, 255, 0.25) 0%, transparent 70%);
+            top: 40%;
+            left: 55%;
+            transform: translate(-50%, -50%);
             animation-delay: 1.5s;
         }
+
         .nebula-3 {
-            width: 280px; height: 280px;
-            background: radial-gradient(circle, rgba(57,255,20,0.12) 0%, transparent 70%);
-            top: 60%; left: 42%;
-            transform: translate(-50%,-50%);
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(57, 255, 20, 0.12) 0%, transparent 70%);
+            top: 60%;
+            left: 42%;
+            transform: translate(-50%, -50%);
             animation-delay: 3s;
         }
+
         @keyframes nebulaBreath {
-            0%, 100% { opacity: 0.4; transform: translate(-50%,-50%) scale(1); }
-            50%      { opacity: 0.9; transform: translate(-50%,-50%) scale(1.15); }
+
+            0%,
+            100% {
+                opacity: 0.4;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            50% {
+                opacity: 0.9;
+                transform: translate(-50%, -50%) scale(1.15);
+            }
         }
 
         /* Orbital rings */
         .orbit-ring {
             position: absolute;
-            top: 50%; left: 50%;
+            top: 50%;
+            left: 50%;
             border-radius: 50%;
-            border: 1px solid rgba(106,13,173,0.12);
+            border: 1px solid rgba(106, 13, 173, 0.12);
         }
+
         .orbit-ring-1 {
-            width: 220px; height: 220px;
+            width: 220px;
+            height: 220px;
             margin: -110px 0 0 -110px;
             animation: orbitSpin 12s linear infinite;
         }
+
         .orbit-ring-2 {
-            width: 340px; height: 340px;
+            width: 340px;
+            height: 340px;
             margin: -170px 0 0 -170px;
-            border-color: rgba(30,144,255,0.08);
+            border-color: rgba(30, 144, 255, 0.08);
             animation: orbitSpin 20s linear infinite reverse;
         }
+
         .orbit-ring-3 {
-            width: 460px; height: 460px;
+            width: 460px;
+            height: 460px;
             margin: -230px 0 0 -230px;
-            border-color: rgba(57,255,20,0.05);
+            border-color: rgba(57, 255, 20, 0.05);
             animation: orbitSpin 30s linear infinite;
         }
+
         @keyframes orbitSpin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
+
         /* Tiny dots on orbits */
         .orbit-dot {
             position: absolute;
-            width: 4px; height: 4px;
+            width: 4px;
+            height: 4px;
             border-radius: 50%;
             background: #6A0DAD;
             box-shadow: 0 0 6px #6A0DAD;
-            top: -2px; left: 50%;
+            top: -2px;
+            left: 50%;
             margin-left: -2px;
         }
-        .orbit-ring-2 .orbit-dot { background: #1E90FF; box-shadow: 0 0 6px #1E90FF; }
-        .orbit-ring-3 .orbit-dot { background: #39FF14; box-shadow: 0 0 6px #39FF14; }
+
+        .orbit-ring-2 .orbit-dot {
+            background: #1E90FF;
+            box-shadow: 0 0 6px #1E90FF;
+        }
+
+        .orbit-ring-3 .orbit-dot {
+            background: #39FF14;
+            box-shadow: 0 0 6px #39FF14;
+        }
 
         /* Center content */
         .preloader-core {
@@ -215,19 +269,34 @@
             text-shadow: none;
             position: relative;
         }
+
         .preloader-initials::after {
             content: '';
             position: absolute;
             inset: -20px;
-            background: radial-gradient(circle, rgba(106,13,173,0.2) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(106, 13, 173, 0.2) 0%, transparent 70%);
             filter: blur(20px);
             z-index: -1;
         }
 
         @keyframes cosmicReveal {
-            0%   { opacity: 0; transform: scale(0.6); filter: blur(10px); }
-            60%  { opacity: 1; transform: scale(1.05); filter: blur(0); }
-            100% { opacity: 1; transform: scale(1); filter: blur(0); }
+            0% {
+                opacity: 0;
+                transform: scale(0.6);
+                filter: blur(10px);
+            }
+
+            60% {
+                opacity: 1;
+                transform: scale(1.05);
+                filter: blur(0);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0);
+            }
         }
 
         /* Name text */
@@ -236,7 +305,7 @@
             font-size: 0.75rem;
             letter-spacing: 6px;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.35);
+            color: rgba(255, 255, 255, 0.35);
             margin-top: 16px;
             opacity: 0;
             animation: fadeSlideUp 0.8s ease 1.4s forwards;
@@ -246,13 +315,14 @@
         .preloader-bar-wrap {
             width: 180px;
             height: 2px;
-            background: rgba(255,255,255,0.06);
+            background: rgba(255, 255, 255, 0.06);
             border-radius: 2px;
             margin: 28px auto 0;
             overflow: hidden;
             opacity: 0;
             animation: fadeSlideUp 0.6s ease 1.8s forwards;
         }
+
         .preloader-bar-fill {
             height: 100%;
             width: 0%;
@@ -260,19 +330,34 @@
             background: linear-gradient(90deg, #6A0DAD, #1E90FF, #39FF14);
             animation: cosmicBarFill 2.5s ease-in-out 2s forwards;
         }
+
         @keyframes cosmicBarFill {
-            0%   { width: 0%; }
-            30%  { width: 40%; }
-            60%  { width: 70%; }
-            85%  { width: 92%; }
-            100% { width: 100%; }
+            0% {
+                width: 0%;
+            }
+
+            30% {
+                width: 40%;
+            }
+
+            60% {
+                width: 70%;
+            }
+
+            85% {
+                width: 92%;
+            }
+
+            100% {
+                width: 100%;
+            }
         }
 
         /* Tagline */
         .preloader-tagline {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.6rem;
-            color: rgba(255,255,255,0.2);
+            color: rgba(255, 255, 255, 0.2);
             letter-spacing: 3px;
             margin-top: 20px;
             opacity: 0;
@@ -280,8 +365,15 @@
         }
 
         @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .light-mode {
@@ -1641,31 +1733,36 @@
             <div class="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
                 <!-- Contact Form -->
                 <div class="glass-card rounded-2xl p-8">
-                    <form id="contact-form" action="https://formspree.io/f/xeeloron" method="POST" class="space-y-6">
+                    <form id="contact-form" action="https://formspree.io/f/xeeloron" method="POST" class="space-y-6"
+                        autocomplete="off">
                         <!-- Formspree hidden fields -->
                         <input type="hidden" name="_subject" value="New message from Grok Galaxy Portfolio">
                         <input type="hidden" name="_next" value="#contact">
+                        <!-- Honeypot anti-spam (hidden from real users) -->
+                        <div class="absolute -left-[9999px]" aria-hidden="true">
+                            <input type="text" name="_gotcha" tabindex="-1" autocomplete="off">
+                        </div>
                         <div>
                             <label class="block text-gray-400 text-sm font-medium mb-2">Name</label>
-                            <input type="text" name="name" required
+                            <input type="text" name="name" required maxlength="100" pattern="[A-Za-z\s\-'.]{2,100}"
                                 class="w-full px-4 py-3 bg-true-black border border-gray-800 rounded-lg focus:border-cosmic-purple focus:outline-none focus:ring-2 focus:ring-cosmic-purple/20 text-white placeholder-gray-600 transition-all"
                                 placeholder="Your name">
                         </div>
                         <div>
                             <label class="block text-gray-400 text-sm font-medium mb-2">Email</label>
-                            <input type="email" name="email" required
+                            <input type="email" name="email" required maxlength="254"
                                 class="w-full px-4 py-3 bg-true-black border border-gray-800 rounded-lg focus:border-cosmic-purple focus:outline-none focus:ring-2 focus:ring-cosmic-purple/20 text-white placeholder-gray-600 transition-all"
                                 placeholder="your@email.com">
                         </div>
                         <div>
                             <label class="block text-gray-400 text-sm font-medium mb-2">Subject</label>
-                            <input type="text" name="subject"
+                            <input type="text" name="subject" maxlength="200"
                                 class="w-full px-4 py-3 bg-true-black border border-gray-800 rounded-lg focus:border-cosmic-purple focus:outline-none focus:ring-2 focus:ring-cosmic-purple/20 text-white placeholder-gray-600 transition-all"
                                 placeholder="What's this about?">
                         </div>
                         <div>
                             <label class="block text-gray-400 text-sm font-medium mb-2">Message</label>
-                            <textarea name="message" rows="5" required
+                            <textarea name="message" rows="5" required maxlength="2000"
                                 class="w-full px-4 py-3 bg-true-black border border-gray-800 rounded-lg focus:border-cosmic-purple focus:outline-none focus:ring-2 focus:ring-cosmic-purple/20 text-white placeholder-gray-600 transition-all resize-none"
                                 placeholder="Your message..."></textarea>
                         </div>
@@ -1903,6 +2000,29 @@
                         <img src="https://visitor-badge.laobi.icu/badge?page_id=ShankarAdhikary.portfolio&left_color=%23050505&right_color=%236A0DAD&left_text=Total"
                             alt="visitor count" class="h-5" />
                     </a>
+                </div>
+            </div>
+            <!-- Security Badge -->
+            <div
+                class="mt-6 pt-6 border-t border-gray-800/20 flex flex-col sm:flex-row items-center justify-center gap-4 text-xs text-gray-600">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-cyber-lime"></i>
+                    <span>CSP Protected</span>
+                </div>
+                <span class="hidden sm:inline text-gray-800">|</span>
+                <div class="flex items-center gap-2">
+                    <i data-lucide="lock" class="w-4 h-4 text-cosmic-purple"></i>
+                    <span>XSS Sanitized</span>
+                </div>
+                <span class="hidden sm:inline text-gray-800">|</span>
+                <div class="flex items-center gap-2">
+                    <i data-lucide="scan-eye" class="w-4 h-4 text-nebula-blue"></i>
+                    <span>Rate Limited</span>
+                </div>
+                <span class="hidden sm:inline text-gray-800">|</span>
+                <div class="flex items-center gap-2">
+                    <i data-lucide="fingerprint" class="w-4 h-4 text-gray-500"></i>
+                    <span>Anti-Spam</span>
                 </div>
             </div>
         </div>
@@ -2180,6 +2300,16 @@ END:VCARD`;
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            // Rate limiting check
+            if (!formRateLimiter()) {
+                alert('⚠️ Too many submissions. Please wait before sending another message.');
+                return;
+            }
+
+            // Honeypot check (bots fill hidden fields)
+            const honeypot = contactForm.querySelector('input[name="_gotcha"]');
+            if (honeypot && honeypot.value) { contactForm.reset(); return; }
+
             // Show loading state
             submitBtn.innerHTML = '<span class="flex items-center justify-center space-x-2"><span>Transmitting...</span><svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></span>';
             submitBtn.disabled = true;
@@ -2239,6 +2369,35 @@ END:VCARD`;
             }
         `;
         document.head.appendChild(style);
+
+        // ============ SECURITY UTILITIES ============
+        // XSS sanitization - escape HTML entities
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+        }
+
+        // Rate limiter factory
+        function createRateLimiter(maxActions, windowMs) {
+            const actions = [];
+            return function () {
+                const now = Date.now();
+                while (actions.length && actions[0] < now - windowMs) actions.shift();
+                if (actions.length >= maxActions) return false;
+                actions.push(now);
+                return true;
+            };
+        }
+
+        // Rate limiters: 5 form submissions per 60s, 15 chat messages per 30s
+        const formRateLimiter = createRateLimiter(5, 60000);
+        const chatRateLimiter = createRateLimiter(15, 30000);
+
+        // Console security warning
+        console.log('%c⚠️ SECURITY WARNING', 'color:#ff5555;font-size:24px;font-weight:bold;');
+        console.log('%cThis is a browser feature intended for developers.\nIf someone told you to paste something here, it is likely a scam.\n\n— Shankar Adhikary (Cybersecurity Engineer)', 'color:#ffb86c;font-size:14px;');
+        console.log('%c🔒 This portfolio is security-hardened with CSP, input sanitization, and rate limiting.', 'color:#50fa7b;font-size:12px;');
 
         // ============ AI CHATBOT ============
         const chatbotBubble = document.getElementById('chatbot-bubble');
@@ -2651,14 +2810,20 @@ Just ask naturally - I understand many variations! 🤖`;
         function addMessage(text, isUser = false) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `flex gap-2 ${isUser ? 'flex-row-reverse' : ''}`;
-            // Convert markdown-like **text** to bold
-            const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            // Sanitize: escape user input, allow safe formatting for bot responses only
+            let displayText;
+            if (isUser) {
+                displayText = escapeHTML(text);
+            } else {
+                // Bot response: allow bold markdown only, escape everything else first
+                displayText = escapeHTML(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            }
             messageDiv.innerHTML = `
                 <div class="w-8 h-8 rounded-full ${isUser ? 'bg-nebula-blue/30' : 'bg-cosmic-purple/30'} flex items-center justify-center flex-shrink-0">
                     <i data-lucide="${isUser ? 'user' : 'bot'}" class="w-4 h-4 ${isUser ? 'text-nebula-blue' : 'text-cosmic-purple'}"></i>
                 </div>
                 <div class="${isUser ? 'bg-nebula-blue/20 rounded-tr-none' : 'bg-gray-800 rounded-tl-none'} rounded-lg p-3 text-sm text-gray-300 max-w-[80%]" style="white-space: pre-line;">
-                    ${formattedText}
+                    ${displayText}
                 </div>
             `;
             chatMessages.appendChild(messageDiv);
@@ -2676,15 +2841,20 @@ Just ask naturally - I understand many variations! 🤖`;
 
         function sendMessage() {
             const message = chatInput.value.trim();
-            if (message) {
-                addMessage(message, true);
-                chatInput.value = '';
-
-                setTimeout(() => {
-                    const response = getAIResponse(message);
-                    addMessage(response);
-                }, 500);
+            if (!message) return;
+            if (message.length > 500) {
+                addMessage('Please keep messages under 500 characters.'); return;
             }
+            if (!chatRateLimiter()) {
+                addMessage('⚠️ Too many messages. Please wait a moment.'); return;
+            }
+            addMessage(message, true);
+            chatInput.value = '';
+
+            setTimeout(() => {
+                const response = getAIResponse(message);
+                addMessage(response);
+            }, 500);
         }
 
         sendChat.addEventListener('click', sendMessage);
@@ -2791,8 +2961,9 @@ Mission: Hack into Shankar's portfolio`,
             const command = cmd.toLowerCase().trim();
 
             if (command === '') return;
+            if (cmd.length > 100) { addTerminalLine('<span class="text-red-400">[SEC]</span> Input too long. Max 100 characters.'); return; }
 
-            addTerminalLine(`<span class="text-blue-400">$</span> ${cmd}`);
+            addTerminalLine(`<span class="text-blue-400">$</span> ${escapeHTML(cmd)}`);
 
             if (command === 'clear') {
                 terminalOutput.innerHTML = '';
