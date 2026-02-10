@@ -1,13 +1,13 @@
-# 🌌 Grok Galaxy Portfolio
+# Shankar's Galaxy Portfolio
 
-**Shankar Adhikary's Personal Portfolio Website**
+Shankar Adhikary's Personal Portfolio Website
 
 A futuristic, space-exploration themed portfolio showcasing skills in Cybersecurity (Red Teaming), Full-stack Development, and AI/ML.
 
 ![Theme](https://img.shields.io/badge/Theme-Grok%20Galaxy-6A0DAD)
 ![Status](https://img.shields.io/badge/Status-Active-39FF14)
 
-## ✨ Features
+## Features
 
 - **Interactive 3D Starfield** - Three.js powered cosmic background with mouse parallax
 - **Glassmorphism Design** - Modern frosted glass card effects
@@ -132,6 +132,6 @@ MIT License - Feel free to use and modify!
 
 ---
 
-**Built with ♥ in the Grok Galaxy**
+**Built with ♥ in the Shankar's Galaxy**
 
 *Shankar Adhikary | Cybersecurity • Full Stack • AI/ML*
