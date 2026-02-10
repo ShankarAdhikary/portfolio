@@ -59,13 +59,13 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest" crossorigin="anonymous"></script>
 
-    <!-- Three.js for Starfield -->
+    <!-- Three.js for Starfield (deferred) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
+        referrerpolicy="no-referrer" defer></script>
 
-    <!-- TagCloud for 3D Globe -->
+    <!-- TagCloud for 3D Globe (deferred) -->
     <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js" crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
+        referrerpolicy="no-referrer" defer></script>
 
     <script>
         tailwind.config = {
@@ -137,9 +137,11 @@
         .nebula {
             position: absolute;
             border-radius: 50%;
-            filter: blur(80px);
+            filter: blur(50px);
             opacity: 0;
             animation: nebulaBreath 4s ease-in-out infinite;
+            will-change: opacity;
+            contain: layout style paint;
         }
 
         .nebula-1 {
@@ -447,6 +449,7 @@
             width: 100%;
             height: 100%;
             z-index: -1;
+            contain: strict;
         }
 
         /* Glow Pulse Animation */
@@ -546,39 +549,44 @@
         /* ==================== CUSTOM CURSOR ==================== */
         .custom-cursor {
             position: fixed;
+            top: 0;
+            left: 0;
             width: 20px;
             height: 20px;
             border: 2px solid #6A0DAD;
             border-radius: 50%;
             pointer-events: none;
             z-index: 99999;
-            transition: transform 0.15s ease, border-color 0.3s ease, background-color 0.3s ease;
-            transform: translate(-50%, -50%);
-            mix-blend-mode: difference;
+            transition: width 0.15s ease, height 0.15s ease, border-color 0.3s ease, background-color 0.3s ease;
+            will-change: transform;
         }
 
         .custom-cursor.hover {
-            transform: translate(-50%, -50%) scale(1.5);
+            width: 30px;
+            height: 30px;
             background-color: rgba(106, 13, 173, 0.3);
             border-color: #39FF14;
         }
 
         .custom-cursor.click {
-            transform: translate(-50%, -50%) scale(0.8);
+            width: 16px;
+            height: 16px;
             background-color: #6A0DAD;
         }
 
         .cursor-trail {
             position: fixed;
+            top: 0;
+            left: 0;
             width: 8px;
             height: 8px;
             background: linear-gradient(135deg, #6A0DAD, #1E90FF);
             border-radius: 50%;
             pointer-events: none;
             z-index: 99998;
-            transform: translate(-50%, -50%);
             opacity: 0.6;
             transition: opacity 0.3s ease;
+            will-change: transform;
         }
 
         /* Hide default cursor */
@@ -2483,8 +2491,8 @@ END:VCARD`;
         if (typeof TagCloud !== 'undefined') {
             TagCloud('#skills-globe', skillTags, {
                 radius: 250,
-                maxSpeed: 'fast',
-                initSpeed: 'fast',
+                maxSpeed: 'normal',
+                initSpeed: 'normal',
                 direction: 135,
                 keep: true,
                 useContainerInlineStyles: true,
@@ -2508,17 +2516,17 @@ END:VCARD`;
         // Three.js Starfield
         function initStarfield() {
             const canvas = document.getElementById('starfield');
-            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+            const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: 'low-power' });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.z = 5;
 
-            // Create stars
+            // Create stars (reduced for performance)
             const starsGeometry = new THREE.BufferGeometry();
-            const starsCount = 5000;
+            const starsCount = 2000;
             const positions = new Float32Array(starsCount * 3);
             const colors = new Float32Array(starsCount * 3);
 
@@ -2562,18 +2570,25 @@ END:VCARD`;
             const stars = new THREE.Points(starsGeometry, starsMaterial);
             scene.add(stars);
 
-            // Mouse interaction
+            // Mouse interaction (throttled)
             let mouseX = 0;
             let mouseY = 0;
+            let starfieldVisible = true;
 
             document.addEventListener('mousemove', (event) => {
                 mouseX = (event.clientX / window.innerWidth) * 2 - 1;
                 mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+            }, { passive: true });
+
+            // Pause rendering when tab is not visible
+            document.addEventListener('visibilitychange', () => {
+                starfieldVisible = !document.hidden;
             });
 
-            // Animation loop
+            // Animation loop (skips frames when tab is hidden)
             function animate() {
                 requestAnimationFrame(animate);
+                if (!starfieldVisible) return;
 
                 // Slow rotation
                 stars.rotation.x += 0.0002;
@@ -2588,29 +2603,40 @@ END:VCARD`;
 
             animate();
 
-            // Handle resize
+            // Handle resize (debounced)
+            let resizeTimeout;
             window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                }, 150);
             });
         }
 
         // Initialize starfield when DOM is loaded
         document.addEventListener('DOMContentLoaded', initStarfield);
 
-        // Navbar scroll effect
+        // Navbar scroll effect (throttled with rAF)
         const navbar = document.getElementById('navbar');
         let lastScrollY = window.scrollY;
+        let scrollTicking = false;
 
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 100) {
-                navbar.classList.add('bg-true-black/80', 'backdrop-blur-lg', 'shadow-lg');
-            } else {
-                navbar.classList.remove('bg-true-black/80', 'backdrop-blur-lg', 'shadow-lg');
+            if (!scrollTicking) {
+                requestAnimationFrame(() => {
+                    if (window.scrollY > 100) {
+                        navbar.classList.add('bg-true-black/80', 'backdrop-blur-lg', 'shadow-lg');
+                    } else {
+                        navbar.classList.remove('bg-true-black/80', 'backdrop-blur-lg', 'shadow-lg');
+                    }
+                    lastScrollY = window.scrollY;
+                    scrollTicking = false;
+                });
+                scrollTicking = true;
             }
-            lastScrollY = window.scrollY;
-        });
+        }, { passive: true });
 
         // Mobile menu toggle
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -3847,7 +3873,7 @@ Just ask naturally — I understand many variations! 🤖`;
             window.addEventListener('resize', resizeCanvas);
 
             const stars = [];
-            for (let i = 0; i < 200; i++) {
+            for (let i = 0; i < 80; i++) {
                 stars.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
@@ -3880,7 +3906,7 @@ Just ask naturally — I understand many variations! 🤖`;
             }
             drawStars();
 
-            // Hide preloader
+            // Hide preloader (reduced wait time)
             window.addEventListener('load', () => {
                 setTimeout(() => {
                     preloader.classList.add('hidden');
@@ -3888,7 +3914,7 @@ Just ask naturally — I understand many variations! 🤖`;
                         preloader.style.display = 'none';
                         cancelAnimationFrame(animId);
                     }, 800);
-                }, 4800);
+                }, 2000);
             });
         })();
 
@@ -3912,23 +3938,31 @@ Just ask naturally — I understand many variations! 🤖`;
 
             if (!cursor || !trail) return;
 
+            // Skip on touch devices
+            if (window.matchMedia('(hover: none)').matches) return;
+
             let mouseX = 0, mouseY = 0;
             let trailX = 0, trailY = 0;
+            let cursorVisible = true;
 
             document.addEventListener('mousemove', (e) => {
                 mouseX = e.clientX;
                 mouseY = e.clientY;
-                cursor.style.left = mouseX + 'px';
-                cursor.style.top = mouseY + 'px';
+                cursor.style.transform = 'translate(' + (mouseX - 10) + 'px,' + (mouseY - 10) + 'px)';
+            }, { passive: true });
+
+            // Pause trail when tab hidden
+            document.addEventListener('visibilitychange', () => {
+                cursorVisible = !document.hidden;
             });
 
             // Smooth trail animation
             function animateTrail() {
+                requestAnimationFrame(animateTrail);
+                if (!cursorVisible) return;
                 trailX += (mouseX - trailX) * 0.15;
                 trailY += (mouseY - trailY) * 0.15;
-                trail.style.left = trailX + 'px';
-                trail.style.top = trailY + 'px';
-                requestAnimationFrame(animateTrail);
+                trail.style.transform = 'translate(' + (trailX - 4) + 'px,' + (trailY - 4) + 'px)';
             }
             animateTrail();
 
@@ -3960,14 +3994,21 @@ Just ask naturally — I understand many variations! 🤖`;
 
             if (!backToTop) return;
 
-            // Show/hide based on scroll position
+            // Show/hide based on scroll position (throttled)
+            let btTicking = false;
             window.addEventListener('scroll', () => {
-                if (window.scrollY > 500) {
-                    backToTop.classList.add('visible');
-                } else {
-                    backToTop.classList.remove('visible');
+                if (!btTicking) {
+                    requestAnimationFrame(() => {
+                        if (window.scrollY > 500) {
+                            backToTop.classList.add('visible');
+                        } else {
+                            backToTop.classList.remove('visible');
+                        }
+                        btTicking = false;
+                    });
+                    btTicking = true;
                 }
-            });
+            }, { passive: true });
 
             // Scroll to top on click
             backToTop.addEventListener('click', () => {
