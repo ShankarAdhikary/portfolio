@@ -1547,7 +1547,7 @@
                 <div class="glass-card rounded-2xl p-6 md:p-8 hover:border-nebula-blue/50 transition-all duration-300">
                     <div class="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
                         <div>
-                            <h3 class="text-xl font-space font-semibold text-white">PR Head</h3>
+                            <h3 class="text-xl font-space font-semibold text-white">Vice-President </h3>
                             <p class="text-nebula-blue font-medium">EDGE Club - RRU</p>
                         </div>
                         <span class="text-gray-500 font-mono text-sm mt-2 md:mt-0">2025 - Present</span>
@@ -2799,8 +2799,8 @@ END:VCARD`;
             roles: [
                 { title: "Campus Lead", org: "Open Source Connect Global 2026", period: "2025 - Present", desc: "Leading open-source initiatives at RRU, organizing workshops and hackathons, mentoring aspiring developers" },
                 { title: "Pre-Incubator", org: "AIC RRU (Atal Incubation Centre)", period: "2025 - Present", desc: "Working on innovative startup ideas at the Atal Incubation Centre" },
-                { title: "Vice President", org: "Chaturanga - Chess Club of RRU", period: "2025 - Present", desc: "Organizing tournaments, coordinating inter-college competitions" },
-                { title: "PR Head", org: "EDGE Club - RRU", period: "2025 - Present", desc: "Managing public relations, outreach, and event coordination" },
+                { title: "Vice-President", org: "Chaturanga - Chess Club of RRU", period: "2025 - Present", desc: "Organizing tournaments, coordinating inter-college competitions" },
+                { title: "Vice-President ", org: "EDGE Club - RRU", period: "2025 - Present", desc: "Managing public relations, outreach, and event coordination" },
                 { title: "Open Source Contributor", org: "Open Source Connect", period: "2025 - Present", desc: "Contributing to security tools and frameworks, developing security-first solutions" }
             ],
 
@@ -3261,7 +3261,7 @@ Shankar understands the full deployment pipeline — from writing code to contai
             }
 
             // ============ ROLES/EXPERIENCE ============
-            if (matchAny(q, ['role', 'position', 'experience', 'work', 'job', 'leader', 'leadership', 'campus lead', 'vp', 'vice president', 'pr head', 'club', 'community'])) {
+            if (matchAny(q, ['role', 'position', 'experience', 'work', 'job', 'leader', 'leadership', 'campus lead', 'vp', 'vice president', 'Vice-President ', 'club', 'community'])) {
                 lastTopic = 'roles';
                 const rolesText = shankarInfo.roles.map(r => `**${r.title}** @ ${r.org}\n   📅 ${r.period}\n   └─ ${r.desc}`).join('\n\n');
                 return `💼 **Current Roles & Leadership:**\n\n${rolesText}\n\nShankar is a natural leader — juggling ${shankarInfo.roles.length} active roles while excelling in academics! 🌟`;
@@ -3553,8 +3553,8 @@ Built from scratch — no templates! 🛠️`;
             }
 
             // ============ EDGE CLUB ============
-            if (matchAny(q, ['edge club', 'pr head', 'public relation'])) {
-                return `📢 **EDGE Club - RRU:**\n\nShankar serves as the **PR Head** at EDGE Club.\n\n• Manages public relations and outreach\n• Coordinates events and workshops\n• Builds community engagement\n\nLeadership + communication skills! 🎤`;
+            if (matchAny(q, ['edge club', 'Vice-President ', 'public relation'])) {
+                return `📢 **EDGE Club - RRU:**\n\nShankar serves as the **Vice-President ** at EDGE Club.\n\n• Manages public relations and outreach\n• Coordinates events and workshops\n• Builds community engagement\n\nLeadership + communication skills! 🎤`;
             }
 
             // ============ HELP ============
