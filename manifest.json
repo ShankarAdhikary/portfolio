@@ -2,7 +2,7 @@
   "name": "Shankar Adhikary Portfolio",
   "short_name": "SA Portfolio",
   "description": "Cybersecurity & Full Stack Developer Portfolio - Shankar Adhikary",
-  "start_url": "/portfolio/",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#050505",
   "theme_color": "#6A0DAD",

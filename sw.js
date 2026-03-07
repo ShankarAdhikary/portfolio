@@ -1,11 +1,11 @@
-const CACHE_NAME = 'shankar-portfolio-v6';
+const CACHE_NAME = 'shankar-portfolio-v7';
 const urlsToCache = [
-  '/portfolio/',
-  '/portfolio/index.html',
-  '/portfolio/terminal.js',
-  '/portfolio/assets/profile.png',
-  '/portfolio/assets/resume.pdf',
-  '/portfolio/manifest.json'
+  '/',
+  '/index.html',
+  '/terminal.js',
+  '/assets/profile.png',
+  '/assets/resume.pdf',
+  '/manifest.json'
 ];
 
 // Install event - cache resources
@@ -39,7 +39,7 @@ self.addEventListener('fetch', event => {
           }
           return response;
         })
-        .catch(() => caches.match(event.request).then(r => r || caches.match('/portfolio/index.html')))
+        .catch(() => caches.match(event.request).then(r => r || caches.match('/index.html')))
     );
     return;
   }
@@ -58,7 +58,7 @@ self.addEventListener('fetch', event => {
           return networkResponse;
         });
       })
-      .catch(() => caches.match('/portfolio/index.html'))
+      .catch(() => caches.match('/index.html'))
   );
 });
 

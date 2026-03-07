@@ -404,7 +404,7 @@
         }
 
         .light-mode #starfield {
-            opacity: 0.3;
+            opacity: 0.15;
         }
 
         .light-mode .bg-true-black {
@@ -413,6 +413,122 @@
 
         .light-mode .border-gray-800 {
             border-color: #e2e8f0 !important;
+        }
+
+        /* Light mode — Navigation */
+        .light-mode nav,
+        .light-mode header {
+            background: rgba(248, 250, 252, 0.85) !important;
+            backdrop-filter: blur(12px);
+        }
+
+        /* Light mode — Section backgrounds */
+        .light-mode section {
+            background-color: transparent !important;
+        }
+
+        .light-mode .bg-deep-charcoal,
+        .light-mode .bg-gray-900,
+        .light-mode [class*="bg-gray-9"] {
+            background-color: #f1f5f9 !important;
+        }
+
+        /* Light mode — Text colors */
+        .light-mode .text-gray-300 {
+            color: #475569 !important;
+        }
+
+        .light-mode .text-gray-600 {
+            color: #64748b !important;
+        }
+
+        /* Light mode — Skill bars & Tags */
+        .light-mode .bg-gray-800 {
+            background-color: #e2e8f0 !important;
+        }
+
+        .light-mode .bg-gray-700 {
+            background-color: #e2e8f0 !important;
+        }
+
+        .light-mode .text-gray-300 {
+            color: #334155 !important;
+        }
+
+        /* Light mode — Chat modal */
+        .light-mode .chat-modal {
+            background: #ffffff !important;
+            border-color: var(--border-color) !important;
+        }
+
+        .light-mode .chat-header {
+            border-color: var(--border-color) !important;
+        }
+
+        .light-mode .chat-header-info h4 {
+            color: var(--text-primary) !important;
+        }
+
+        .light-mode .chat-msg.bot-msg .chat-msg-content {
+            background: rgba(0, 0, 0, 0.03) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-primary) !important;
+        }
+
+        .light-mode .chat-msg.user-msg .chat-msg-content {
+            color: var(--text-primary) !important;
+        }
+
+        .light-mode .chat-input-wrap {
+            background: rgba(0, 0, 0, 0.03) !important;
+            border-color: var(--border-color) !important;
+        }
+
+        .light-mode .chat-input-wrap textarea {
+            color: var(--text-primary) !important;
+        }
+
+        .light-mode .chat-suggestion-btn {
+            background: rgba(0, 0, 0, 0.04) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-secondary) !important;
+        }
+
+        .light-mode .chat-close-btn {
+            background: rgba(0, 0, 0, 0.04) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-secondary) !important;
+        }
+
+        .light-mode .chat-input-bar {
+            border-color: var(--border-color) !important;
+        }
+
+        /* Light mode — Footer */
+        .light-mode footer {
+            background-color: #f1f5f9 !important;
+        }
+
+        .light-mode footer .border-gray-800 {
+            border-color: #e2e8f0 !important;
+        }
+
+        /* Light mode — Gradient text stays vivid */
+        .light-mode .gradient-text {
+            background: linear-gradient(135deg, #6A0DAD, #1E90FF) !important;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+        }
+
+        /* Light mode — Experience timeline */
+        .light-mode [class*="border-cosmic-purple"] {
+            border-color: rgba(106, 13, 173, 0.15) !important;
+        }
+
+        /* Light mode — Back to top button */
+        .light-mode #back-to-top {
+            background: rgba(106, 13, 173, 0.9) !important;
         }
 
         /* Custom Scrollbar */
@@ -1252,6 +1368,9 @@
                     <a href="#work"
                         class="nav-link relative text-gray-300 hover:text-white transition-colors font-medium">The
                         Constellations</a>
+                    <a href="#blog"
+                        class="nav-link relative text-gray-300 hover:text-white transition-colors font-medium">The
+                        Transmissions</a>
                     <a href="#contact"
                         class="nav-link relative text-gray-300 hover:text-white transition-colors font-medium">The
                         Uplink</a>
@@ -1284,6 +1403,8 @@
                         Toolkit</a>
                     <a href="#work" class="text-gray-300 hover:text-white transition-colors font-medium">The
                         Constellations</a>
+                    <a href="#blog" class="text-gray-300 hover:text-white transition-colors font-medium">The
+                        Transmissions</a>
                     <a href="#contact" class="text-gray-300 hover:text-white transition-colors font-medium">The
                         Uplink</a>
                 </div>
@@ -1416,8 +1537,8 @@
                             <p class="text-gray-500 text-sm mt-1">Certifications</p>
                         </div>
                         <div class="glass-card rounded-xl p-4 text-center">
-                            <span class="text-3xl font-bold gradient-text">0</span>
-                            <p class="text-gray-500 text-sm mt-1">Years Exp</p>
+                            <span class="text-3xl font-bold gradient-text">5+</span>
+                            <p class="text-gray-500 text-sm mt-1">Leadership Roles</p>
                         </div>
                     </div>
 
@@ -1660,9 +1781,6 @@
                     </a>
                 </div>
             </div>
-            </a>
-        </div>
-        </div>
         </div>
     </section>
 
@@ -2053,13 +2171,126 @@
         </div>
     </section>
 
+    <!-- Blog / Writeups Section - The Transmissions -->
+    <section id="blog" class="section-padding relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center mb-20">
+                <span
+                    class="inline-block px-4 py-1.5 rounded-full bg-cyber-lime/10 border border-cyber-lime/30 text-cyber-lime font-mono text-sm tracking-wider mb-4">05
+                    // THE TRANSMISSIONS</span>
+                <h2 class="text-4xl md:text-5xl font-space font-bold mt-4 gradient-text">Blog & Writeups</h2>
+                <p class="text-gray-500 mt-4 max-w-2xl mx-auto">Sharing knowledge from the frontlines of cybersecurity,
+                    development, and open source.</p>
+                <div class="w-20 h-1 bg-gradient-to-r from-cyber-lime to-nebula-blue mx-auto mt-6 rounded-full"></div>
+            </div>
+
+            <!-- Blog Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Blog Post 1 -->
+                <article
+                    class="glass-card rounded-2xl overflow-hidden transition-all duration-300 hover:border-cyber-lime/30 group">
+                    <div class="h-3 bg-gradient-to-r from-cyber-lime to-teal-500"></div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span
+                                class="px-2 py-1 rounded text-xs font-mono bg-cyber-lime/10 text-cyber-lime">Cybersecurity</span>
+                            <span class="text-gray-600 text-xs">Feb 2026</span>
+                        </div>
+                        <h3
+                            class="text-lg font-space font-semibold text-white mb-2 group-hover:text-cyber-lime transition-colors">
+                            OWASP Top 10: A Practical Walkthrough</h3>
+                        <p class="text-gray-400 text-sm mb-4 leading-relaxed">Breaking down the OWASP Top 10
+                            vulnerabilities with real-world examples, exploitation techniques, and remediation
+                            strategies I've learned during CTFs and lab exercises.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600 text-xs flex items-center gap-1">
+                                <i data-lucide="clock" class="w-3 h-3"></i> 8 min read
+                            </span>
+                            <span
+                                class="text-cyber-lime text-xs font-mono group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                                Read more <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                            </span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Blog Post 2 -->
+                <article
+                    class="glass-card rounded-2xl overflow-hidden transition-all duration-300 hover:border-cosmic-purple/30 group">
+                    <div class="h-3 bg-gradient-to-r from-cosmic-purple to-nebula-blue"></div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="px-2 py-1 rounded text-xs font-mono bg-cosmic-purple/10 text-cosmic-purple">Red
+                                Teaming</span>
+                            <span class="text-gray-600 text-xs">Jan 2026</span>
+                        </div>
+                        <h3
+                            class="text-lg font-space font-semibold text-white mb-2 group-hover:text-cosmic-purple transition-colors">
+                            My First CTF: Lessons from IIT Madras Shaastra 2026</h3>
+                        <p class="text-gray-400 text-sm mb-4 leading-relaxed">A detailed writeup of the challenges I
+                            faced during the Shaastra 2026 CTF at IIT Madras — from web exploitation to reverse
+                            engineering and privilege escalation.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600 text-xs flex items-center gap-1">
+                                <i data-lucide="clock" class="w-3 h-3"></i> 12 min read
+                            </span>
+                            <span
+                                class="text-cosmic-purple text-xs font-mono group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                                Read more <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                            </span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Blog Post 3 -->
+                <article
+                    class="glass-card rounded-2xl overflow-hidden transition-all duration-300 hover:border-nebula-blue/30 group">
+                    <div class="h-3 bg-gradient-to-r from-nebula-blue to-cyan-500"></div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="px-2 py-1 rounded text-xs font-mono bg-nebula-blue/10 text-nebula-blue">Open
+                                Source</span>
+                            <span class="text-gray-600 text-xs">Dec 2025</span>
+                        </div>
+                        <h3
+                            class="text-lg font-space font-semibold text-white mb-2 group-hover:text-nebula-blue transition-colors">
+                            How I Became a Campus Lead at OSC Global 2026</h3>
+                        <p class="text-gray-400 text-sm mb-4 leading-relaxed">My journey from first contribution to
+                            leading open-source initiatives at RRU — organizing workshops, mentoring developers, and
+                            building a community from scratch.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600 text-xs flex items-center gap-1">
+                                <i data-lucide="clock" class="w-3 h-3"></i> 6 min read
+                            </span>
+                            <span
+                                class="text-nebula-blue text-xs font-mono group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                                Read more <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                            </span>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+
+            <!-- Coming Soon Note -->
+            <div class="text-center mt-12">
+                <p class="text-gray-500 text-sm">
+                    <i data-lucide="pen-line" class="w-4 h-4 inline-block mr-1 align-text-bottom"></i>
+                    More writeups coming soon — stay tuned!
+                </p>
+            </div>
+        </div>
+    </section>
+
     <!-- Contact Section - The Uplink -->
     <section id="contact" class="section-padding relative">
         <div class="max-w-7xl mx-auto px-6">
             <!-- Section Header -->
             <div class="text-center mb-20">
                 <span
-                    class="inline-block px-4 py-1.5 rounded-full bg-nebula-blue/10 border border-nebula-blue/30 text-nebula-blue font-mono text-sm tracking-wider mb-4">05
+                    class="inline-block px-4 py-1.5 rounded-full bg-nebula-blue/10 border border-nebula-blue/30 text-nebula-blue font-mono text-sm tracking-wider mb-4">06
                     // THE UPLINK</span>
                 <h2 class="text-4xl md:text-5xl font-space font-bold mt-4 gradient-text">Get In Touch</h2>
                 <p class="text-gray-500 mt-4 max-w-2xl mx-auto">Ready to collaborate on your next mission? Let's connect
@@ -3731,7 +3962,7 @@ Just ask naturally — I understand many variations! 🤖`;
 
             // ============ ARE YOU REAL AI ============
             if (matchAny(q, ['real ai', 'chatgpt', 'gpt', 'grok', 'gemini', 'claude', 'llm', 'openai', 'trained'])) {
-                return `🤖 **Good question!**\n\nI'm **Shankar AI** — a custom rule-based assistant, not a live LLM like ChatGPT or Grok.\n\n**How I work:**\n• Pre-trained on Shankar's professional data\n• Pattern matching with fuzzy intent detection\n• 60+ topic handlers\n• Context-aware follow-up responses\n• XSS sanitized & rate limited\n\nI'm lightweight, fast, and privacy-friendly — no API calls, no data sent anywhere! Built by Shankar himself. 🛡️`;
+                return `🤖 **Good question!**\n\nI'm **Shankar AI** — a portfolio assistant powered by **Groq AI (LLaMA 3.3)** for live, intelligent responses!\n\n**How I work:**\n• Powered by Groq's blazing-fast LLM inference\n• Trained context: Shankar's professional data\n• Conversational memory for follow-ups\n• XSS sanitized & rate limited\n• API key secured server-side via Vercel proxy\n\nAsk me anything — I give real AI answers, not canned responses! 🚀`;
             }
 
             // ============ HOW MANY QUESTIONS ============
