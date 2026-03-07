@@ -14,7 +14,7 @@
 
     <!-- Security Headers -->
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://unpkg.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://formspree.io https://api.countapi.xyz https://visitor-badge.laobi.icu; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://formspree.io;">
+        content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://unpkg.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://formspree.io https://api.countapi.xyz https://visitor-badge.laobi.icu https://api.groq.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://formspree.io;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -2754,7 +2754,9 @@ END:VCARD`;
         console.log('%c🔒 This portfolio is security-hardened with CSP, input sanitization, and rate limiting.', 'color:#50fa7b;font-size:12px;');
 
         // ============ AI CHATBOT — PREMIUM ============
-        // Groq AI is proxied through /api/chat (API key stored server-side)
+        // Auto-detect: use direct Groq API locally, proxy when deployed
+        const IS_LOCAL = location.protocol === 'file:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+        const GROQ_API_KEY = ''; // Set via Vercel env var — never commit your key here
         const GROQ_ENABLED = true;
 
         const GROQ_SYSTEM_PROMPT = `You are Shankar AI, a smart and friendly portfolio assistant for Shankar Adhikary. Answer questions about Shankar using the data below. Keep replies concise (under 200 words), use markdown bold (**text**) for emphasis, and add relevant emojis. If asked something unrelated to Shankar, you may still answer helpfully but steer the conversation back.
@@ -2779,17 +2781,36 @@ DATA:
 `;
 
         async function getGroqResponse(userMessage) {
-            const response = await fetch('/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    messages: [
-                        { role: 'system', content: GROQ_SYSTEM_PROMPT },
-                        ...conversationContext.slice(-10),
-                        { role: 'user', content: userMessage }
-                    ]
-                })
-            });
+            const msgs = [
+                { role: 'system', content: GROQ_SYSTEM_PROMPT },
+                ...conversationContext.slice(-10),
+                { role: 'user', content: userMessage }
+            ];
+
+            let response;
+            if (IS_LOCAL) {
+                // Direct Groq API call for local testing
+                response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + GROQ_API_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'llama-3.3-70b-versatile',
+                        messages: msgs,
+                        max_tokens: 512,
+                        temperature: 0.7
+                    })
+                });
+            } else {
+                // Secure proxy for deployed version
+                response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messages: msgs })
+                });
+            }
             if (!response.ok) throw new Error('API error: ' + response.status);
             const data = await response.json();
             return data.choices[0].message.content;
