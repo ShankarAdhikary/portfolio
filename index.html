@@ -2279,7 +2279,7 @@
                     <i data-lucide="arrow-up" class="w-4 h-4"></i>
                 </button>
             </div>
-            <p class="chat-footer-note">Shankar AI · Responses are pre-trained, not live LLM</p>
+            <p class="chat-footer-note">Shankar AI · Powered by Groq</p>
         </div>
     </div>
 
@@ -2754,6 +2754,50 @@ END:VCARD`;
         console.log('%c🔒 This portfolio is security-hardened with CSP, input sanitization, and rate limiting.', 'color:#50fa7b;font-size:12px;');
 
         // ============ AI CHATBOT — PREMIUM ============
+        // Groq AI is proxied through /api/chat (API key stored server-side)
+        const GROQ_ENABLED = true;
+
+        const GROQ_SYSTEM_PROMPT = `You are Shankar AI, a smart and friendly portfolio assistant for Shankar Adhikary. Answer questions about Shankar using the data below. Keep replies concise (under 200 words), use markdown bold (**text**) for emphasis, and add relevant emojis. If asked something unrelated to Shankar, you may still answer helpfully but steer the conversation back.
+
+DATA:
+- Name: Shankar Adhikary, 19 years old, born 2006, Indian
+- Education: BTech Cybersecurity, 2nd Year (2025-2029), Rashtriya Raksha University (RRU), Gandhinagar, Gujarat. RRU is under Ministry of Home Affairs, Government of India.
+- Skills: Penetration Testing, Red Teaming, OSINT, Cryptography, Network Security, Ethical Hacking, Malware Analysis, Incident Response, Digital Forensics
+- Languages: Python, JavaScript, C, C++, Java, Bash, SQL, Rust
+- Frontend: React, Next.js, HTML5, CSS3, Tailwind CSS, Three.js
+- Backend: Node.js, Express.js, Django, Flask
+- AI/ML: TensorFlow, NLP, Computer Vision, LLM Integration
+- Tools: Burp Suite, Wireshark, Nmap, Metasploit, Kali Linux, Ghidra, Hashcat, SQLMap
+- Roles: Campus Lead at OSC Global 2026, Pre-Incubator at AIC RRU, VP of Chaturanga Chess Club, VP of EDGE Club
+- Projects: Open Source Connect Platform, RedTeam Toolkit, Threat Detector AI, SecureVault (Rust+WASM), OSINT Framework, Vulnerability Scanner, Phishing Detector, Network Monitor
+- Certifications: 25+ including MCP Fundamentals, Tech Mahindra Cybersecurity, NVIDIA Networking, NIELIT Python
+- Achievements: Smart India Hackathon, Shaastra 2026 IIT Madras, CTF Competitions, DevFest Gandhinagar
+- Contact: adhikaryshankar04@gmail.com | github.com/ShankarAdhikary | linkedin.com/in/adhikaryxshankar | x.com/SHANKARAD2006 | instagram.com/the0xshankar
+- Motto: राष्ट्रीय सुरक्षा सर्वोपरि (National Security is Supreme)
+- Interests: Cybersecurity Research, Chess, Photography, Astrophotography, Open Source, AI Ethics
+- Creative: Photography, Videography, Pixelverse Cinematography
+`;
+
+        async function getGroqResponse(userMessage) {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: [
+                        { role: 'system', content: GROQ_SYSTEM_PROMPT },
+                        ...conversationContext.slice(-10),
+                        { role: 'user', content: userMessage }
+                    ]
+                })
+            });
+            if (!response.ok) throw new Error('API error: ' + response.status);
+            const data = await response.json();
+            return data.choices[0].message.content;
+        }
+
+        // Conversation context for Groq (keeps last 10 messages)
+        let conversationContext = [];
+
         const chatFab = document.getElementById('chatbot-fab');
         const chatOverlay = document.getElementById('chat-overlay');
         const chatModal = document.getElementById('chat-modal');
@@ -3811,14 +3855,33 @@ Just ask naturally — I understand many variations! 🤖`;
             // Hide suggestions after first message
             chatSuggestions.style.display = 'none';
 
-            // Show typing indicator with realistic delay
+            // Show typing indicator and call Groq API
             showTypingIndicator();
-            const typingDelay = 600 + Math.random() * 800;
-            setTimeout(() => {
-                removeTypingIndicator();
-                const response = getAIResponse(message);
-                addMessage(response);
-            }, typingDelay);
+
+            if (GROQ_ENABLED) {
+                // Live AI mode via Groq
+                conversationContext.push({ role: 'user', content: message });
+                getGroqResponse(message).then(reply => {
+                    removeTypingIndicator();
+                    conversationContext.push({ role: 'assistant', content: reply });
+                    // Keep context window manageable
+                    if (conversationContext.length > 20) conversationContext = conversationContext.slice(-10);
+                    addMessage(reply);
+                }).catch(() => {
+                    removeTypingIndicator();
+                    // Fallback to local responses on API error
+                    const response = getAIResponse(message);
+                    addMessage(response);
+                });
+            } else {
+                // Offline fallback mode
+                const typingDelay = 600 + Math.random() * 800;
+                setTimeout(() => {
+                    removeTypingIndicator();
+                    const response = getAIResponse(message);
+                    addMessage(response);
+                }, typingDelay);
+            }
         }
 
         sendChat.addEventListener('click', sendMessage);
