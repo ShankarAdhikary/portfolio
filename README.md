@@ -1,12 +1,12 @@
-# Shankar Adhikary | Portfolio Website 🚀
+# Shankar Adhikary | Portfolio Website 
 
-This is the repository for my personal portfolio website, hosted on GitHub Pages. It serves as a central hub to showcase my technical skills, projects, certifications, and professional experience in Cybersecurity, Full-Stack Development, and AI/ML.
+This is the repository for my personal portfolio website.  It serves as a central hub to showcase my technical skills, projects, certifications, and professional experience in Cybersecurity, Full-Stack Development, and AI/ML.
 
-🔗 **[View Live Demo](https://shankaradhikary.github.io/portfolio/)**
+**[View Live Demo](https://portfolio-main-ruddy-omega.vercel.app/)**
 
 ---
 
-## 📱 Preview
+## Preview
 
 ![Theme](https://img.shields.io/badge/Theme-Grok%20Galaxy-6A0DAD)
 ![Status](https://img.shields.io/badge/Status-Active-39FF14)
@@ -14,7 +14,7 @@ This is the repository for my personal portfolio website, hosted on GitHub Pages
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 | Category | Technologies |
 |----------|-------------|
@@ -28,7 +28,7 @@ This is the repository for my personal portfolio website, hosted on GitHub Pages
 
 ---
 
-## ✨ Features
+## Features
 
 - **Fully Responsive** — Optimized for all screen sizes from mobile to ultra-wide monitors.
 - **Modern UI/UX** — Glassmorphism design with smooth scroll animations and cosmic theme.
@@ -43,7 +43,7 @@ This is the repository for my personal portfolio website, hosted on GitHub Pages
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 To get a local copy up and running, follow these steps:
 
@@ -80,7 +80,7 @@ To get a local copy up and running, follow these steps:
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 portfolio/
@@ -100,7 +100,7 @@ portfolio/
 
 ---
 
-## 📑 Sections
+## Sections
 
 | # | Section | Description |
 |---|---------|-------------|
@@ -114,7 +114,7 @@ portfolio/
 
 ---
 
-## 🤝 Contact
+## Contact
 
 | Platform | Link |
 |----------|------|
@@ -126,7 +126,7 @@ portfolio/
 
 ---
 
-## 📄 License
+## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
