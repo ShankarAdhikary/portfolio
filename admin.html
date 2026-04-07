@@ -65,8 +65,8 @@ label { font-size: .75rem; color: #9ca3af; font-weight: 500; display: block; mar
         <!-- First-time setup -->
         <div id="setup-section" style="display:none">
             <p class="text-sm text-gray-400 mb-4 text-center">Welcome! Set your admin password to get started.</p>
-            <div class="field-group"><label>New Password</label><input type="password" id="setup-pass" placeholder="Create a strong password" /></div>
-            <div class="field-group"><label>Confirm Password</label><input type="password" id="setup-confirm" placeholder="Repeat password" /></div>
+            <div class="field-group"><label>New Password (min 8 chars)</label><input type="password" id="setup-pass" placeholder="Create a strong password" minlength="8" /></div>
+            <div class="field-group"><label>Confirm Password</label><input type="password" id="setup-confirm" placeholder="Repeat password" minlength="8" /></div>
             <button class="btn btn-primary w-full justify-center" onclick="setupPassword()">Set Password &amp; Enter</button>
         </div>
         <!-- Login -->
@@ -329,7 +329,7 @@ async function setupPassword() {
     const p2 = document.getElementById('setup-confirm').value;
     if (!p1) return showToast('Please enter a password.', 'error');
     if (p1 !== p2) return showToast('Passwords do not match.', 'error');
-    if (p1.length < 6) return showToast('Password must be at least 6 characters.', 'error');
+    if (p1.length < 8) return showToast('Password must be at least 8 characters.', 'error');
     const hash = await sha256(p1);
     localStorage.setItem(PASS_KEY, hash);
     sessionStorage.setItem(SESSION_KEY, '1');
@@ -354,7 +354,7 @@ async function changePassword() {
     const cf = document.getElementById('confirm-pass').value;
     if (!cur || !nw || !cf) return showToast('Fill in all fields.', 'error');
     if (nw !== cf) return showToast('New passwords do not match.', 'error');
-    if (nw.length < 6) return showToast('Password must be at least 6 characters.', 'error');
+    if (nw.length < 8) return showToast('Password must be at least 8 characters.', 'error');
     const curHash = await sha256(cur);
     if (curHash !== localStorage.getItem(PASS_KEY)) return showToast('Current password is incorrect.', 'error');
     const newHash = await sha256(nw);
