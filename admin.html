@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Admin Panel</title>
+<meta name="robots" content="noindex, nofollow">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #050505; color: #e5e7eb; min-height: 100vh; }
+.glass { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(12px); }
+.tab-btn { transition: all .2s; border-bottom: 2px solid transparent; padding: .625rem 1rem; font-size: .875rem; color: #6b7280; cursor: pointer; white-space: nowrap; background: transparent; border-top: none; border-left: none; border-right: none; }
+.tab-btn:hover { color: #d1d5db; }
+.tab-btn.active { color: #6A0DAD; border-color: #6A0DAD; }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+input, textarea, select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: #e5e7eb; border-radius: .5rem; padding: .5rem .75rem; width: 100%; font-size: .875rem; transition: border-color .2s; font-family: inherit; }
+input:focus, textarea:focus, select:focus { outline: none; border-color: #6A0DAD; }
+label { font-size: .75rem; color: #9ca3af; font-weight: 500; display: block; margin-bottom: .25rem; }
+.field-group { margin-bottom: 1rem; }
+.btn { padding: .5rem 1.25rem; border-radius: .5rem; font-weight: 600; font-size: .875rem; cursor: pointer; transition: opacity .2s; border: none; display: inline-flex; align-items: center; gap: .375rem; }
+.btn-primary { background: linear-gradient(135deg,#6A0DAD,#1E90FF); color:#fff; }
+.btn-primary:hover { opacity: .85; }
+.btn-danger { background: rgba(239,68,68,.15); color:#ef4444; border:1px solid rgba(239,68,68,.3); }
+.btn-danger:hover { background: rgba(239,68,68,.25); }
+.btn-success { background: rgba(57,255,20,.12); color:#39FF14; border:1px solid rgba(57,255,20,.25); }
+.btn-success:hover { background: rgba(57,255,20,.2); }
+.btn-ghost { background: rgba(255,255,255,.05); color:#d1d5db; border:1px solid rgba(255,255,255,.1); }
+.btn-ghost:hover { background: rgba(255,255,255,.09); }
+.card-item { background: rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:.75rem; padding:1rem; margin-bottom:.75rem; }
+.card-item:hover { border-color: rgba(106,13,173,.35); }
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); backdrop-filter:blur(4px); z-index:50; display:flex; align-items:center; justify-content:center; padding:1rem; }
+.modal-box { background:#0a0a0a; border:1px solid rgba(255,255,255,.12); border-radius:1rem; padding:1.5rem; width:100%; max-width:640px; max-height:90vh; overflow-y:auto; }
+.toast { position:fixed; bottom:1.5rem; right:1.5rem; z-index:100; background:#0d0d0d; border:1px solid rgba(106,13,173,.5); border-radius:.75rem; padding:.75rem 1.25rem; font-size:.875rem; transform:translateY(100px); opacity:0; transition: all .3s; pointer-events:none; }
+.toast.show { transform:translateY(0); opacity:1; }
+.toast.success { border-color: rgba(57,255,20,.5); color: #39FF14; }
+.toast.error { border-color: rgba(239,68,68,.5); color: #ef4444; }
+::-webkit-scrollbar { width:5px; height:5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(106,13,173,.4); border-radius:9999px; }
+.gradient-text { background: linear-gradient(135deg,#6A0DAD,#1E90FF,#39FF14); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+#login-screen { position:fixed; inset:0; z-index:200; background: radial-gradient(ellipse at 50% 50%,#0d0015 0%,#000 100%); display:flex; align-items:center; justify-content:center; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media(max-width:640px) { .form-grid { grid-template-columns: 1fr; } }
+.w-full { width: 100%; }
+.justify-center { justify-content: center; }
+.space-y { margin-top: 1.25rem; }
+</style>
+</head>
+<body>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<!-- Login Screen -->
+<div id="login-screen">
+    <div class="glass rounded-2xl p-8 w-full max-w-sm" style="border-color:rgba(106,13,173,.3)">
+        <div class="text-center mb-6">
+            <span class="text-4xl font-mono font-bold gradient-text">SA</span>
+            <p class="text-gray-500 text-xs mt-1 tracking-widest uppercase font-mono">Admin Panel</p>
+        </div>
+        <!-- First-time setup -->
+        <div id="setup-section" style="display:none">
+            <p class="text-sm text-gray-400 mb-4 text-center">Welcome! Set your admin password to get started.</p>
+            <div class="field-group"><label>New Password</label><input type="password" id="setup-pass" placeholder="Create a strong password" /></div>
+            <div class="field-group"><label>Confirm Password</label><input type="password" id="setup-confirm" placeholder="Repeat password" /></div>
+            <button class="btn btn-primary w-full justify-center" onclick="setupPassword()">Set Password &amp; Enter</button>
+        </div>
+        <!-- Login -->
+        <div id="login-section">
+            <div class="field-group"><label>Password</label><input type="password" id="login-pass" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')login()" /></div>
+            <p id="login-err" class="text-red-400 text-xs mb-3" style="display:none">Incorrect password. Try again.</p>
+            <button class="btn btn-primary w-full justify-center" onclick="login()">
+                <i data-lucide="log-in" class="w-4 h-4"></i> Login
+            </button>
+            <p class="text-gray-600 text-xs text-center mt-4">Forgot password?
+                <a href="#" onclick="forgotPassword()" style="color:#6A0DAD">Reset (clears password only)</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Admin App -->
+<div id="admin-app" style="display:none">
+    <!-- Header -->
+    <header class="sticky top-0 z-40 glass" style="border-bottom:1px solid rgba(255,255,255,0.07); padding:.75rem 1.5rem; display:flex; align-items:center; justify-content:space-between">
+        <div style="display:flex; align-items:center; gap:.75rem">
+            <span class="text-xl font-mono font-bold gradient-text">SA</span>
+            <span style="color:#374151; font-size:.75rem">|</span>
+            <span style="color:#9ca3af; font-size:.875rem">Admin Panel</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:.5rem; flex-wrap:wrap">
+            <a href="index.html" target="_blank" class="btn btn-ghost" style="font-size:.75rem; padding:.375rem .75rem">
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                <span>View Portfolio</span>
+            </a>
+            <button class="btn btn-ghost" style="font-size:.75rem; padding:.375rem .75rem" onclick="exportData()">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span>Export</span>
+            </button>
+            <button class="btn btn-ghost" style="font-size:.75rem; padding:.375rem .75rem" onclick="document.getElementById('import-input').click()">
+                <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                <span>Import</span>
+            </button>
+            <input type="file" id="import-input" accept=".json" style="display:none" onchange="importData(event)" />
+            <button class="btn btn-danger" style="font-size:.75rem; padding:.375rem .75rem" onclick="logout()">
+                <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Tab Bar -->
+    <nav style="border-bottom:1px solid rgba(255,255,255,0.07); padding:0 1.5rem; display:flex; overflow-x:auto; gap:0">
+        <button class="tab-btn active" data-tab="about">About</button>
+        <button class="tab-btn" data-tab="experience">Experience</button>
+        <button class="tab-btn" data-tab="projects">Projects</button>
+        <button class="tab-btn" data-tab="certifications">Certs</button>
+        <button class="tab-btn" data-tab="blog">Blog</button>
+        <button class="tab-btn" data-tab="skills">Skills</button>
+        <button class="tab-btn" data-tab="contact">Contact</button>
+        <button class="tab-btn" data-tab="settings">Settings</button>
+    </nav>
+
+    <!-- Main Content -->
+    <main style="max-width:900px; margin:0 auto; padding:2rem 1.5rem">
+
+        <!-- ABOUT TAB -->
+        <div id="tab-about" class="tab-pane active">
+            <h2 style="color:#fff; font-size:1.125rem; font-weight:600; margin-bottom:1.5rem">About Section</h2>
+            <div class="glass rounded-xl" style="padding:1.25rem">
+                <div class="field-group"><label>Section Title (HTML allowed for color spans)</label><input type="text" id="about-title" /></div>
+                <div class="field-group"><label>Bio Paragraph 1</label><textarea id="about-bio1" rows="4"></textarea></div>
+                <div class="field-group"><label>Bio Paragraph 2</label><textarea id="about-bio2" rows="4"></textarea></div>
+                <div class="form-grid">
+                    <div class="field-group"><label>Projects Stat (e.g. 10+)</label><input type="text" id="about-statProjects" /></div>
+                    <div class="field-group"><label>Certifications Stat</label><input type="text" id="about-statCerts" /></div>
+                    <div class="field-group"><label>Leadership Roles Stat</label><input type="text" id="about-statRoles" /></div>
+                </div>
+                <button class="btn btn-primary" onclick="saveAbout()">
+                    <i data-lucide="save" class="w-4 h-4"></i> Save About
+                </button>
+            </div>
+        </div>
+
+        <!-- EXPERIENCE TAB -->
+        <div id="tab-experience" class="tab-pane">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem">
+                <h2 style="color:#fff; font-size:1.125rem; font-weight:600">Experience &amp; Roles</h2>
+                <button class="btn btn-primary" style="font-size:.8125rem" onclick="openModal('experience')">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Add Entry
+                </button>
+            </div>
+            <div id="experience-list"></div>
+        </div>
+
+        <!-- PROJECTS TAB -->
+        <div id="tab-projects" class="tab-pane">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem">
+                <h2 style="color:#fff; font-size:1.125rem; font-weight:600">Projects</h2>
+                <button class="btn btn-primary" style="font-size:.8125rem" onclick="openModal('projects')">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Add Project
+                </button>
+            </div>
+            <div id="projects-list"></div>
+        </div>
+
+        <!-- CERTIFICATIONS TAB -->
+        <div id="tab-certifications" class="tab-pane">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem">
+                <h2 style="color:#fff; font-size:1.125rem; font-weight:600">Certifications &amp; Achievements</h2>
+                <button class="btn btn-primary" style="font-size:.8125rem" onclick="openModal('certifications')">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Add Cert
+                </button>
+            </div>
+            <div id="certifications-list"></div>
+        </div>
+
+        <!-- BLOG TAB -->
+        <div id="tab-blog" class="tab-pane">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem">
+                <h2 style="color:#fff; font-size:1.125rem; font-weight:600">Blog &amp; Writeups</h2>
+                <button class="btn btn-primary" style="font-size:.8125rem" onclick="openModal('blog')">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Add Post
+                </button>
+            </div>
+            <div id="blog-list"></div>
+        </div>
+
+        <!-- SKILLS TAB -->
+        <div id="tab-skills" class="tab-pane">
+            <h2 style="color:#fff; font-size:1.125rem; font-weight:600; margin-bottom:1.5rem">Skills (comma-separated)</h2>
+            <div class="glass rounded-xl" style="padding:1.25rem">
+                <div class="field-group"><label>Cybersecurity Skills</label><textarea id="skills-cybersecurity" rows="2" placeholder="Penetration Testing, Red Teaming, OSINT..."></textarea></div>
+                <div class="field-group"><label>Programming Languages</label><textarea id="skills-programming" rows="2" placeholder="Python, JavaScript, C, Rust..."></textarea></div>
+                <div class="field-group"><label>Frontend</label><textarea id="skills-frontend" rows="2" placeholder="React, Next.js, HTML5, Tailwind CSS..."></textarea></div>
+                <div class="field-group"><label>Backend</label><textarea id="skills-backend" rows="2" placeholder="Node.js, Express.js, Django..."></textarea></div>
+                <div class="field-group"><label>Databases</label><input type="text" id="skills-databases" placeholder="MongoDB, PostgreSQL, MySQL..." /></div>
+                <div class="field-group"><label>DevOps / Cloud</label><textarea id="skills-devops" rows="2" placeholder="Docker, Git, GitHub Actions, AWS..."></textarea></div>
+                <div class="field-group"><label>Security Tools</label><textarea id="skills-tools" rows="2" placeholder="Burp Suite, Wireshark, Nmap, Metasploit..."></textarea></div>
+                <div class="field-group"><label>AI / ML</label><textarea id="skills-ai_ml" rows="2" placeholder="TensorFlow, NLP, Computer Vision..."></textarea></div>
+                <div class="field-group"><label>Creative Skills</label><input type="text" id="skills-creative" placeholder="Photography, Videography, Lightroom..." /></div>
+                <button class="btn btn-primary" onclick="saveSkills()">
+                    <i data-lucide="save" class="w-4 h-4"></i> Save Skills
+                </button>
+            </div>
+        </div>
+
+        <!-- CONTACT TAB -->
+        <div id="tab-contact" class="tab-pane">
+            <h2 style="color:#fff; font-size:1.125rem; font-weight:600; margin-bottom:1.5rem">Contact Information</h2>
+            <div class="glass rounded-xl" style="padding:1.25rem">
+                <div class="form-grid">
+                    <div class="field-group"><label>Email</label><input type="email" id="contact-email" placeholder="your@email.com" /></div>
+                    <div class="field-group"><label>GitHub URL</label><input type="url" id="contact-github" placeholder="https://github.com/..." /></div>
+                    <div class="field-group"><label>LinkedIn URL</label><input type="url" id="contact-linkedin" placeholder="https://linkedin.com/in/..." /></div>
+                    <div class="field-group"><label>Twitter / X URL</label><input type="url" id="contact-twitter" placeholder="https://x.com/..." /></div>
+                    <div class="field-group"><label>Instagram URL</label><input type="url" id="contact-instagram" placeholder="https://instagram.com/..." /></div>
+                    <div class="field-group"><label>Portfolio URL</label><input type="url" id="contact-portfolio" placeholder="https://..." /></div>
+                </div>
+                <button class="btn btn-primary" style="margin-top:.5rem" onclick="saveContact()">
+                    <i data-lucide="save" class="w-4 h-4"></i> Save Contact
+                </button>
+            </div>
+        </div>
+
+        <!-- SETTINGS TAB -->
+        <div id="tab-settings" class="tab-pane">
+            <h2 style="color:#fff; font-size:1.125rem; font-weight:600; margin-bottom:1.5rem">Settings</h2>
+            <div style="display:flex; flex-direction:column; gap:1.25rem">
+                <!-- Change Password -->
+                <div class="glass rounded-xl" style="padding:1.25rem">
+                    <h3 style="color:#fff; font-size:.875rem; font-weight:600; margin-bottom:1rem">Change Password</h3>
+                    <div class="form-grid">
+                        <div class="field-group"><label>Current Password</label><input type="password" id="cur-pass" /></div>
+                        <div class="field-group"><label>New Password</label><input type="password" id="new-pass" /></div>
+                        <div class="field-group"><label>Confirm New Password</label><input type="password" id="confirm-pass" /></div>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top:.5rem" onclick="changePassword()">
+                        <i data-lucide="key" class="w-4 h-4"></i> Change Password
+                    </button>
+                </div>
+                <!-- Data Management -->
+                <div class="glass rounded-xl" style="padding:1.25rem">
+                    <h3 style="color:#fff; font-size:.875rem; font-weight:600; margin-bottom:1rem">Data Management</h3>
+                    <div style="display:flex; flex-wrap:wrap; gap:.75rem">
+                        <button class="btn btn-success" onclick="exportData()">
+                            <i data-lucide="download" class="w-4 h-4"></i> Export JSON Backup
+                        </button>
+                        <button class="btn btn-ghost" onclick="document.getElementById('import-input2').click()">
+                            <i data-lucide="upload" class="w-4 h-4"></i> Import JSON
+                        </button>
+                        <input type="file" id="import-input2" accept=".json" style="display:none" onchange="importData(event)" />
+                        <button class="btn btn-danger" onclick="resetToDefaults()">
+                            <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset to Defaults
+                        </button>
+                    </div>
+                    <p style="color:#4b5563; font-size:.75rem; margin-top:.75rem">Export creates a JSON backup. Import restores from a backup file. Reset clears all custom data and reloads defaults.</p>
+                </div>
+                <!-- Info -->
+                <div class="glass rounded-xl" style="padding:1.25rem">
+                    <h3 style="color:#fff; font-size:.875rem; font-weight:600; margin-bottom:.75rem">How it works</h3>
+                    <ul style="color:#6b7280; font-size:.75rem; line-height:1.8">
+                        <li>&#8226; Changes are saved to your browser's <strong style="color:#9ca3af">localStorage</strong></li>
+                        <li>&#8226; The portfolio reads from localStorage automatically &mdash; changes appear instantly when you refresh</li>
+                        <li>&#8226; Use <strong style="color:#9ca3af">Export</strong> to download a backup JSON before clearing browser data</li>
+                        <li>&#8226; Use <strong style="color:#9ca3af">Import</strong> on another device to sync your data</li>
+                        <li>&#8226; The admin link is in the portfolio footer (small "Admin" link)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem">
+            <h3 id="modal-title" style="color:#fff; font-size:1rem; font-weight:600"></h3>
+            <button onclick="closeModal()" style="color:#6b7280; background:none; border:none; cursor:pointer">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        <div id="modal-body"></div>
+        <div style="display:flex; justify-content:flex-end; gap:.75rem; margin-top:1.25rem">
+            <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveModal()">
+                <i data-lucide="save" class="w-4 h-4"></i> Save
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============ CRYPTO UTILS ============
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// ============ AUTH ============
+const SESSION_KEY = 'sa_admin_session';
+const PASS_KEY = 'sa_admin_hash';
+
+async function login() {
+    const pass = document.getElementById('login-pass').value;
+    if (!pass) return;
+    const hash = await sha256(pass);
+    const stored = localStorage.getItem(PASS_KEY);
+    if (hash === stored) {
+        sessionStorage.setItem(SESSION_KEY, '1');
+        showApp();
+    } else {
+        const err = document.getElementById('login-err');
+        err.style.display = 'block';
+        document.getElementById('login-pass').value = '';
+        setTimeout(() => { err.style.display = 'none'; }, 3000);
+    }
+}
+
+async function setupPassword() {
+    const p1 = document.getElementById('setup-pass').value;
+    const p2 = document.getElementById('setup-confirm').value;
+    if (!p1) return showToast('Please enter a password.', 'error');
+    if (p1 !== p2) return showToast('Passwords do not match.', 'error');
+    if (p1.length < 6) return showToast('Password must be at least 6 characters.', 'error');
+    const hash = await sha256(p1);
+    localStorage.setItem(PASS_KEY, hash);
+    sessionStorage.setItem(SESSION_KEY, '1');
+    showApp();
+}
+
+function logout() {
+    sessionStorage.removeItem(SESSION_KEY);
+    location.reload();
+}
+
+function forgotPassword() {
+    if (!confirm('This will remove your stored password. You will need to set a new one. Your portfolio data will be preserved.\n\nContinue?')) return;
+    localStorage.removeItem(PASS_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
+    location.reload();
+}
+
+async function changePassword() {
+    const cur = document.getElementById('cur-pass').value;
+    const nw = document.getElementById('new-pass').value;
+    const cf = document.getElementById('confirm-pass').value;
+    if (!cur || !nw || !cf) return showToast('Fill in all fields.', 'error');
+    if (nw !== cf) return showToast('New passwords do not match.', 'error');
+    if (nw.length < 6) return showToast('Password must be at least 6 characters.', 'error');
+    const curHash = await sha256(cur);
+    if (curHash !== localStorage.getItem(PASS_KEY)) return showToast('Current password is incorrect.', 'error');
+    const newHash = await sha256(nw);
+    localStorage.setItem(PASS_KEY, newHash);
+    document.getElementById('cur-pass').value = '';
+    document.getElementById('new-pass').value = '';
+    document.getElementById('confirm-pass').value = '';
+    showToast('Password changed successfully!', 'success');
+}
+
+// ============ SHOW APP ============
+function showApp() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-app').style.display = 'block';
+    lucide.createIcons();
+    loadAllData();
+    initTabs();
+}
+
+function checkSession() {
+    const stored = localStorage.getItem(PASS_KEY);
+    if (!stored) {
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('setup-section').style.display = 'block';
+    } else if (sessionStorage.getItem(SESSION_KEY) === '1') {
+        showApp();
+        return;
+    }
+    lucide.createIcons();
+}
+
+// ============ DATA DEFAULTS ============
+const DEFAULT_DATA = {
+    about: {
+        title: 'BTech in Cybersecurity <span class="text-cosmic-purple">@ RRU</span>',
+        bio1: "I'm Shankar Adhikary, a passionate cybersecurity enthusiast currently pursuing my BTech in Cybersecurity (2025-2029) at Rashtriya Raksha University. My journey spans across Red Team operations, Full-stack development, and cutting-edge AI/ML research.",
+        bio2: "As a Campus Lead at Open Source Connect Global 2026, I actively contribute to the open-source ecosystem while fostering innovation among fellow developers. My work bridges the gap between security research and practical implementation.",
+        statProjects: '10+', statCerts: '25+', statRoles: '5+'
+    },
+    experience: [
+        { title: 'Campus Lead', org: 'Open Source Connect Global 2026', period: '2025 - Present', desc: 'Leading open-source initiatives at RRU, organizing workshops, hackathons, and mentoring aspiring developers.', tags: 'Leadership,Open Source,Community' },
+        { title: 'Contributor', org: 'Open Source Connect', period: '2025 - Present', desc: 'Active contributor to various open-source security tools and frameworks.', tags: 'Security,Development' },
+        { title: 'Pre-Incubator', org: 'AIC RRU (Atal Incubation Centre)', period: '2025 - Present', desc: 'Working on innovative startup ideas at AIC RRU.', tags: 'Startup,Innovation,Entrepreneurship' },
+        { title: 'Vice President', org: 'Chaturanga - Chess Club of RRU', period: '2025 - Present', desc: 'Leading the chess community at RRU, organizing tournaments.', tags: 'Leadership,Strategy,Events' },
+        { title: 'Vice-President', org: 'EDGE Club - RRU', period: '2025 - Present', desc: 'Heading Public Relations for EDGE Club.', tags: 'PR,Networking,Communication' }
+    ],
+    certifications: [
+        { name: 'Fundamentals of MCP', issuer: 'Model Context Protocol', fileUrl: 'assets/certificates/MCP unit 1.webp', icon: 'award', color: 'cosmic-purple' },
+        { name: 'OSCG Campus Lead', issuer: 'Open Source Connect Global', fileUrl: 'assets/certificates/Documents/OSCG/OSCG%20Campus%20Lead%202026%20Badge.jpg', icon: 'users', color: 'nebula-blue' },
+        { name: 'OSC Contributor', issuer: 'Open Source Connect 2026', fileUrl: 'assets/certificates/Documents/OSCG/OSCG%20Contributor%20NexFellow%20Banner.png', icon: 'code-2', color: 'cyber-lime' },
+        { name: 'Cybersecurity', issuer: 'Tech Mahindra', fileUrl: 'assets/certificates/Cybersecurity%20bt%20tech%20Mahindra.pdf', icon: 'shield-check', color: 'red-500' },
+        { name: 'Networking', issuer: 'NVIDIA', fileUrl: 'assets/certificates/Networking/Nvidia Networking.jpeg', icon: 'network', color: 'green-500' },
+        { name: 'Network Fundamentals', issuer: 'Cybrary', fileUrl: 'assets/certificates/Networking/cybrary-cert-network-fundamentals-v2.pdf', icon: 'wifi', color: 'teal-500' },
+        { name: 'OSINT Basics', issuer: 'Cybrary', fileUrl: 'assets/certificates/OSINT/cybrary-cert-osint-basics.pdf', icon: 'search', color: 'yellow-500' },
+        { name: 'Python Programming', issuer: 'NIELIT', fileUrl: 'assets/certificates/Programming/Pyhton_NIELIT.pdf', icon: 'file-code', color: 'blue-500' },
+        { name: 'C Programming', issuer: 'Certification', fileUrl: 'assets/certificates/Programming/C language.pdf', icon: 'terminal', color: 'indigo-500' },
+        { name: 'CTF Participation', issuer: 'Capture The Flag', fileUrl: 'assets/certificates/Participation%20Certificates/CTF_IIT_MADRAS.pdf', icon: 'flag', color: 'orange-500' },
+        { name: 'Smart India Hackathon', issuer: 'SIH Participation', fileUrl: 'assets/certificates/Participation%20Certificates/SIH%202025.pdf', icon: 'lightbulb', color: 'pink-500' },
+        { name: 'AI Fundamentals', issuer: 'AI Certification', fileUrl: 'assets/certificates/Participation%20Certificates/AI_Vibe_coding.pdf', icon: 'brain', color: 'purple-500' }
+    ],
+    projects: [
+        { name: 'Open Source Connect', category: 'Featured', desc: 'Platform connecting developers with open-source projects worldwide.', tech: 'React,Node.js,MongoDB', githubUrl: '#', liveUrl: '#', gradient: 'from-cosmic-purple/30 to-nebula-blue/30', icon: 'globe' },
+        { name: 'RedTeam Toolkit', category: 'Security', desc: 'Comprehensive suite of penetration testing tools for security assessments.', tech: 'Python,Bash,Kali', githubUrl: '#', liveUrl: '', gradient: 'from-red-500/30 to-orange-500/30', icon: 'bug' },
+        { name: 'Threat Detector AI', category: 'AI/ML', desc: 'Machine learning model for real-time threat detection.', tech: 'TensorFlow,Python', githubUrl: '#', liveUrl: '#', gradient: 'from-cyber-lime/30 to-teal-500/30', icon: 'brain' },
+        { name: 'SecureVault', category: 'Cryptography', desc: 'End-to-end encrypted password manager with zero-knowledge architecture.', tech: 'Rust,WebAssembly', githubUrl: '#', liveUrl: '', gradient: 'from-nebula-blue/30 to-indigo-500/30', icon: 'lock' },
+        { name: 'Pixelverse Gallery', category: 'Creative', desc: 'Photography portfolio showcasing cosmic landscapes.', tech: 'Photography,Lightroom', githubUrl: '', liveUrl: '#', gradient: 'from-pink-500/30 to-purple-500/30', icon: 'camera' },
+        { name: 'CloudGuard', category: 'DevOps', desc: 'Automated cloud security posture management tool.', tech: 'AWS,Terraform', githubUrl: '#', liveUrl: '', gradient: 'from-yellow-500/30 to-amber-500/30', icon: 'server' }
+    ],
+    blog: [
+        { title: 'OWASP Top 10: A Practical Walkthrough', category: 'Cybersecurity', date: 'Feb 2026', readTime: '8', desc: 'Breaking down the OWASP Top 10 vulnerabilities with real-world examples.', url: '#', accentColor: 'cyber-lime', gradient: 'from-cyber-lime to-teal-500' },
+        { title: 'My First CTF: Lessons from IIT Madras Shaastra 2026', category: 'Red Teaming', date: 'Jan 2026', readTime: '12', desc: 'A detailed writeup of the Shaastra 2026 CTF at IIT Madras.', url: '#', accentColor: 'cosmic-purple', gradient: 'from-cosmic-purple to-nebula-blue' },
+        { title: 'How I Became a Campus Lead at OSC Global 2026', category: 'Open Source', date: 'Dec 2025', readTime: '6', desc: 'My journey from first contribution to leading open-source initiatives at RRU.', url: '#', accentColor: 'nebula-blue', gradient: 'from-nebula-blue to-cyan-500' }
+    ],
+    skills: {
+        cybersecurity: 'Penetration Testing, Red Teaming, OSINT, Cryptography, Network Security, Vulnerability Assessment, Ethical Hacking, Malware Analysis, Incident Response, Threat Hunting, Digital Forensics, Security Auditing',
+        programming: 'Python, JavaScript, C, C++, Java, Bash, SQL, Rust',
+        frontend: 'React, Next.js, HTML5, CSS3, Tailwind CSS, Three.js',
+        backend: 'Node.js, Express.js, Django, Flask, REST APIs',
+        databases: 'MongoDB, PostgreSQL, MySQL, Firebase',
+        devops: 'Docker, Git, GitHub Actions, CI/CD, Linux, AWS, Vercel',
+        tools: 'Burp Suite, Wireshark, Nmap, Metasploit, Kali Linux, Docker, Git, VS Code, Ghidra, John the Ripper, Hashcat, SQLMap, Nikto',
+        ai_ml: 'Machine Learning, Deep Learning, TensorFlow, NLP, Computer Vision, LLM Integration, Anomaly Detection',
+        creative: 'Photography, Videography, Video Editing, Adobe Lightroom, Color Grading, Astrophotography'
+    },
+    contact: {
+        email: 'adhikaryshankar04@gmail.com',
+        github: 'https://github.com/ShankarAdhikary',
+        linkedin: 'https://linkedin.com/in/adhikaryxshankar',
+        twitter: 'https://x.com/SHANKARAD2006',
+        instagram: 'https://instagram.com/the0xshankar',
+        portfolio: 'https://shankaradhikary.github.io/portfolio'
+    }
+};
+
+// ============ DATA UTILS ============
+function getData() {
+    try { const s = localStorage.getItem('portfolioData'); if (s) return JSON.parse(s); } catch(e) {}
+    return JSON.parse(JSON.stringify(DEFAULT_DATA));
+}
+function saveData(data) { localStorage.setItem('portfolioData', JSON.stringify(data)); }
+function escAttr(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ============ TABS ============
+function initTabs() {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        });
+    });
+}
+
+// ============ LOAD DATA INTO FORMS ============
+function loadAllData() {
+    const data = getData();
+    // About
+    const ab = Object.assign({}, DEFAULT_DATA.about, data.about || {});
+    document.getElementById('about-title').value = ab.title;
+    document.getElementById('about-bio1').value = ab.bio1;
+    document.getElementById('about-bio2').value = ab.bio2;
+    document.getElementById('about-statProjects').value = ab.statProjects;
+    document.getElementById('about-statCerts').value = ab.statCerts;
+    document.getElementById('about-statRoles').value = ab.statRoles;
+    // Skills
+    const sk = Object.assign({}, DEFAULT_DATA.skills, data.skills || {});
+    ['cybersecurity','programming','frontend','backend','databases','devops','tools','ai_ml','creative'].forEach(k => {
+        const el = document.getElementById('skills-' + k);
+        if (el) el.value = sk[k] || '';
+    });
+    // Contact
+    const ct = Object.assign({}, DEFAULT_DATA.contact, data.contact || {});
+    ['email','github','linkedin','twitter','instagram','portfolio'].forEach(k => {
+        const el = document.getElementById('contact-' + k);
+        if (el) el.value = ct[k] || '';
+    });
+    // Lists
+    renderList('experience', data.experience || DEFAULT_DATA.experience);
+    renderList('projects', data.projects || DEFAULT_DATA.projects);
+    renderList('certifications', data.certifications || DEFAULT_DATA.certifications);
+    renderList('blog', data.blog || DEFAULT_DATA.blog);
+}
+
+// ============ SAVE FUNCTIONS ============
+function saveAbout() {
+    const data = getData();
+    data.about = {
+        title: document.getElementById('about-title').value,
+        bio1: document.getElementById('about-bio1').value,
+        bio2: document.getElementById('about-bio2').value,
+        statProjects: document.getElementById('about-statProjects').value,
+        statCerts: document.getElementById('about-statCerts').value,
+        statRoles: document.getElementById('about-statRoles').value,
+    };
+    saveData(data);
+    showToast('About section saved!', 'success');
+}
+
+function saveSkills() {
+    const data = getData();
+    data.skills = {};
+    ['cybersecurity','programming','frontend','backend','databases','devops','tools','ai_ml','creative'].forEach(k => {
+        const el = document.getElementById('skills-' + k);
+        if (el) data.skills[k] = el.value;
+    });
+    saveData(data);
+    showToast('Skills saved!', 'success');
+}
+
+function saveContact() {
+    const data = getData();
+    data.contact = {};
+    ['email','github','linkedin','twitter','instagram','portfolio'].forEach(k => {
+        const el = document.getElementById('contact-' + k);
+        if (el) data.contact[k] = el.value;
+    });
+    saveData(data);
+    showToast('Contact info saved!', 'success');
+}
+
+// ============ LIST RENDERERS ============
+const listLabels = {
+    experience: i => i.title + ' @ ' + i.org,
+    projects: i => i.name,
+    certifications: i => i.name,
+    blog: i => i.title
+};
+const listSubtitles = {
+    experience: i => i.period,
+    projects: i => (i.category || '') + (i.tech ? ' · ' + i.tech : ''),
+    certifications: i => i.issuer,
+    blog: i => (i.category || '') + (i.date ? ' · ' + i.date : '')
+};
+
+function renderList(section, items) {
+    const container = document.getElementById(section + '-list');
+    if (!container) return;
+    if (!items || !items.length) {
+        container.innerHTML = '<p style="color:#4b5563; font-size:.875rem">No entries yet. Click "Add" to create one.</p>';
+        return;
+    }
+    container.innerHTML = items.map((item, idx) => `
+        <div class="card-item" style="display:flex; align-items:center; justify-content:space-between; gap:1rem">
+            <div style="min-width:0; flex:1">
+                <p style="color:#fff; font-size:.875rem; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${escAttr(listLabels[section](item))}</p>
+                <p style="color:#6b7280; font-size:.75rem; margin-top:.2rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${escAttr(listSubtitles[section](item))}</p>
+            </div>
+            <div style="display:flex; gap:.5rem; flex-shrink:0">
+                <button class="btn btn-ghost" style="font-size:.75rem; padding:.3rem .7rem" onclick="openModal('${section}',${idx})">
+                    <i data-lucide="edit-3" style="width:14px;height:14px"></i>
+                </button>
+                <button class="btn btn-danger" style="font-size:.75rem; padding:.3rem .7rem" onclick="deleteItem('${section}',${idx})">
+                    <i data-lucide="trash-2" style="width:14px;height:14px"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+    lucide.createIcons({ nodes: Array.from(container.querySelectorAll('[data-lucide]')) });
+}
+
+function deleteItem(section, idx) {
+    if (!confirm('Delete this entry?')) return;
+    const data = getData();
+    if (!data[section]) data[section] = JSON.parse(JSON.stringify(DEFAULT_DATA[section]));
+    data[section].splice(idx, 1);
+    saveData(data);
+    renderList(section, data[section]);
+    showToast('Deleted.', 'success');
+}
+
+// ============ MODAL FORMS ============
+let modalSection = null;
+let modalIdx = null;
+
+function getModalForm(section, item) {
+    const v = (key) => escAttr(item[key] || '');
+    if (section === 'experience') return `
+        <div class="field-group"><label>Title / Role *</label><input type="text" id="mf-title" value="${v('title')}" placeholder="Campus Lead" /></div>
+        <div class="field-group"><label>Organisation *</label><input type="text" id="mf-org" value="${v('org')}" placeholder="Open Source Connect" /></div>
+        <div class="field-group"><label>Period</label><input type="text" id="mf-period" value="${v('period')}" placeholder="2025 - Present" /></div>
+        <div class="field-group"><label>Description</label><textarea id="mf-desc" rows="3">${v('desc')}</textarea></div>
+        <div class="field-group"><label>Tags (comma-separated)</label><input type="text" id="mf-tags" value="${v('tags')}" placeholder="Leadership,Open Source,Community" /></div>
+    `;
+    if (section === 'projects') return `
+        <div class="form-grid">
+            <div class="field-group"><label>Project Name *</label><input type="text" id="mf-name" value="${v('name')}" placeholder="My Project" /></div>
+            <div class="field-group"><label>Category</label><input type="text" id="mf-category" value="${v('category')}" placeholder="Featured, Security, AI/ML..." /></div>
+        </div>
+        <div class="field-group"><label>Description</label><textarea id="mf-desc" rows="3">${v('desc')}</textarea></div>
+        <div class="field-group"><label>Tech Stack (comma-separated)</label><input type="text" id="mf-tech" value="${v('tech')}" placeholder="React,Node.js,MongoDB" /></div>
+        <div class="form-grid">
+            <div class="field-group"><label>GitHub URL</label><input type="url" id="mf-githubUrl" value="${v('githubUrl')}" placeholder="https://github.com/..." /></div>
+            <div class="field-group"><label>Live Demo URL</label><input type="url" id="mf-liveUrl" value="${v('liveUrl')}" placeholder="https://..." /></div>
+        </div>
+        <div class="form-grid">
+            <div class="field-group"><label>Card Gradient (Tailwind)</label><input type="text" id="mf-gradient" value="${item.gradient || 'from-cosmic-purple/30 to-nebula-blue/30'}" placeholder="from-cosmic-purple/30 to-nebula-blue/30" /></div>
+            <div class="field-group"><label>Icon (Lucide name)</label><input type="text" id="mf-icon" value="${item.icon || 'code'}" placeholder="globe, bug, lock, brain..." /></div>
+        </div>
+    `;
+    if (section === 'certifications') return `
+        <div class="form-grid">
+            <div class="field-group"><label>Certificate Name *</label><input type="text" id="mf-name" value="${v('name')}" placeholder="Python Programming" /></div>
+            <div class="field-group"><label>Issuer</label><input type="text" id="mf-issuer" value="${v('issuer')}" placeholder="NIELIT" /></div>
+        </div>
+        <div class="field-group"><label>File / Link URL</label><input type="text" id="mf-fileUrl" value="${v('fileUrl')}" placeholder="assets/certificates/... or https://..." /></div>
+        <div class="form-grid">
+            <div class="field-group"><label>Icon (Lucide name)</label><input type="text" id="mf-icon" value="${item.icon || 'award'}" placeholder="award, shield, brain, flag..." /></div>
+            <div class="field-group"><label>Color (Tailwind class)</label><input type="text" id="mf-color" value="${item.color || 'cosmic-purple'}" placeholder="cosmic-purple, nebula-blue, red-500..." /></div>
+        </div>
+    `;
+    if (section === 'blog') return `
+        <div class="field-group"><label>Post Title *</label><input type="text" id="mf-title" value="${v('title')}" placeholder="OWASP Top 10 Walkthrough" /></div>
+        <div class="form-grid">
+            <div class="field-group"><label>Category</label><input type="text" id="mf-category" value="${v('category')}" placeholder="Cybersecurity, Red Teaming..." /></div>
+            <div class="field-group"><label>Date</label><input type="text" id="mf-date" value="${v('date')}" placeholder="Feb 2026" /></div>
+        </div>
+        <div class="field-group"><label>Read Time (minutes)</label><input type="number" id="mf-readTime" value="${item.readTime || '5'}" min="1" /></div>
+        <div class="field-group"><label>Description / Excerpt</label><textarea id="mf-desc" rows="3">${v('desc')}</textarea></div>
+        <div class="field-group"><label>Post URL</label><input type="url" id="mf-url" value="${item.url || '#'}" placeholder="https://..." /></div>
+        <div class="form-grid">
+            <div class="field-group"><label>Accent Color (Tailwind)</label><input type="text" id="mf-accentColor" value="${item.accentColor || 'cyber-lime'}" placeholder="cyber-lime, cosmic-purple, nebula-blue..." /></div>
+            <div class="field-group"><label>Top Bar Gradient</label><input type="text" id="mf-gradient" value="${item.gradient || 'from-cyber-lime to-teal-500'}" placeholder="from-cyber-lime to-teal-500" /></div>
+        </div>
+    `;
+    return '';
+}
+
+const modalTitles = {
+    experience: ['Add Experience Entry', 'Edit Experience Entry'],
+    projects: ['Add Project', 'Edit Project'],
+    certifications: ['Add Certification', 'Edit Certification'],
+    blog: ['Add Blog Post', 'Edit Blog Post']
+};
+
+function openModal(section, idx) {
+    modalSection = section;
+    modalIdx = (idx !== undefined) ? idx : null;
+    const data = getData();
+    const item = (idx !== undefined) ? (data[section] || DEFAULT_DATA[section])[idx] || {} : {};
+    document.getElementById('modal-title').textContent = modalTitles[section][idx !== undefined ? 1 : 0];
+    document.getElementById('modal-body').innerHTML = getModalForm(section, item);
+    document.getElementById('modal').style.display = 'flex';
+    lucide.createIcons({ nodes: Array.from(document.getElementById('modal').querySelectorAll('[data-lucide]')) });
+}
+
+function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+    modalSection = null; modalIdx = null;
+}
+
+function getModalValues(section) {
+    const val = (id) => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+    if (section === 'experience') return { title: val('mf-title'), org: val('mf-org'), period: val('mf-period'), desc: val('mf-desc'), tags: val('mf-tags') };
+    if (section === 'projects') return { name: val('mf-name'), category: val('mf-category'), desc: val('mf-desc'), tech: val('mf-tech'), githubUrl: val('mf-githubUrl'), liveUrl: val('mf-liveUrl'), gradient: val('mf-gradient'), icon: val('mf-icon') };
+    if (section === 'certifications') return { name: val('mf-name'), issuer: val('mf-issuer'), fileUrl: val('mf-fileUrl'), icon: val('mf-icon'), color: val('mf-color') };
+    if (section === 'blog') return { title: val('mf-title'), category: val('mf-category'), date: val('mf-date'), readTime: val('mf-readTime'), desc: val('mf-desc'), url: val('mf-url'), accentColor: val('mf-accentColor'), gradient: val('mf-gradient') };
+    return {};
+}
+
+function saveModal() {
+    if (!modalSection) return;
+    const values = getModalValues(modalSection);
+    const nameField = values.title || values.name;
+    if (!nameField) return showToast('Please fill in the required fields (*).', 'error');
+    const data = getData();
+    if (!data[modalSection]) data[modalSection] = JSON.parse(JSON.stringify(DEFAULT_DATA[modalSection]));
+    if (modalIdx !== null) {
+        data[modalSection][modalIdx] = values;
+    } else {
+        data[modalSection].push(values);
+    }
+    saveData(data);
+    renderList(modalSection, data[modalSection]);
+    closeModal();
+    showToast('Saved!', 'success');
+}
+
+// ============ EXPORT / IMPORT / RESET ============
+function exportData() {
+    const data = getData();
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'portfolio-data-' + new Date().toISOString().slice(0,10) + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Data exported!', 'success');
+}
+
+function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        try {
+            const data = JSON.parse(ev.target.result);
+            if (!confirm('Replace all current portfolio data with the imported file?\n\nThis cannot be undone.')) return;
+            saveData(data);
+            loadAllData();
+            showToast('Data imported successfully!', 'success');
+        } catch (err) {
+            showToast('Invalid JSON file.', 'error');
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+function resetToDefaults() {
+    if (!confirm('Reset ALL portfolio data to defaults?\n\nThis cannot be undone.')) return;
+    localStorage.removeItem('portfolioData');
+    loadAllData();
+    showToast('Reset to defaults.', 'success');
+}
+
+// ============ TOAST ============
+let toastTimer;
+function showToast(msg, type) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.className = 'toast show ' + (type || 'success');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ============ INIT ============
+window.addEventListener('DOMContentLoaded', checkSession);
+</script>
+</body>
+</html>
