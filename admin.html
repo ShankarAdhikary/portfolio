@@ -339,7 +339,7 @@ input:disabled, textarea:disabled { opacity: .5; cursor: not-allowed; }
       </button>
       <p style="color:#374151;font-size:.6875rem;text-align:center;margin-top:1rem">
         Forgot password?
-        <a href="#" onclick="forgotPassword()" style="color:#6A0DAD">Reset (preserves data)</a>
+        <button type="button" onclick="forgotPassword()" style="color:#6A0DAD;background:none;border:none;cursor:pointer;font-size:inherit;padding:0">Reset (preserves data)</button>
       </p>
     </div>
   </div>
@@ -681,7 +681,9 @@ async function makeStoredHash(password) {
 async function verifyPassword(password, stored) {
     if (!stored) return false;
     if (stored.startsWith('v2:')) {
-        // v2:salt:hash  (both are hex, no colons)
+        // Format: "v2:<hex-salt>:<hex-hash>"
+        // Both salt and hash are lowercase hex (0-9, a-f) and never contain colons,
+        // so splitting on the second colon is unambiguous.
         const firstColon = stored.indexOf(':');
         const secondColon = stored.indexOf(':', firstColon + 1);
         const salt = stored.substring(firstColon + 1, secondColon);
@@ -918,8 +920,9 @@ function tickSession() {
     if (remaining <= 0) {
         clearSessionTimer();
         sessionStorage.removeItem(SESSION_KEY);
-        alert('Your session has expired due to inactivity. Please sign in again.');
-        location.reload();
+        // Use a toast then redirect instead of blocking alert()
+        showToast('Session expired. Redirecting to login…', 'error');
+        setTimeout(function() { location.reload(); }, 1500);
         return;
     }
     var mins = Math.floor(remaining / 60000);
@@ -1088,15 +1091,15 @@ function renderDashboard() {
     }
 
     var dateEl = document.getElementById('dash-date');
-    if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', year:'numeric' });
+    if (dateEl) dateEl.textContent = new Date().toLocaleDateString(navigator.language || 'en', { weekday:'short', month:'short', day:'numeric', year:'numeric' });
 
     var storageEl = document.getElementById('storage-info');
     if (storageEl) {
         try {
             var total = 0;
-            for (var k in localStorage) {
-                if (Object.prototype.hasOwnProperty.call(localStorage, k)) total += (localStorage.getItem(k) || '').length * 2;
-            }
+            Object.keys(localStorage).forEach(function(k) {
+                total += (localStorage.getItem(k) || '').length * 2;
+            });
             var kb = (total / 1024).toFixed(1);
             var keys = Object.keys(localStorage).filter(function(k) { return k.startsWith('sa_') || k === 'portfolioData'; });
             storageEl.innerHTML =
