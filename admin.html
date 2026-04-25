@@ -3,324 +3,839 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfolio Admin Panel</title>
+<title>SA · Admin</title>
 <meta name="robots" content="noindex, nofollow">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest" crossorigin="anonymous"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-* { box-sizing: border-box; }
-body { font-family: 'Inter', sans-serif; background: #050505; color: #e5e7eb; min-height: 100vh; }
-.glass { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(12px); }
-.tab-btn { transition: all .2s; border-bottom: 2px solid transparent; padding: .625rem 1rem; font-size: .875rem; color: #6b7280; cursor: pointer; white-space: nowrap; background: transparent; border-top: none; border-left: none; border-right: none; }
-.tab-btn:hover { color: #d1d5db; }
-.tab-btn.active { color: #6A0DAD; border-color: #6A0DAD; }
-.tab-pane { display: none; }
-.tab-pane.active { display: block; }
-input, textarea, select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: #e5e7eb; border-radius: .5rem; padding: .5rem .75rem; width: 100%; font-size: .875rem; transition: border-color .2s; font-family: inherit; }
-input:focus, textarea:focus, select:focus { outline: none; border-color: #6A0DAD; }
-label { font-size: .75rem; color: #9ca3af; font-weight: 500; display: block; margin-bottom: .25rem; }
-.field-group { margin-bottom: 1rem; }
-.btn { padding: .5rem 1.25rem; border-radius: .5rem; font-weight: 600; font-size: .875rem; cursor: pointer; transition: opacity .2s; border: none; display: inline-flex; align-items: center; gap: .375rem; }
-.btn-primary { background: linear-gradient(135deg,#6A0DAD,#1E90FF); color:#fff; }
-.btn-primary:hover { opacity: .85; }
-.btn-danger { background: rgba(239,68,68,.15); color:#ef4444; border:1px solid rgba(239,68,68,.3); }
-.btn-danger:hover { background: rgba(239,68,68,.25); }
-.btn-success { background: rgba(57,255,20,.12); color:#39FF14; border:1px solid rgba(57,255,20,.25); }
-.btn-success:hover { background: rgba(57,255,20,.2); }
-.btn-ghost { background: rgba(255,255,255,.05); color:#d1d5db; border:1px solid rgba(255,255,255,.1); }
-.btn-ghost:hover { background: rgba(255,255,255,.09); }
-.card-item { background: rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:.75rem; padding:1rem; margin-bottom:.75rem; }
-.card-item:hover { border-color: rgba(106,13,173,.35); }
-.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); backdrop-filter:blur(4px); z-index:50; display:flex; align-items:center; justify-content:center; padding:1rem; }
-.modal-box { background:#0a0a0a; border:1px solid rgba(255,255,255,.12); border-radius:1rem; padding:1.5rem; width:100%; max-width:640px; max-height:90vh; overflow-y:auto; }
-.toast { position:fixed; bottom:1.5rem; right:1.5rem; z-index:100; background:#0d0d0d; border:1px solid rgba(106,13,173,.5); border-radius:.75rem; padding:.75rem 1.25rem; font-size:.875rem; transform:translateY(100px); opacity:0; transition: all .3s; pointer-events:none; }
-.toast.show { transform:translateY(0); opacity:1; }
-.toast.success { border-color: rgba(57,255,20,.5); color: #39FF14; }
-.toast.error { border-color: rgba(239,68,68,.5); color: #ef4444; }
-::-webkit-scrollbar { width:5px; height:5px; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --purple: #6A0DAD;
+  --blue: #1E90FF;
+  --green: #39FF14;
+  --bg: #050505;
+  --surface: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+  --text: #e5e7eb;
+  --muted: #6b7280;
+  --sidebar-w: 220px;
+}
+html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(106,13,173,.4); border-radius:9999px; }
-.gradient-text { background: linear-gradient(135deg,#6A0DAD,#1E90FF,#39FF14); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-#login-screen { position:fixed; inset:0; z-index:200; background: radial-gradient(ellipse at 50% 50%,#0d0015 0%,#000 100%); display:flex; align-items:center; justify-content:center; }
+::-webkit-scrollbar-thumb { background: rgba(106,13,173,.4); border-radius: 9999px; }
+
+/* ── GLASS ── */
+.glass { background: var(--surface); border: 1px solid var(--border); backdrop-filter: blur(12px); }
+
+/* ── GRADIENT TEXT ── */
+.gradient-text { background: linear-gradient(135deg,#6A0DAD,#1E90FF,#39FF14); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+/* ── BUTTONS ── */
+.btn { padding: .5rem 1.125rem; border-radius: .5rem; font-weight: 600; font-size: .875rem; cursor: pointer; transition: all .15s; border: none; display: inline-flex; align-items: center; gap: .375rem; font-family: inherit; }
+.btn-primary { background: linear-gradient(135deg,#6A0DAD,#1E90FF); color: #fff; }
+.btn-primary:hover { opacity: .85; transform: translateY(-1px); }
+.btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.btn-danger { background: rgba(239,68,68,.12); color: #ef4444; border: 1px solid rgba(239,68,68,.25); }
+.btn-danger:hover { background: rgba(239,68,68,.2); }
+.btn-success { background: rgba(57,255,20,.1); color: #39FF14; border: 1px solid rgba(57,255,20,.2); }
+.btn-success:hover { background: rgba(57,255,20,.18); }
+.btn-ghost { background: rgba(255,255,255,.05); color: #d1d5db; border: 1px solid rgba(255,255,255,.09); }
+.btn-ghost:hover { background: rgba(255,255,255,.09); }
+
+/* ── FORM ELEMENTS ── */
+label { font-size: .75rem; color: #9ca3af; font-weight: 500; display: block; margin-bottom: .3rem; }
+input, textarea, select { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); color: var(--text); border-radius: .5rem; padding: .5625rem .875rem; width: 100%; font-size: .875rem; transition: border-color .2s, box-shadow .2s; font-family: inherit; }
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(106,13,173,.15); }
+input::placeholder, textarea::placeholder { color: #374151; }
+input:disabled, textarea:disabled { opacity: .5; cursor: not-allowed; }
+.field-group { margin-bottom: .875rem; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-@media(max-width:640px) { .form-grid { grid-template-columns: 1fr; } }
-.w-full { width: 100%; }
-.justify-center { justify-content: center; }
-.space-y { margin-top: 1.25rem; }
+@media(max-width:600px) { .form-grid { grid-template-columns: 1fr; } }
+
+/* ── SECTION CARD ── */
+.section-card { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); border-radius: .875rem; padding: 1.25rem; margin-bottom: 1.25rem; }
+.section-card h3 { color: #fff; font-size: .875rem; font-weight: 600; margin-bottom: .875rem; display: flex; align-items: center; gap: .5rem; }
+
+/* ── LIST CARD ITEM ── */
+.card-item { background: rgba(255,255,255,.025); border: 1px solid rgba(255,255,255,.065); border-left: 3px solid transparent; border-radius: .75rem; padding: .875rem 1rem; margin-bottom: .625rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; transition: all .15s; }
+.card-item:hover { background: rgba(106,13,173,.08); border-left-color: rgba(106,13,173,.6); border-color: rgba(106,13,173,.2); }
+
+/* ── MODAL ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.8); backdrop-filter: blur(6px); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.modal-box { background: #0c0c0c; border: 1px solid rgba(255,255,255,.1); border-top: 2px solid rgba(106,13,173,.6); border-radius: 1rem; padding: 1.5rem; width: 100%; max-width: 660px; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,.7), 0 0 60px rgba(106,13,173,.08); }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 100; background: #0f0f0f; border: 1px solid rgba(106,13,173,.4); border-radius: .75rem; padding: .75rem 1.25rem; font-size: .875rem; transform: translateY(20px); opacity: 0; transition: all .25s ease; pointer-events: none; max-width: 320px; display: flex; align-items: center; gap: .5rem; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { border-color: rgba(57,255,20,.4); }
+.toast.error { border-color: rgba(239,68,68,.4); }
+.toast-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.toast.success .toast-dot { background: #39FF14; }
+.toast.error .toast-dot { background: #ef4444; }
+.toast.info .toast-dot { background: #1E90FF; }
+
+/* ══════════════════════════════════
+   LOGIN SCREEN
+══════════════════════════════════ */
+#login-screen {
+  position: fixed; inset: 0; z-index: 200;
+  background: #030303;
+  background-image:
+    linear-gradient(rgba(106,13,173,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(106,13,173,.07) 1px, transparent 1px);
+  background-size: 44px 44px;
+  display: flex; align-items: center; justify-content: center; padding: 1rem;
+  overflow: hidden;
+}
+#login-screen::before {
+  content: '';
+  position: absolute;
+  width: 560px; height: 560px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(106,13,173,.18) 0%, transparent 70%);
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  animation: pulseOrb 6s ease-in-out infinite;
+  pointer-events: none;
+}
+#login-screen::after {
+  content: '';
+  position: absolute;
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(30,144,255,.1) 0%, transparent 70%);
+  bottom: 8%; right: 12%;
+  animation: pulseOrb 9s ease-in-out infinite 2s;
+  pointer-events: none;
+}
+@keyframes pulseOrb {
+  0%, 100% { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+  50% { opacity: .65; transform: translate(-50%,-50%) scale(1.18); }
+}
+.login-card {
+  position: relative; z-index: 1;
+  background: rgba(10,10,10,.88);
+  border: 1px solid rgba(106,13,173,.35);
+  border-radius: 1.25rem;
+  padding: 2rem;
+  width: 100%; max-width: 390px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.04),
+    0 25px 60px rgba(0,0,0,.65),
+    0 0 80px rgba(106,13,173,.14);
+  backdrop-filter: blur(20px);
+}
+.login-logo { text-align: center; margin-bottom: 1.75rem; }
+.login-logo-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2.5rem; font-weight: 700;
+  background: linear-gradient(135deg,#6A0DAD,#1E90FF);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  display: block;
+}
+.login-subtitle {
+  color: #4b5563; font-size: .6875rem; letter-spacing: .12em;
+  text-transform: uppercase; font-family: 'JetBrains Mono', monospace;
+  margin-top: .3rem;
+}
+.security-badge {
+  display: inline-flex; align-items: center; gap: .375rem;
+  background: rgba(57,255,20,.07); border: 1px solid rgba(57,255,20,.18);
+  border-radius: 9999px; padding: .25rem .75rem;
+  font-size: .6875rem; color: rgba(57,255,20,.85);
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: .75rem;
+}
+
+/* Password strength */
+.strength-bar-wrap { height: 3px; background: rgba(255,255,255,.07); border-radius: 9999px; margin-top: .375rem; overflow: hidden; }
+.strength-bar { height: 100%; border-radius: 9999px; transition: width .3s ease, background .3s ease; width: 0; }
+.strength-label { font-size: .6875rem; margin-top: .25rem; transition: color .3s; height: .875rem; }
+
+/* Lockout banner */
+.lockout-banner { background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.25); border-radius: .625rem; padding: .75rem 1rem; margin-bottom: 1rem; display: flex; align-items: center; gap: .625rem; font-size: .8125rem; color: #fca5a5; }
+.attempts-hint { font-size: .6875rem; color: #f97316; margin-top: .375rem; text-align: center; min-height: 1rem; }
+
+/* Pass visibility toggle */
+.pass-wrap { position: relative; }
+.pass-wrap input { padding-right: 2.5rem; }
+.eye-btn { position: absolute; right: .75rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #6b7280; padding: 0; display: flex; align-items: center; }
+.eye-btn:hover { color: #9ca3af; }
+
+/* ══════════════════════════════════
+   ADMIN APP LAYOUT
+══════════════════════════════════ */
+#admin-app {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  grid-template-rows: 56px 1fr;
+  height: 100vh;
+}
+
+/* ── HEADER ── */
+#admin-header {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1.25rem;
+  background: rgba(5,5,5,.96);
+  border-bottom: 1px solid rgba(255,255,255,.065);
+  backdrop-filter: blur(12px);
+  z-index: 40;
+}
+.header-brand { display: flex; align-items: center; gap: .75rem; }
+.header-logo { font-family: 'JetBrains Mono', monospace; font-size: 1.25rem; font-weight: 700; }
+.header-divider { width: 1px; height: 18px; background: rgba(255,255,255,.1); }
+.header-title { font-size: .8125rem; color: #6b7280; }
+.header-actions { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.session-badge {
+  display: flex; align-items: center; gap: .375rem;
+  background: rgba(57,255,20,.06); border: 1px solid rgba(57,255,20,.18);
+  border-radius: 9999px; padding: .2rem .65rem;
+  font-size: .6875rem; font-family: 'JetBrains Mono', monospace; color: rgba(57,255,20,.85);
+  transition: all .3s;
+}
+.session-badge.warning { background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.25); color: #fca5a5; }
+@media (max-width:600px) { .hide-sm { display: none !important; } }
+
+/* ── SIDEBAR ── */
+#sidebar {
+  grid-column: 1;
+  grid-row: 2;
+  background: rgba(8,8,8,.97);
+  border-right: 1px solid rgba(255,255,255,.06);
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+  position: sticky; top: 56px; height: calc(100vh - 56px);
+}
+.sidebar-label { font-size: .625rem; letter-spacing: .1em; text-transform: uppercase; color: #374151; font-weight: 600; padding: 1.25rem 1rem .5rem; }
+.nav-item { display: flex; align-items: center; gap: .75rem; padding: .65rem 1rem; cursor: pointer; transition: all .15s; color: #6b7280; font-size: .875rem; border: none; background: none; width: 100%; text-align: left; position: relative; }
+.nav-item:hover { background: rgba(255,255,255,.04); color: #d1d5db; }
+.nav-item.active { background: rgba(106,13,173,.12); color: #c084fc; }
+.nav-item.active::before { content: ''; position: absolute; left: 0; top: 5px; bottom: 5px; width: 3px; background: linear-gradient(180deg,#6A0DAD,#1E90FF); border-radius: 0 3px 3px 0; }
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+.nav-spacer { flex: 1; min-height: 1rem; }
+.sidebar-footer { padding: .75rem; border-top: 1px solid rgba(255,255,255,.05); }
+
+/* ── MAIN CONTENT ── */
+#main-content {
+  grid-column: 2;
+  grid-row: 2;
+  overflow-y: auto;
+  padding: 1.75rem;
+}
+
+/* ── MOBILE NAV ── */
+#mobile-nav {
+  display: none;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-bottom: 1px solid rgba(255,255,255,.065);
+  padding: 0 .75rem;
+  background: rgba(8,8,8,.97);
+  grid-column: 1 / -1;
+}
+.mobile-tab { flex-shrink: 0; padding: .625rem .875rem; font-size: .8125rem; color: #6b7280; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; border-top: none; border-left: none; border-right: none; background: transparent; transition: all .2s; }
+.mobile-tab:hover { color: #d1d5db; }
+.mobile-tab.active { color: #c084fc; border-bottom-color: #6A0DAD; }
+
+@media (max-width: 767px) {
+  #admin-app { grid-template-columns: 1fr; grid-template-rows: 56px auto 1fr; }
+  #admin-header { grid-column: 1; grid-row: 1; }
+  #sidebar { display: none; }
+  #mobile-nav { display: flex; grid-column: 1; grid-row: 2; }
+  #main-content { grid-column: 1; grid-row: 3; padding: 1.25rem 1rem; }
+}
+
+/* ── TAB PANES ── */
+.tab-pane { display: none; }
+.tab-pane.active { display: block; animation: fadeIn .2s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── PAGE HEADER ── */
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+.page-title { font-size: 1rem; font-weight: 600; color: #fff; }
+
+/* ── DASHBOARD STATS ── */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: .875rem; margin-bottom: 1.25rem; }
+.stat-card { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); border-radius: .875rem; padding: 1rem 1.25rem; }
+.stat-card-value { font-size: 1.75rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+.stat-card-label { font-size: .75rem; color: #6b7280; margin-top: .25rem; }
+
+/* ── SECURITY INFO GRID ── */
+.sec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: .75rem; margin-bottom: 1rem; }
+.sec-cell { background: rgba(255,255,255,.025); border: 1px solid rgba(255,255,255,.065); border-radius: .625rem; padding: .875rem; }
+.sec-cell-label { font-size: .6875rem; color: #6b7280; margin-bottom: .3rem; }
+.sec-cell-value { font-size: .875rem; font-family: 'JetBrains Mono', monospace; color: #c084fc; }
 </style>
 </head>
 <body>
 
 <!-- Toast -->
-<div id="toast" class="toast"></div>
+<div id="toast" class="toast"><span class="toast-dot"></span><span id="toast-msg"></span></div>
 
-<!-- Login Screen -->
+<!-- ══════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════ -->
 <div id="login-screen">
-    <div class="glass rounded-2xl p-8 w-full max-w-sm" style="border-color:rgba(106,13,173,.3)">
-        <div class="text-center mb-6">
-            <span class="text-4xl font-mono font-bold gradient-text">SA</span>
-            <p class="text-gray-500 text-xs mt-1 tracking-widest uppercase font-mono">Admin Panel</p>
-        </div>
-        <!-- First-time setup -->
-        <div id="setup-section" style="display:none">
-            <p class="text-sm text-gray-400 mb-4 text-center">Welcome! Set your admin password to get started.</p>
-            <div class="field-group"><label>New Password (min 8 chars)</label><input type="password" id="setup-pass" placeholder="Create a strong password" minlength="8" /></div>
-            <div class="field-group"><label>Confirm Password</label><input type="password" id="setup-confirm" placeholder="Repeat password" minlength="8" /></div>
-            <button class="btn btn-primary w-full justify-center" onclick="setupPassword()">Set Password &amp; Enter</button>
-        </div>
-        <!-- Login -->
-        <div id="login-section">
-            <div class="field-group"><label>Password</label><input type="password" id="login-pass" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')login()" /></div>
-            <p id="login-err" class="text-red-400 text-xs mb-3" style="display:none">Incorrect password. Try again.</p>
-            <button class="btn btn-primary w-full justify-center" onclick="login()">
-                <i data-lucide="log-in" class="w-4 h-4"></i> Login
-            </button>
-            <p class="text-gray-600 text-xs text-center mt-4">Forgot password?
-                <a href="#" onclick="forgotPassword()" style="color:#6A0DAD">Reset (clears password only)</a>
-            </p>
-        </div>
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="login-logo-text">SA</span>
+      <p class="login-subtitle">Admin Panel</p>
+      <div style="display:flex;justify-content:center">
+        <span class="security-badge">
+          <i data-lucide="shield-check" style="width:11px;height:11px"></i>
+          PBKDF2 · Secured
+        </span>
+      </div>
     </div>
+
+    <!-- First-time setup -->
+    <div id="setup-section" style="display:none">
+      <p style="font-size:.8125rem;color:#9ca3af;margin-bottom:1.25rem;text-align:center;line-height:1.6">First time here! Create a strong admin password to secure this panel.</p>
+      <div class="field-group">
+        <label>New Password <span style="color:#ef4444">*</span> (min 8 chars)</label>
+        <div class="pass-wrap">
+          <input type="password" id="setup-pass" placeholder="Create a strong password" oninput="updateStrength(this.value,'setup')" autocomplete="new-password" />
+          <button type="button" class="eye-btn" onclick="toggleVis('setup-pass','setup-eye')" tabindex="-1">
+            <i id="setup-eye" data-lucide="eye" style="width:15px;height:15px"></i>
+          </button>
+        </div>
+        <div class="strength-bar-wrap"><div class="strength-bar" id="setup-strength-bar"></div></div>
+        <p class="strength-label" id="setup-strength-label"></p>
+      </div>
+      <div class="field-group">
+        <label>Confirm Password <span style="color:#ef4444">*</span></label>
+        <input type="password" id="setup-confirm" placeholder="Repeat password" autocomplete="new-password" />
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:.25rem" onclick="setupPassword()">
+        <i data-lucide="lock" style="width:15px;height:15px"></i> Create Password &amp; Enter
+      </button>
+    </div>
+
+    <!-- Login -->
+    <div id="login-section">
+      <!-- Lockout banner -->
+      <div id="lockout-banner" class="lockout-banner" style="display:none">
+        <i data-lucide="shield-off" style="width:16px;height:16px;flex-shrink:0"></i>
+        <span>Too many failed attempts. Try again in <strong id="lockout-counter">60</strong>s</span>
+      </div>
+      <div class="field-group">
+        <label>Password</label>
+        <div class="pass-wrap">
+          <input type="password" id="login-pass" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')login()" autocomplete="current-password" />
+          <button type="button" class="eye-btn" onclick="toggleVis('login-pass','login-eye')" tabindex="-1">
+            <i id="login-eye" data-lucide="eye" style="width:15px;height:15px"></i>
+          </button>
+        </div>
+      </div>
+      <p id="login-err" style="display:none;font-size:.75rem;color:#f87171;margin-bottom:.75rem;text-align:center;padding:.5rem;background:rgba(239,68,68,.08);border-radius:.375rem">Incorrect password. Please try again.</p>
+      <p id="attempts-hint" class="attempts-hint" style="display:none;margin-bottom:.5rem"></p>
+      <button id="login-btn" class="btn btn-primary" style="width:100%;justify-content:center" onclick="login()">
+        <i data-lucide="log-in" style="width:15px;height:15px"></i> Sign In
+      </button>
+      <p style="color:#374151;font-size:.6875rem;text-align:center;margin-top:1rem">
+        Forgot password?
+        <button type="button" onclick="forgotPassword()" style="color:#6A0DAD;background:none;border:none;cursor:pointer;font-size:inherit;padding:0">Reset (preserves data)</button>
+      </p>
+    </div>
+  </div>
 </div>
 
-<!-- Admin App -->
+<!-- ══════════════════════════════════
+     ADMIN APP
+══════════════════════════════════ -->
 <div id="admin-app" style="display:none">
-    <!-- Header -->
-    <header class="sticky top-0 z-40 glass" style="border-bottom:1px solid rgba(255,255,255,0.07); padding:.75rem 1.5rem; display:flex; align-items:center; justify-content:space-between">
-        <div style="display:flex; align-items:center; gap:.75rem">
-            <span class="text-xl font-mono font-bold gradient-text">SA</span>
-            <span style="color:#374151; font-size:.75rem">|</span>
-            <span style="color:#9ca3af; font-size:.875rem">Admin Panel</span>
+
+  <!-- Header -->
+  <header id="admin-header">
+    <div class="header-brand">
+      <span class="header-logo gradient-text">SA</span>
+      <div class="header-divider"></div>
+      <span class="header-title">Admin Panel</span>
+    </div>
+    <div class="header-actions">
+      <div class="session-badge" id="session-badge" title="Session time remaining">
+        <i data-lucide="clock" style="width:11px;height:11px"></i>
+        <span id="session-timer">30:00</span>
+      </div>
+      <a href="index.html" target="_blank" class="btn btn-ghost" style="font-size:.75rem;padding:.35rem .7rem">
+        <i data-lucide="external-link" style="width:13px;height:13px"></i>
+        <span class="hide-sm">View Site</span>
+      </a>
+      <button class="btn btn-ghost" style="font-size:.75rem;padding:.35rem .7rem" onclick="exportData()">
+        <i data-lucide="download" style="width:13px;height:13px"></i>
+        <span class="hide-sm">Export</span>
+      </button>
+      <button class="btn btn-ghost" style="font-size:.75rem;padding:.35rem .7rem" onclick="document.getElementById('import-header').click()">
+        <i data-lucide="upload" style="width:13px;height:13px"></i>
+        <span class="hide-sm">Import</span>
+      </button>
+      <input type="file" id="import-header" accept=".json" style="display:none" onchange="importData(event)" />
+      <button class="btn btn-danger" style="padding:.35rem .7rem" onclick="logout()" title="Sign out">
+        <i data-lucide="log-out" style="width:13px;height:13px"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Sidebar (desktop) -->
+  <nav id="sidebar">
+    <p class="sidebar-label">Content</p>
+    <button class="nav-item active" data-tab="dashboard">
+      <i data-lucide="layout-dashboard"></i> Dashboard
+    </button>
+    <button class="nav-item" data-tab="about">
+      <i data-lucide="user"></i> About
+    </button>
+    <button class="nav-item" data-tab="experience">
+      <i data-lucide="briefcase"></i> Experience
+    </button>
+    <button class="nav-item" data-tab="projects">
+      <i data-lucide="code-2"></i> Projects
+    </button>
+    <button class="nav-item" data-tab="certifications">
+      <i data-lucide="award"></i> Certifications
+    </button>
+    <button class="nav-item" data-tab="blog">
+      <i data-lucide="file-text"></i> Blog
+    </button>
+    <button class="nav-item" data-tab="skills">
+      <i data-lucide="zap"></i> Skills
+    </button>
+    <button class="nav-item" data-tab="contact">
+      <i data-lucide="mail"></i> Contact
+    </button>
+    <p class="sidebar-label">System</p>
+    <button class="nav-item" data-tab="settings">
+      <i data-lucide="settings"></i> Settings
+    </button>
+    <div class="nav-spacer"></div>
+    <div class="sidebar-footer">
+      <button class="btn btn-danger" style="width:100%;justify-content:center;font-size:.8125rem" onclick="logout()">
+        <i data-lucide="log-out" style="width:14px;height:14px"></i> Sign Out
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile nav -->
+  <nav id="mobile-nav">
+    <button class="mobile-tab active" data-tab="dashboard">Dashboard</button>
+    <button class="mobile-tab" data-tab="about">About</button>
+    <button class="mobile-tab" data-tab="experience">Experience</button>
+    <button class="mobile-tab" data-tab="projects">Projects</button>
+    <button class="mobile-tab" data-tab="certifications">Certs</button>
+    <button class="mobile-tab" data-tab="blog">Blog</button>
+    <button class="mobile-tab" data-tab="skills">Skills</button>
+    <button class="mobile-tab" data-tab="contact">Contact</button>
+    <button class="mobile-tab" data-tab="settings">Settings</button>
+  </nav>
+
+  <!-- Main Content -->
+  <main id="main-content">
+
+    <!-- DASHBOARD -->
+    <div id="tab-dashboard" class="tab-pane active">
+      <div class="page-header">
+        <h2 class="page-title">Dashboard</h2>
+        <span style="font-size:.75rem;color:#4b5563;font-family:'JetBrains Mono',monospace" id="dash-date"></span>
+      </div>
+      <div class="stats-grid" id="dash-stats"></div>
+      <div class="section-card">
+        <h3><i data-lucide="zap" style="width:15px;height:15px;color:#c084fc"></i> Quick Actions</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:.75rem">
+          <button class="btn btn-success" onclick="exportData()"><i data-lucide="download" style="width:14px;height:14px"></i> Export Backup</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('import-dash').click()"><i data-lucide="upload" style="width:14px;height:14px"></i> Import JSON</button>
+          <input type="file" id="import-dash" accept=".json" style="display:none" onchange="importData(event)" />
+          <a href="index.html" target="_blank" class="btn btn-ghost"><i data-lucide="external-link" style="width:14px;height:14px"></i> View Portfolio</a>
         </div>
-        <div style="display:flex; align-items:center; gap:.5rem; flex-wrap:wrap">
-            <a href="index.html" target="_blank" class="btn btn-ghost" style="font-size:.75rem; padding:.375rem .75rem">
-                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                <span>View Portfolio</span>
-            </a>
-            <button class="btn btn-ghost" style="font-size:.75rem; padding:.375rem .75rem" onclick="exportData()">
-                <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                <span>Export</span>
-            </button>
-            <button class="btn btn-ghost" style="font-size:.75rem; padding:.375rem .75rem" onclick="document.getElementById('import-input').click()">
-                <i data-lucide="upload" class="w-3.5 h-3.5"></i>
-                <span>Import</span>
-            </button>
-            <input type="file" id="import-input" accept=".json" style="display:none" onchange="importData(event)" />
-            <button class="btn btn-danger" style="font-size:.75rem; padding:.375rem .75rem" onclick="logout()">
-                <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
-            </button>
+      </div>
+      <div class="section-card">
+        <h3><i data-lucide="database" style="width:15px;height:15px;color:#c084fc"></i> Storage Info</h3>
+        <div id="storage-info" style="font-size:.8125rem;color:#6b7280;line-height:1.9"></div>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div id="tab-about" class="tab-pane">
+      <div class="page-header"><h2 class="page-title">About Section</h2></div>
+      <div class="section-card">
+        <div class="field-group"><label>Section Title (HTML allowed for color spans)</label><input type="text" id="about-title" /></div>
+        <div class="field-group"><label>Bio Paragraph 1</label><textarea id="about-bio1" rows="4"></textarea></div>
+        <div class="field-group"><label>Bio Paragraph 2</label><textarea id="about-bio2" rows="4"></textarea></div>
+        <div class="form-grid">
+          <div class="field-group"><label>Projects Stat (e.g. 10+)</label><input type="text" id="about-statProjects" /></div>
+          <div class="field-group"><label>Certifications Stat</label><input type="text" id="about-statCerts" /></div>
+          <div class="field-group"><label>Leadership Roles Stat</label><input type="text" id="about-statRoles" /></div>
         </div>
-    </header>
+        <button class="btn btn-primary" onclick="saveAbout()"><i data-lucide="save" style="width:14px;height:14px"></i> Save About</button>
+      </div>
+    </div>
 
-    <!-- Tab Bar -->
-    <nav style="border-bottom:1px solid rgba(255,255,255,0.07); padding:0 1.5rem; display:flex; overflow-x:auto; gap:0">
-        <button class="tab-btn active" data-tab="about">About</button>
-        <button class="tab-btn" data-tab="experience">Experience</button>
-        <button class="tab-btn" data-tab="projects">Projects</button>
-        <button class="tab-btn" data-tab="certifications">Certs</button>
-        <button class="tab-btn" data-tab="blog">Blog</button>
-        <button class="tab-btn" data-tab="skills">Skills</button>
-        <button class="tab-btn" data-tab="contact">Contact</button>
-        <button class="tab-btn" data-tab="settings">Settings</button>
-    </nav>
+    <!-- EXPERIENCE -->
+    <div id="tab-experience" class="tab-pane">
+      <div class="page-header">
+        <h2 class="page-title">Experience &amp; Roles</h2>
+        <button class="btn btn-primary" style="font-size:.8125rem" onclick="openModal('experience')"><i data-lucide="plus" style="width:14px;height:14px"></i> Add Entry</button>
+      </div>
+      <div id="experience-list"></div>
+    </div>
 
-    <!-- Main Content -->
-    <main style="max-width:900px; margin:0 auto; padding:2rem 1.5rem">
+    <!-- PROJECTS -->
+    <div id="tab-projects" class="tab-pane">
+      <div class="page-header">
+        <h2 class="page-title">Projects</h2>
+        <button class="btn btn-primary" style="font-size:.8125rem" onclick="openModal('projects')"><i data-lucide="plus" style="width:14px;height:14px"></i> Add Project</button>
+      </div>
+      <div id="projects-list"></div>
+    </div>
 
-        <!-- ABOUT TAB -->
-        <div id="tab-about" class="tab-pane active">
-            <h2 style="color:#fff; font-size:1.125rem; font-weight:600; margin-bottom:1.5rem">About Section</h2>
-            <div class="glass rounded-xl" style="padding:1.25rem">
-                <div class="field-group"><label>Section Title (HTML allowed for color spans)</label><input type="text" id="about-title" /></div>
-                <div class="field-group"><label>Bio Paragraph 1</label><textarea id="about-bio1" rows="4"></textarea></div>
-                <div class="field-group"><label>Bio Paragraph 2</label><textarea id="about-bio2" rows="4"></textarea></div>
-                <div class="form-grid">
-                    <div class="field-group"><label>Projects Stat (e.g. 10+)</label><input type="text" id="about-statProjects" /></div>
-                    <div class="field-group"><label>Certifications Stat</label><input type="text" id="about-statCerts" /></div>
-                    <div class="field-group"><label>Leadership Roles Stat</label><input type="text" id="about-statRoles" /></div>
-                </div>
-                <button class="btn btn-primary" onclick="saveAbout()">
-                    <i data-lucide="save" class="w-4 h-4"></i> Save About
+    <!-- CERTIFICATIONS -->
+    <div id="tab-certifications" class="tab-pane">
+      <div class="page-header">
+        <h2 class="page-title">Certifications &amp; Achievements</h2>
+        <button class="btn btn-primary" style="font-size:.8125rem" onclick="openModal('certifications')"><i data-lucide="plus" style="width:14px;height:14px"></i> Add Cert</button>
+      </div>
+      <div id="certifications-list"></div>
+    </div>
+
+    <!-- BLOG -->
+    <div id="tab-blog" class="tab-pane">
+      <div class="page-header">
+        <h2 class="page-title">Blog &amp; Writeups</h2>
+        <button class="btn btn-primary" style="font-size:.8125rem" onclick="openModal('blog')"><i data-lucide="plus" style="width:14px;height:14px"></i> Add Post</button>
+      </div>
+      <div id="blog-list"></div>
+    </div>
+
+    <!-- SKILLS -->
+    <div id="tab-skills" class="tab-pane">
+      <div class="page-header"><h2 class="page-title">Skills</h2></div>
+      <div class="section-card">
+        <div class="field-group"><label>Cybersecurity Skills</label><textarea id="skills-cybersecurity" rows="2" placeholder="Penetration Testing, Red Teaming, OSINT..."></textarea></div>
+        <div class="field-group"><label>Programming Languages</label><textarea id="skills-programming" rows="2" placeholder="Python, JavaScript, C, Rust..."></textarea></div>
+        <div class="field-group"><label>Frontend</label><textarea id="skills-frontend" rows="2" placeholder="React, Next.js, HTML5, Tailwind CSS..."></textarea></div>
+        <div class="field-group"><label>Backend</label><textarea id="skills-backend" rows="2" placeholder="Node.js, Express.js, Django..."></textarea></div>
+        <div class="field-group"><label>Databases</label><input type="text" id="skills-databases" placeholder="MongoDB, PostgreSQL, MySQL..." /></div>
+        <div class="field-group"><label>DevOps / Cloud</label><textarea id="skills-devops" rows="2" placeholder="Docker, Git, GitHub Actions, AWS..."></textarea></div>
+        <div class="field-group"><label>Security Tools</label><textarea id="skills-tools" rows="2" placeholder="Burp Suite, Wireshark, Nmap, Metasploit..."></textarea></div>
+        <div class="field-group"><label>AI / ML</label><textarea id="skills-ai_ml" rows="2" placeholder="TensorFlow, NLP, Computer Vision..."></textarea></div>
+        <div class="field-group"><label>Creative Skills</label><input type="text" id="skills-creative" placeholder="Photography, Videography, Lightroom..." /></div>
+        <button class="btn btn-primary" onclick="saveSkills()"><i data-lucide="save" style="width:14px;height:14px"></i> Save Skills</button>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div id="tab-contact" class="tab-pane">
+      <div class="page-header"><h2 class="page-title">Contact Information</h2></div>
+      <div class="section-card">
+        <div class="form-grid">
+          <div class="field-group"><label>Email</label><input type="email" id="contact-email" placeholder="your@email.com" /></div>
+          <div class="field-group"><label>GitHub URL</label><input type="url" id="contact-github" placeholder="https://github.com/..." /></div>
+          <div class="field-group"><label>LinkedIn URL</label><input type="url" id="contact-linkedin" placeholder="https://linkedin.com/in/..." /></div>
+          <div class="field-group"><label>Twitter / X URL</label><input type="url" id="contact-twitter" placeholder="https://x.com/..." /></div>
+          <div class="field-group"><label>Instagram URL</label><input type="url" id="contact-instagram" placeholder="https://instagram.com/..." /></div>
+          <div class="field-group"><label>Portfolio URL</label><input type="url" id="contact-portfolio" placeholder="https://..." /></div>
+        </div>
+        <button class="btn btn-primary" onclick="saveContact()"><i data-lucide="save" style="width:14px;height:14px"></i> Save Contact</button>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="tab-settings" class="tab-pane">
+      <div class="page-header"><h2 class="page-title">Settings</h2></div>
+      <div style="display:flex;flex-direction:column;gap:1.25rem">
+
+        <!-- Security overview -->
+        <div class="section-card">
+          <h3><i data-lucide="shield" style="width:15px;height:15px;color:#c084fc"></i> Security</h3>
+          <div class="sec-grid">
+            <div class="sec-cell">
+              <p class="sec-cell-label">Hash Algorithm</p>
+              <p class="sec-cell-value" id="sec-algo">PBKDF2-SHA256</p>
+            </div>
+            <div class="sec-cell">
+              <p class="sec-cell-label">Iterations</p>
+              <p class="sec-cell-value">310,000</p>
+            </div>
+            <div class="sec-cell">
+              <p class="sec-cell-label">Session Timeout</p>
+              <p class="sec-cell-value">30 min</p>
+            </div>
+            <div class="sec-cell">
+              <p class="sec-cell-label">Max Login Attempts</p>
+              <p class="sec-cell-value">5 / 60s lockout</p>
+            </div>
+          </div>
+          <p style="color:#4b5563;font-size:.75rem;line-height:1.6">Passwords are hashed with PBKDF2-SHA256 (310k iterations + unique random salt). Sessions expire after 30 minutes of inactivity.</p>
+        </div>
+
+        <!-- Change Password -->
+        <div class="section-card">
+          <h3><i data-lucide="key" style="width:15px;height:15px;color:#c084fc"></i> Change Password</h3>
+          <div class="form-grid">
+            <div class="field-group"><label>Current Password</label><input type="password" id="cur-pass" autocomplete="current-password" /></div>
+            <div class="field-group" style="grid-column:1/-1">
+              <label>New Password</label>
+              <div class="pass-wrap">
+                <input type="password" id="new-pass" oninput="updateStrength(this.value,'change')" autocomplete="new-password" placeholder="min 8 chars" />
+                <button type="button" class="eye-btn" onclick="toggleVis('new-pass','new-pass-eye')" tabindex="-1">
+                  <i id="new-pass-eye" data-lucide="eye" style="width:15px;height:15px"></i>
                 </button>
+              </div>
+              <div class="strength-bar-wrap"><div class="strength-bar" id="change-strength-bar"></div></div>
+              <p class="strength-label" id="change-strength-label"></p>
             </div>
+            <div class="field-group"><label>Confirm New Password</label><input type="password" id="confirm-pass" autocomplete="new-password" /></div>
+          </div>
+          <button class="btn btn-primary" onclick="changePassword()"><i data-lucide="key" style="width:14px;height:14px"></i> Update Password</button>
         </div>
 
-        <!-- EXPERIENCE TAB -->
-        <div id="tab-experience" class="tab-pane">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem">
-                <h2 style="color:#fff; font-size:1.125rem; font-weight:600">Experience &amp; Roles</h2>
-                <button class="btn btn-primary" style="font-size:.8125rem" onclick="openModal('experience')">
-                    <i data-lucide="plus" class="w-4 h-4"></i> Add Entry
-                </button>
-            </div>
-            <div id="experience-list"></div>
+        <!-- Data Management -->
+        <div class="section-card">
+          <h3><i data-lucide="database" style="width:15px;height:15px;color:#c084fc"></i> Data Management</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:.875rem">
+            <button class="btn btn-success" onclick="exportData()"><i data-lucide="download" style="width:14px;height:14px"></i> Export JSON Backup</button>
+            <button class="btn btn-ghost" onclick="document.getElementById('import-settings').click()"><i data-lucide="upload" style="width:14px;height:14px"></i> Import JSON</button>
+            <input type="file" id="import-settings" accept=".json" style="display:none" onchange="importData(event)" />
+            <button class="btn btn-danger" onclick="resetToDefaults()"><i data-lucide="rotate-ccw" style="width:14px;height:14px"></i> Reset to Defaults</button>
+          </div>
+          <p style="color:#4b5563;font-size:.75rem;line-height:1.6">Export creates a full JSON backup. Import restores from a backup file. Reset clears all custom data and reloads defaults.</p>
         </div>
 
-        <!-- PROJECTS TAB -->
-        <div id="tab-projects" class="tab-pane">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem">
-                <h2 style="color:#fff; font-size:1.125rem; font-weight:600">Projects</h2>
-                <button class="btn btn-primary" style="font-size:.8125rem" onclick="openModal('projects')">
-                    <i data-lucide="plus" class="w-4 h-4"></i> Add Project
-                </button>
-            </div>
-            <div id="projects-list"></div>
+        <!-- How it works -->
+        <div class="section-card">
+          <h3><i data-lucide="info" style="width:15px;height:15px;color:#c084fc"></i> How It Works</h3>
+          <ul style="color:#6b7280;font-size:.8125rem;line-height:2.1;list-style:none">
+            <li>&#8226; Changes are saved to your browser's <strong style="color:#9ca3af">localStorage</strong></li>
+            <li>&#8226; The portfolio reads from localStorage automatically — changes appear on refresh</li>
+            <li>&#8226; Use <strong style="color:#9ca3af">Export</strong> to download a backup before clearing browser data</li>
+            <li>&#8226; Use <strong style="color:#9ca3af">Import</strong> on another device to sync your data</li>
+            <li>&#8226; The admin link is in the portfolio footer (small "Admin" link)</li>
+          </ul>
         </div>
 
-        <!-- CERTIFICATIONS TAB -->
-        <div id="tab-certifications" class="tab-pane">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem">
-                <h2 style="color:#fff; font-size:1.125rem; font-weight:600">Certifications &amp; Achievements</h2>
-                <button class="btn btn-primary" style="font-size:.8125rem" onclick="openModal('certifications')">
-                    <i data-lucide="plus" class="w-4 h-4"></i> Add Cert
-                </button>
-            </div>
-            <div id="certifications-list"></div>
-        </div>
+      </div>
+    </div>
 
-        <!-- BLOG TAB -->
-        <div id="tab-blog" class="tab-pane">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem">
-                <h2 style="color:#fff; font-size:1.125rem; font-weight:600">Blog &amp; Writeups</h2>
-                <button class="btn btn-primary" style="font-size:.8125rem" onclick="openModal('blog')">
-                    <i data-lucide="plus" class="w-4 h-4"></i> Add Post
-                </button>
-            </div>
-            <div id="blog-list"></div>
-        </div>
-
-        <!-- SKILLS TAB -->
-        <div id="tab-skills" class="tab-pane">
-            <h2 style="color:#fff; font-size:1.125rem; font-weight:600; margin-bottom:1.5rem">Skills (comma-separated)</h2>
-            <div class="glass rounded-xl" style="padding:1.25rem">
-                <div class="field-group"><label>Cybersecurity Skills</label><textarea id="skills-cybersecurity" rows="2" placeholder="Penetration Testing, Red Teaming, OSINT..."></textarea></div>
-                <div class="field-group"><label>Programming Languages</label><textarea id="skills-programming" rows="2" placeholder="Python, JavaScript, C, Rust..."></textarea></div>
-                <div class="field-group"><label>Frontend</label><textarea id="skills-frontend" rows="2" placeholder="React, Next.js, HTML5, Tailwind CSS..."></textarea></div>
-                <div class="field-group"><label>Backend</label><textarea id="skills-backend" rows="2" placeholder="Node.js, Express.js, Django..."></textarea></div>
-                <div class="field-group"><label>Databases</label><input type="text" id="skills-databases" placeholder="MongoDB, PostgreSQL, MySQL..." /></div>
-                <div class="field-group"><label>DevOps / Cloud</label><textarea id="skills-devops" rows="2" placeholder="Docker, Git, GitHub Actions, AWS..."></textarea></div>
-                <div class="field-group"><label>Security Tools</label><textarea id="skills-tools" rows="2" placeholder="Burp Suite, Wireshark, Nmap, Metasploit..."></textarea></div>
-                <div class="field-group"><label>AI / ML</label><textarea id="skills-ai_ml" rows="2" placeholder="TensorFlow, NLP, Computer Vision..."></textarea></div>
-                <div class="field-group"><label>Creative Skills</label><input type="text" id="skills-creative" placeholder="Photography, Videography, Lightroom..." /></div>
-                <button class="btn btn-primary" onclick="saveSkills()">
-                    <i data-lucide="save" class="w-4 h-4"></i> Save Skills
-                </button>
-            </div>
-        </div>
-
-        <!-- CONTACT TAB -->
-        <div id="tab-contact" class="tab-pane">
-            <h2 style="color:#fff; font-size:1.125rem; font-weight:600; margin-bottom:1.5rem">Contact Information</h2>
-            <div class="glass rounded-xl" style="padding:1.25rem">
-                <div class="form-grid">
-                    <div class="field-group"><label>Email</label><input type="email" id="contact-email" placeholder="your@email.com" /></div>
-                    <div class="field-group"><label>GitHub URL</label><input type="url" id="contact-github" placeholder="https://github.com/..." /></div>
-                    <div class="field-group"><label>LinkedIn URL</label><input type="url" id="contact-linkedin" placeholder="https://linkedin.com/in/..." /></div>
-                    <div class="field-group"><label>Twitter / X URL</label><input type="url" id="contact-twitter" placeholder="https://x.com/..." /></div>
-                    <div class="field-group"><label>Instagram URL</label><input type="url" id="contact-instagram" placeholder="https://instagram.com/..." /></div>
-                    <div class="field-group"><label>Portfolio URL</label><input type="url" id="contact-portfolio" placeholder="https://..." /></div>
-                </div>
-                <button class="btn btn-primary" style="margin-top:.5rem" onclick="saveContact()">
-                    <i data-lucide="save" class="w-4 h-4"></i> Save Contact
-                </button>
-            </div>
-        </div>
-
-        <!-- SETTINGS TAB -->
-        <div id="tab-settings" class="tab-pane">
-            <h2 style="color:#fff; font-size:1.125rem; font-weight:600; margin-bottom:1.5rem">Settings</h2>
-            <div style="display:flex; flex-direction:column; gap:1.25rem">
-                <!-- Change Password -->
-                <div class="glass rounded-xl" style="padding:1.25rem">
-                    <h3 style="color:#fff; font-size:.875rem; font-weight:600; margin-bottom:1rem">Change Password</h3>
-                    <div class="form-grid">
-                        <div class="field-group"><label>Current Password</label><input type="password" id="cur-pass" /></div>
-                        <div class="field-group"><label>New Password</label><input type="password" id="new-pass" /></div>
-                        <div class="field-group"><label>Confirm New Password</label><input type="password" id="confirm-pass" /></div>
-                    </div>
-                    <button class="btn btn-primary" style="margin-top:.5rem" onclick="changePassword()">
-                        <i data-lucide="key" class="w-4 h-4"></i> Change Password
-                    </button>
-                </div>
-                <!-- Data Management -->
-                <div class="glass rounded-xl" style="padding:1.25rem">
-                    <h3 style="color:#fff; font-size:.875rem; font-weight:600; margin-bottom:1rem">Data Management</h3>
-                    <div style="display:flex; flex-wrap:wrap; gap:.75rem">
-                        <button class="btn btn-success" onclick="exportData()">
-                            <i data-lucide="download" class="w-4 h-4"></i> Export JSON Backup
-                        </button>
-                        <button class="btn btn-ghost" onclick="document.getElementById('import-input2').click()">
-                            <i data-lucide="upload" class="w-4 h-4"></i> Import JSON
-                        </button>
-                        <input type="file" id="import-input2" accept=".json" style="display:none" onchange="importData(event)" />
-                        <button class="btn btn-danger" onclick="resetToDefaults()">
-                            <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset to Defaults
-                        </button>
-                    </div>
-                    <p style="color:#4b5563; font-size:.75rem; margin-top:.75rem">Export creates a JSON backup. Import restores from a backup file. Reset clears all custom data and reloads defaults.</p>
-                </div>
-                <!-- Info -->
-                <div class="glass rounded-xl" style="padding:1.25rem">
-                    <h3 style="color:#fff; font-size:.875rem; font-weight:600; margin-bottom:.75rem">How it works</h3>
-                    <ul style="color:#6b7280; font-size:.75rem; line-height:1.8">
-                        <li>&#8226; Changes are saved to your browser's <strong style="color:#9ca3af">localStorage</strong></li>
-                        <li>&#8226; The portfolio reads from localStorage automatically &mdash; changes appear instantly when you refresh</li>
-                        <li>&#8226; Use <strong style="color:#9ca3af">Export</strong> to download a backup JSON before clearing browser data</li>
-                        <li>&#8226; Use <strong style="color:#9ca3af">Import</strong> on another device to sync your data</li>
-                        <li>&#8226; The admin link is in the portfolio footer (small "Admin" link)</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-    </main>
+  </main>
 </div>
 
 <!-- Modal -->
 <div id="modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal()">
-    <div class="modal-box">
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem">
-            <h3 id="modal-title" style="color:#fff; font-size:1rem; font-weight:600"></h3>
-            <button onclick="closeModal()" style="color:#6b7280; background:none; border:none; cursor:pointer">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-        </div>
-        <div id="modal-body"></div>
-        <div style="display:flex; justify-content:flex-end; gap:.75rem; margin-top:1.25rem">
-            <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-            <button class="btn btn-primary" onclick="saveModal()">
-                <i data-lucide="save" class="w-4 h-4"></i> Save
-            </button>
-        </div>
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,.07)">
+      <h3 style="color:#fff;font-size:.9375rem;font-weight:600;display:flex;align-items:center;gap:.5rem">
+        <span style="width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#6A0DAD,#1E90FF);display:inline-block;flex-shrink:0"></span>
+        <span id="modal-title"></span>
+      </h3>
+      <button onclick="closeModal()" style="color:#6b7280;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);cursor:pointer;border-radius:.375rem;padding:.3rem;display:flex;align-items:center">
+        <i data-lucide="x" style="width:16px;height:16px"></i>
+      </button>
     </div>
+    <div id="modal-body"></div>
+    <div style="display:flex;justify-content:flex-end;gap:.75rem;margin-top:1.25rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.07)">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveModal()"><i data-lucide="save" style="width:14px;height:14px"></i> Save</button>
+    </div>
+  </div>
 </div>
 
 <script>
-// ============ CRYPTO UTILS ============
-async function sha256(message) {
-    const msgBuffer = new TextEncoder().encode(message);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+// ══════════════════════════════════
+// CRYPTO UTILITIES
+// ══════════════════════════════════
+
+function generateSalt() {
+    const arr = new Uint8Array(16);
+    crypto.getRandomValues(arr);
+    return Array.from(arr).map(b => b.toString(16).padStart(2,'0')).join('');
 }
 
-// ============ AUTH ============
-const SESSION_KEY = 'sa_admin_session';
-const PASS_KEY = 'sa_admin_hash';
+async function pbkdf2Hash(password, salt) {
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+        'raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']
+    );
+    const bits = await crypto.subtle.deriveBits(
+        { name: 'PBKDF2', salt: enc.encode(salt), iterations: 310000, hash: 'SHA-256' },
+        keyMaterial, 256
+    );
+    return Array.from(new Uint8Array(bits)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// Legacy SHA-256 for backward-compatible migration only
+async function sha256(message) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(message));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function makeStoredHash(password) {
+    const salt = generateSalt();
+    const hash = await pbkdf2Hash(password, salt);
+    return 'v2:' + salt + ':' + hash;
+}
+
+async function verifyPassword(password, stored) {
+    if (!stored) return false;
+    if (stored.startsWith('v2:')) {
+        // Format: "v2:<hex-salt>:<hex-hash>"
+        // Both salt and hash are lowercase hex (0-9, a-f) and never contain colons,
+        // so splitting on the second colon is unambiguous.
+        const firstColon = stored.indexOf(':');
+        const secondColon = stored.indexOf(':', firstColon + 1);
+        const salt = stored.substring(firstColon + 1, secondColon);
+        const expectedHash = stored.substring(secondColon + 1);
+        const actualHash = await pbkdf2Hash(password, salt);
+        return actualHash === expectedHash;
+    } else {
+        // Legacy SHA-256 (old installations)
+        return (await sha256(password)) === stored;
+    }
+}
+
+// ══════════════════════════════════
+// PASSWORD STRENGTH
+// ══════════════════════════════════
+
+function getStrength(pass) {
+    if (!pass) return 0;
+    let s = 0;
+    if (pass.length >= 8) s++;
+    if (pass.length >= 12) s++;
+    if (/[A-Z]/.test(pass)) s++;
+    if (/[0-9]/.test(pass)) s++;
+    if (/[^A-Za-z0-9]/.test(pass)) s++;
+    return s;
+}
+
+const STRENGTH_INFO = [
+    { label: '', color: '' },
+    { label: 'Very Weak', color: '#ef4444' },
+    { label: 'Weak', color: '#f97316' },
+    { label: 'Fair', color: '#eab308' },
+    { label: 'Good', color: '#84cc16' },
+    { label: 'Strong', color: '#22c55e' },
+];
+
+function updateStrength(pass, prefix) {
+    const score = getStrength(pass);
+    const pct = pass ? Math.max(10, score * 20) : 0;
+    const info = STRENGTH_INFO[Math.min(score, 5)];
+    const bar = document.getElementById(prefix + '-strength-bar');
+    const lbl = document.getElementById(prefix + '-strength-label');
+    if (bar) { bar.style.width = pct + '%'; bar.style.background = info.color || 'transparent'; }
+    if (lbl) { lbl.textContent = info.label; lbl.style.color = info.color || '#6b7280'; }
+}
+
+function toggleVis(inputId, iconId) {
+    const inp = document.getElementById(inputId);
+    const ico = document.getElementById(iconId);
+    if (!inp) return;
+    if (inp.type === 'password') {
+        inp.type = 'text';
+        if (ico) { ico.setAttribute('data-lucide','eye-off'); lucide.createIcons({ nodes: [ico] }); }
+    } else {
+        inp.type = 'password';
+        if (ico) { ico.setAttribute('data-lucide','eye'); lucide.createIcons({ nodes: [ico] }); }
+    }
+}
+
+// ══════════════════════════════════
+// AUTH & RATE LIMITING
+// ══════════════════════════════════
+
+const SESSION_KEY  = 'sa_admin_session';
+const PASS_KEY     = 'sa_admin_hash';
+const ATTEMPTS_KEY = 'sa_login_attempts';
+const LOCKOUT_KEY  = 'sa_login_lockout';
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_SECS = 60;
+
+function getAttempts()  { return parseInt(sessionStorage.getItem(ATTEMPTS_KEY) || '0'); }
+function getLockoutEnd(){ return parseInt(sessionStorage.getItem(LOCKOUT_KEY)  || '0'); }
+function isLockedOut()  { return Date.now() < getLockoutEnd(); }
+
+function recordFailedAttempt() {
+    const attempts = getAttempts() + 1;
+    sessionStorage.setItem(ATTEMPTS_KEY, String(attempts));
+    if (attempts >= MAX_ATTEMPTS) {
+        sessionStorage.setItem(LOCKOUT_KEY, String(Date.now() + LOCKOUT_SECS * 1000));
+        startLockoutCountdown();
+    } else {
+        const remaining = MAX_ATTEMPTS - attempts;
+        const hint = document.getElementById('attempts-hint');
+        if (hint) {
+            hint.style.display = 'block';
+            hint.textContent = remaining + ' attempt' + (remaining !== 1 ? 's' : '') + ' remaining before lockout';
+        }
+    }
+}
+
+function resetAttempts() {
+    sessionStorage.removeItem(ATTEMPTS_KEY);
+    sessionStorage.removeItem(LOCKOUT_KEY);
+    const hint = document.getElementById('attempts-hint');
+    if (hint) hint.style.display = 'none';
+}
+
+let lockoutInterval;
+function startLockoutCountdown() {
+    const banner   = document.getElementById('lockout-banner');
+    const counter  = document.getElementById('lockout-counter');
+    const loginBtn = document.getElementById('login-btn');
+    const loginInp = document.getElementById('login-pass');
+    if (banner)   banner.style.display = 'flex';
+    if (loginBtn) loginBtn.disabled = true;
+    if (loginInp) loginInp.disabled = true;
+    const hint = document.getElementById('attempts-hint');
+    if (hint) hint.style.display = 'none';
+
+    clearInterval(lockoutInterval);
+    lockoutInterval = setInterval(function() {
+        const remaining = Math.ceil((getLockoutEnd() - Date.now()) / 1000);
+        if (remaining <= 0) {
+            clearInterval(lockoutInterval);
+            sessionStorage.setItem(ATTEMPTS_KEY, '0');
+            sessionStorage.removeItem(LOCKOUT_KEY);
+            if (banner)   banner.style.display = 'none';
+            if (loginBtn) loginBtn.disabled = false;
+            if (loginInp) { loginInp.disabled = false; loginInp.focus(); }
+        } else {
+            if (counter) counter.textContent = remaining;
+        }
+    }, 500);
+}
 
 async function login() {
+    if (isLockedOut()) return;
     const pass = document.getElementById('login-pass').value;
     if (!pass) return;
-    const hash = await sha256(pass);
+
+    const btn = document.getElementById('login-btn');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i data-lucide="loader" style="width:15px;height:15px"></i> Verifying…'; lucide.createIcons({ nodes: [btn] }); }
+
     const stored = localStorage.getItem(PASS_KEY);
-    if (hash === stored) {
+    const ok = await verifyPassword(pass, stored);
+
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="log-in" style="width:15px;height:15px"></i> Sign In'; lucide.createIcons({ nodes: [btn] }); }
+
+    if (ok) {
+        // Silently migrate legacy SHA-256 hash to PBKDF2 on first successful login
+        if (stored && !stored.startsWith('v2:')) {
+            const upgraded = await makeStoredHash(pass);
+            localStorage.setItem(PASS_KEY, upgraded);
+        }
+        resetAttempts();
         sessionStorage.setItem(SESSION_KEY, '1');
         showApp();
     } else {
-        const err = document.getElementById('login-err');
-        err.style.display = 'block';
+        recordFailedAttempt();
         document.getElementById('login-pass').value = '';
-        setTimeout(() => { err.style.display = 'none'; }, 3000);
+        const err = document.getElementById('login-err');
+        if (err) { err.style.display = 'block'; setTimeout(function(){ err.style.display = 'none'; }, 3500); }
     }
 }
 
@@ -328,21 +843,23 @@ async function setupPassword() {
     const p1 = document.getElementById('setup-pass').value;
     const p2 = document.getElementById('setup-confirm').value;
     if (!p1) return showToast('Please enter a password.', 'error');
-    if (p1 !== p2) return showToast('Passwords do not match.', 'error');
     if (p1.length < 8) return showToast('Password must be at least 8 characters.', 'error');
-    const hash = await sha256(p1);
-    localStorage.setItem(PASS_KEY, hash);
+    if (getStrength(p1) < 2) return showToast('Password is too weak. Add uppercase letters, numbers, or symbols.', 'error');
+    if (p1 !== p2) return showToast('Passwords do not match.', 'error');
+    const stored = await makeStoredHash(p1);
+    localStorage.setItem(PASS_KEY, stored);
     sessionStorage.setItem(SESSION_KEY, '1');
     showApp();
 }
 
 function logout() {
     sessionStorage.removeItem(SESSION_KEY);
+    clearSessionTimer();
     location.reload();
 }
 
 function forgotPassword() {
-    if (!confirm('This will remove your stored password. You will need to set a new one. Your portfolio data will be preserved.\n\nContinue?')) return;
+    if (!confirm('This will remove your stored password hash.\nYour portfolio data will be preserved.\n\nYou will need to set a new password. Continue?')) return;
     localStorage.removeItem(PASS_KEY);
     sessionStorage.removeItem(SESSION_KEY);
     location.reload();
@@ -350,43 +867,110 @@ function forgotPassword() {
 
 async function changePassword() {
     const cur = document.getElementById('cur-pass').value;
-    const nw = document.getElementById('new-pass').value;
-    const cf = document.getElementById('confirm-pass').value;
-    if (!cur || !nw || !cf) return showToast('Fill in all fields.', 'error');
+    const nw  = document.getElementById('new-pass').value;
+    const cf  = document.getElementById('confirm-pass').value;
+    if (!cur || !nw || !cf) return showToast('Please fill in all fields.', 'error');
+    if (nw.length < 8) return showToast('New password must be at least 8 characters.', 'error');
+    if (getStrength(nw) < 2) return showToast('New password is too weak.', 'error');
     if (nw !== cf) return showToast('New passwords do not match.', 'error');
-    if (nw.length < 8) return showToast('Password must be at least 8 characters.', 'error');
-    const curHash = await sha256(cur);
-    if (curHash !== localStorage.getItem(PASS_KEY)) return showToast('Current password is incorrect.', 'error');
-    const newHash = await sha256(nw);
-    localStorage.setItem(PASS_KEY, newHash);
+    const ok = await verifyPassword(cur, localStorage.getItem(PASS_KEY));
+    if (!ok) return showToast('Current password is incorrect.', 'error');
+    const stored = await makeStoredHash(nw);
+    localStorage.setItem(PASS_KEY, stored);
     document.getElementById('cur-pass').value = '';
     document.getElementById('new-pass').value = '';
     document.getElementById('confirm-pass').value = '';
-    showToast('Password changed successfully!', 'success');
+    updateStrength('', 'change');
+    showToast('Password updated successfully!', 'success');
 }
 
-// ============ SHOW APP ============
+// ══════════════════════════════════
+// SESSION TIMEOUT
+// ══════════════════════════════════
+
+const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
+const WARN_BEFORE_MS     =  5 * 60 * 1000;
+let sessionExpiry = 0;
+let sessionTimerInterval;
+
+function startSessionTimer() {
+    sessionExpiry = Date.now() + SESSION_TIMEOUT_MS;
+    clearInterval(sessionTimerInterval);
+    sessionTimerInterval = setInterval(tickSession, 1000);
+    ['mousemove','keydown','click','touchstart'].forEach(function(ev) {
+        document.addEventListener(ev, resetSessionExpiry, { passive: true });
+    });
+}
+
+function resetSessionExpiry() {
+    sessionExpiry = Date.now() + SESSION_TIMEOUT_MS;
+    var badge = document.getElementById('session-badge');
+    if (badge) badge.classList.remove('warning');
+}
+
+function clearSessionTimer() {
+    clearInterval(sessionTimerInterval);
+    ['mousemove','keydown','click','touchstart'].forEach(function(ev) {
+        document.removeEventListener(ev, resetSessionExpiry);
+    });
+}
+
+function tickSession() {
+    var remaining = sessionExpiry - Date.now();
+    if (remaining <= 0) {
+        clearSessionTimer();
+        sessionStorage.removeItem(SESSION_KEY);
+        // Use a toast then redirect instead of blocking alert()
+        showToast('Session expired. Redirecting to login…', 'error');
+        setTimeout(function() { location.reload(); }, 1500);
+        return;
+    }
+    var mins = Math.floor(remaining / 60000);
+    var secs = Math.floor((remaining % 60000) / 1000);
+    var timerEl = document.getElementById('session-timer');
+    if (timerEl) timerEl.textContent = String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+    var badge = document.getElementById('session-badge');
+    if (badge) {
+        if (remaining <= WARN_BEFORE_MS) badge.classList.add('warning');
+        else badge.classList.remove('warning');
+    }
+}
+
+// ══════════════════════════════════
+// SHOW APP
+// ══════════════════════════════════
+
 function showApp() {
     document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('admin-app').style.display = 'block';
+    document.getElementById('admin-app').style.display = 'grid';
     lucide.createIcons();
     loadAllData();
     initTabs();
+    startSessionTimer();
+    renderDashboard();
+    // Update security algorithm display
+    var stored  = localStorage.getItem(PASS_KEY);
+    var algoEl  = document.getElementById('sec-algo');
+    if (algoEl) algoEl.textContent = (stored && stored.startsWith('v2:')) ? 'PBKDF2-SHA256' : 'SHA-256 (legacy – login to upgrade)';
 }
 
 function checkSession() {
-    const stored = localStorage.getItem(PASS_KEY);
+    var stored = localStorage.getItem(PASS_KEY);
     if (!stored) {
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('setup-section').style.display = 'block';
     } else if (sessionStorage.getItem(SESSION_KEY) === '1') {
         showApp();
         return;
+    } else if (isLockedOut()) {
+        startLockoutCountdown();
     }
     lucide.createIcons();
 }
 
-// ============ DATA DEFAULTS ============
+// ══════════════════════════════════
+// DATA DEFAULTS
+// ══════════════════════════════════
 const DEFAULT_DATA = {
     about: {
         title: 'BTech in Cybersecurity <span class="text-cosmic-purple">@ RRU</span>',
@@ -449,9 +1033,12 @@ const DEFAULT_DATA = {
     }
 };
 
-// ============ DATA UTILS ============
+// ══════════════════════════════════
+// DATA UTILS
+// ══════════════════════════════════
+
 function getData() {
-    try { const s = localStorage.getItem('portfolioData'); if (s) return JSON.parse(s); } catch(e) {}
+    try { var s = localStorage.getItem('portfolioData'); if (s) return JSON.parse(s); } catch(e) {}
     return JSON.parse(JSON.stringify(DEFAULT_DATA));
 }
 function saveData(data) { localStorage.setItem('portfolioData', JSON.stringify(data)); }
@@ -459,68 +1046,126 @@ function escAttr(str) {
     return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ============ TABS ============
+// ══════════════════════════════════
+// TABS
+// ══════════════════════════════════
+
 function initTabs() {
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-        });
+    function activateTab(tabName) {
+        document.querySelectorAll('.nav-item').forEach(function(b)    { b.classList.toggle('active', b.dataset.tab === tabName); });
+        document.querySelectorAll('.mobile-tab').forEach(function(b)  { b.classList.toggle('active', b.dataset.tab === tabName); });
+        document.querySelectorAll('.tab-pane').forEach(function(p)    { p.classList.remove('active'); });
+        var pane = document.getElementById('tab-' + tabName);
+        if (pane) pane.classList.add('active');
+    }
+    document.querySelectorAll('.nav-item, .mobile-tab').forEach(function(btn) {
+        btn.addEventListener('click', function() { activateTab(btn.dataset.tab); });
     });
 }
 
-// ============ LOAD DATA INTO FORMS ============
+// ══════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════
+
+function renderDashboard() {
+    var data = getData();
+    var exp  = (data.experience     || DEFAULT_DATA.experience).length;
+    var proj = (data.projects       || DEFAULT_DATA.projects).length;
+    var cert = (data.certifications || DEFAULT_DATA.certifications).length;
+    var blog = (data.blog           || DEFAULT_DATA.blog).length;
+
+    var statsEl = document.getElementById('dash-stats');
+    if (statsEl) {
+        var stats = [
+            { label: 'Experience',      value: exp,  color: '#6A0DAD' },
+            { label: 'Projects',        value: proj, color: '#1E90FF' },
+            { label: 'Certifications',  value: cert, color: '#39FF14' },
+            { label: 'Blog Posts',      value: blog, color: '#f59e0b' },
+        ];
+        statsEl.innerHTML = stats.map(function(s) {
+            return '<div class="stat-card">' +
+                '<div class="stat-card-value" style="color:' + s.color + '">' + s.value + '</div>' +
+                '<div class="stat-card-label">' + s.label + '</div>' +
+                '</div>';
+        }).join('');
+    }
+
+    var dateEl = document.getElementById('dash-date');
+    if (dateEl) dateEl.textContent = new Date().toLocaleDateString(navigator.language || 'en', { weekday:'short', month:'short', day:'numeric', year:'numeric' });
+
+    var storageEl = document.getElementById('storage-info');
+    if (storageEl) {
+        try {
+            var total = 0;
+            Object.keys(localStorage).forEach(function(k) {
+                total += (localStorage.getItem(k) || '').length * 2;
+            });
+            var kb = (total / 1024).toFixed(1);
+            var keys = Object.keys(localStorage).filter(function(k) { return k.startsWith('sa_') || k === 'portfolioData'; });
+            storageEl.innerHTML =
+                '<p>Estimated localStorage usage: <strong style="color:#9ca3af">~' + kb + ' KB</strong></p>' +
+                '<p style="margin-top:.25rem">Admin keys: <code style="font-family:\'JetBrains Mono\',monospace;color:#9ca3af;font-size:.75rem">' + escAttr(keys.join(', ')) + '</code></p>';
+        } catch(e) {
+            storageEl.textContent = 'Unable to read storage info.';
+        }
+    }
+}
+
+// ══════════════════════════════════
+// LOAD DATA INTO FORMS
+// ══════════════════════════════════
+
 function loadAllData() {
-    const data = getData();
-    // About
-    const ab = Object.assign({}, DEFAULT_DATA.about, data.about || {});
-    document.getElementById('about-title').value = ab.title;
-    document.getElementById('about-bio1').value = ab.bio1;
-    document.getElementById('about-bio2').value = ab.bio2;
+    var data = getData();
+    var ab = Object.assign({}, DEFAULT_DATA.about, data.about || {});
+    document.getElementById('about-title').value       = ab.title;
+    document.getElementById('about-bio1').value        = ab.bio1;
+    document.getElementById('about-bio2').value        = ab.bio2;
     document.getElementById('about-statProjects').value = ab.statProjects;
-    document.getElementById('about-statCerts').value = ab.statCerts;
-    document.getElementById('about-statRoles').value = ab.statRoles;
-    // Skills
-    const sk = Object.assign({}, DEFAULT_DATA.skills, data.skills || {});
-    ['cybersecurity','programming','frontend','backend','databases','devops','tools','ai_ml','creative'].forEach(k => {
-        const el = document.getElementById('skills-' + k);
+    document.getElementById('about-statCerts').value   = ab.statCerts;
+    document.getElementById('about-statRoles').value   = ab.statRoles;
+
+    var sk = Object.assign({}, DEFAULT_DATA.skills, data.skills || {});
+    ['cybersecurity','programming','frontend','backend','databases','devops','tools','ai_ml','creative'].forEach(function(k) {
+        var el = document.getElementById('skills-' + k);
         if (el) el.value = sk[k] || '';
     });
-    // Contact
-    const ct = Object.assign({}, DEFAULT_DATA.contact, data.contact || {});
-    ['email','github','linkedin','twitter','instagram','portfolio'].forEach(k => {
-        const el = document.getElementById('contact-' + k);
+
+    var ct = Object.assign({}, DEFAULT_DATA.contact, data.contact || {});
+    ['email','github','linkedin','twitter','instagram','portfolio'].forEach(function(k) {
+        var el = document.getElementById('contact-' + k);
         if (el) el.value = ct[k] || '';
     });
-    // Lists
-    renderList('experience', data.experience || DEFAULT_DATA.experience);
-    renderList('projects', data.projects || DEFAULT_DATA.projects);
+
+    renderList('experience',     data.experience     || DEFAULT_DATA.experience);
+    renderList('projects',       data.projects       || DEFAULT_DATA.projects);
     renderList('certifications', data.certifications || DEFAULT_DATA.certifications);
-    renderList('blog', data.blog || DEFAULT_DATA.blog);
+    renderList('blog',           data.blog           || DEFAULT_DATA.blog);
 }
 
-// ============ SAVE FUNCTIONS ============
+// ══════════════════════════════════
+// SAVE FUNCTIONS
+// ══════════════════════════════════
+
 function saveAbout() {
-    const data = getData();
+    var data = getData();
     data.about = {
-        title: document.getElementById('about-title').value,
-        bio1: document.getElementById('about-bio1').value,
-        bio2: document.getElementById('about-bio2').value,
+        title:        document.getElementById('about-title').value,
+        bio1:         document.getElementById('about-bio1').value,
+        bio2:         document.getElementById('about-bio2').value,
         statProjects: document.getElementById('about-statProjects').value,
-        statCerts: document.getElementById('about-statCerts').value,
-        statRoles: document.getElementById('about-statRoles').value,
+        statCerts:    document.getElementById('about-statCerts').value,
+        statRoles:    document.getElementById('about-statRoles').value,
     };
     saveData(data);
     showToast('About section saved!', 'success');
 }
 
 function saveSkills() {
-    const data = getData();
+    var data = getData();
     data.skills = {};
-    ['cybersecurity','programming','frontend','backend','databases','devops','tools','ai_ml','creative'].forEach(k => {
-        const el = document.getElementById('skills-' + k);
+    ['cybersecurity','programming','frontend','backend','databases','devops','tools','ai_ml','creative'].forEach(function(k) {
+        var el = document.getElementById('skills-' + k);
         if (el) data.skills[k] = el.value;
     });
     saveData(data);
@@ -528,135 +1173,130 @@ function saveSkills() {
 }
 
 function saveContact() {
-    const data = getData();
+    var data = getData();
     data.contact = {};
-    ['email','github','linkedin','twitter','instagram','portfolio'].forEach(k => {
-        const el = document.getElementById('contact-' + k);
+    ['email','github','linkedin','twitter','instagram','portfolio'].forEach(function(k) {
+        var el = document.getElementById('contact-' + k);
         if (el) data.contact[k] = el.value;
     });
     saveData(data);
     showToast('Contact info saved!', 'success');
 }
 
-// ============ LIST RENDERERS ============
-const listLabels = {
-    experience: i => i.title + ' @ ' + i.org,
-    projects: i => i.name,
-    certifications: i => i.name,
-    blog: i => i.title
+// ══════════════════════════════════
+// LIST RENDERERS
+// ══════════════════════════════════
+
+var listLabels = {
+    experience:     function(i) { return i.title + ' @ ' + i.org; },
+    projects:       function(i) { return i.name; },
+    certifications: function(i) { return i.name; },
+    blog:           function(i) { return i.title; }
 };
-const listSubtitles = {
-    experience: i => i.period,
-    projects: i => (i.category || '') + (i.tech ? ' · ' + i.tech : ''),
-    certifications: i => i.issuer,
-    blog: i => (i.category || '') + (i.date ? ' · ' + i.date : '')
+var listSubtitles = {
+    experience:     function(i) { return i.period; },
+    projects:       function(i) { return (i.category || '') + (i.tech ? ' · ' + i.tech : ''); },
+    certifications: function(i) { return i.issuer; },
+    blog:           function(i) { return (i.category || '') + (i.date ? ' · ' + i.date : ''); }
+};
+var listIcons = {
+    experience: 'briefcase', projects: 'code-2', certifications: 'award', blog: 'file-text'
 };
 
 function renderList(section, items) {
-    const container = document.getElementById(section + '-list');
+    var container = document.getElementById(section + '-list');
     if (!container) return;
     if (!items || !items.length) {
-        container.innerHTML = '<p style="color:#4b5563; font-size:.875rem">No entries yet. Click "Add" to create one.</p>';
+        container.innerHTML = '<p style="color:#4b5563;font-size:.875rem;text-align:center;padding:2rem 0">No entries yet. Click &ldquo;Add&rdquo; to create one.</p>';
         return;
     }
-    container.innerHTML = items.map((item, idx) => `
-        <div class="card-item" style="display:flex; align-items:center; justify-content:space-between; gap:1rem">
-            <div style="min-width:0; flex:1">
-                <p style="color:#fff; font-size:.875rem; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${escAttr(listLabels[section](item))}</p>
-                <p style="color:#6b7280; font-size:.75rem; margin-top:.2rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${escAttr(listSubtitles[section](item))}</p>
-            </div>
-            <div style="display:flex; gap:.5rem; flex-shrink:0">
-                <button class="btn btn-ghost" style="font-size:.75rem; padding:.3rem .7rem" onclick="openModal('${section}',${idx})">
-                    <i data-lucide="edit-3" style="width:14px;height:14px"></i>
-                </button>
-                <button class="btn btn-danger" style="font-size:.75rem; padding:.3rem .7rem" onclick="deleteItem('${section}',${idx})">
-                    <i data-lucide="trash-2" style="width:14px;height:14px"></i>
-                </button>
-            </div>
-        </div>
-    `).join('');
+    container.innerHTML = items.map(function(item, idx) {
+        return '<div class="card-item">' +
+            '<div style="display:flex;align-items:center;gap:.75rem;min-width:0;flex:1">' +
+            '<div style="width:36px;height:36px;border-radius:.5rem;background:rgba(106,13,173,.15);border:1px solid rgba(106,13,173,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">' +
+            '<i data-lucide="' + listIcons[section] + '" style="width:15px;height:15px;color:#c084fc"></i>' +
+            '</div>' +
+            '<div style="min-width:0">' +
+            '<p style="color:#e5e7eb;font-size:.875rem;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escAttr(listLabels[section](item)) + '</p>' +
+            '<p style="color:#6b7280;font-size:.75rem;margin-top:.125rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escAttr(listSubtitles[section](item)) + '</p>' +
+            '</div></div>' +
+            '<div style="display:flex;gap:.375rem;flex-shrink:0">' +
+            '<button class="btn btn-ghost" style="font-size:.75rem;padding:.3rem .6rem" onclick="openModal(\'' + section + '\',' + idx + ')" title="Edit"><i data-lucide="pencil" style="width:13px;height:13px"></i></button>' +
+            '<button class="btn btn-danger" style="font-size:.75rem;padding:.3rem .6rem" onclick="deleteItem(\'' + section + '\',' + idx + ')" title="Delete"><i data-lucide="trash-2" style="width:13px;height:13px"></i></button>' +
+            '</div></div>';
+    }).join('');
     lucide.createIcons({ nodes: Array.from(container.querySelectorAll('[data-lucide]')) });
 }
 
 function deleteItem(section, idx) {
-    if (!confirm('Delete this entry?')) return;
-    const data = getData();
+    if (!confirm('Delete this entry? This cannot be undone.')) return;
+    var data = getData();
     if (!data[section]) data[section] = JSON.parse(JSON.stringify(DEFAULT_DATA[section]));
     data[section].splice(idx, 1);
     saveData(data);
     renderList(section, data[section]);
-    showToast('Deleted.', 'success');
+    renderDashboard();
+    showToast('Entry deleted.', 'success');
 }
 
-// ============ MODAL FORMS ============
-let modalSection = null;
-let modalIdx = null;
+// ══════════════════════════════════
+// MODAL FORMS
+// ══════════════════════════════════
+
+var modalSection = null;
+var modalIdx     = null;
 
 function getModalForm(section, item) {
-    const v = (key) => escAttr(item[key] || '');
-    if (section === 'experience') return `
-        <div class="field-group"><label>Title / Role *</label><input type="text" id="mf-title" value="${v('title')}" placeholder="Campus Lead" /></div>
-        <div class="field-group"><label>Organisation *</label><input type="text" id="mf-org" value="${v('org')}" placeholder="Open Source Connect" /></div>
-        <div class="field-group"><label>Period</label><input type="text" id="mf-period" value="${v('period')}" placeholder="2025 - Present" /></div>
-        <div class="field-group"><label>Description</label><textarea id="mf-desc" rows="3">${v('desc')}</textarea></div>
-        <div class="field-group"><label>Tags (comma-separated)</label><input type="text" id="mf-tags" value="${v('tags')}" placeholder="Leadership,Open Source,Community" /></div>
-    `;
-    if (section === 'projects') return `
-        <div class="form-grid">
-            <div class="field-group"><label>Project Name *</label><input type="text" id="mf-name" value="${v('name')}" placeholder="My Project" /></div>
-            <div class="field-group"><label>Category</label><input type="text" id="mf-category" value="${v('category')}" placeholder="Featured, Security, AI/ML..." /></div>
-        </div>
-        <div class="field-group"><label>Description</label><textarea id="mf-desc" rows="3">${v('desc')}</textarea></div>
-        <div class="field-group"><label>Tech Stack (comma-separated)</label><input type="text" id="mf-tech" value="${v('tech')}" placeholder="React,Node.js,MongoDB" /></div>
-        <div class="form-grid">
-            <div class="field-group"><label>GitHub URL</label><input type="url" id="mf-githubUrl" value="${v('githubUrl')}" placeholder="https://github.com/..." /></div>
-            <div class="field-group"><label>Live Demo URL</label><input type="url" id="mf-liveUrl" value="${v('liveUrl')}" placeholder="https://..." /></div>
-        </div>
-        <div class="form-grid">
-            <div class="field-group"><label>Card Gradient (Tailwind)</label><input type="text" id="mf-gradient" value="${item.gradient || 'from-cosmic-purple/30 to-nebula-blue/30'}" placeholder="from-cosmic-purple/30 to-nebula-blue/30" /></div>
-            <div class="field-group"><label>Icon (Lucide name)</label><input type="text" id="mf-icon" value="${item.icon || 'code'}" placeholder="globe, bug, lock, brain..." /></div>
-        </div>
-    `;
-    if (section === 'certifications') return `
-        <div class="form-grid">
-            <div class="field-group"><label>Certificate Name *</label><input type="text" id="mf-name" value="${v('name')}" placeholder="Python Programming" /></div>
-            <div class="field-group"><label>Issuer</label><input type="text" id="mf-issuer" value="${v('issuer')}" placeholder="NIELIT" /></div>
-        </div>
-        <div class="field-group"><label>File / Link URL</label><input type="text" id="mf-fileUrl" value="${v('fileUrl')}" placeholder="assets/certificates/... or https://..." /></div>
-        <div class="form-grid">
-            <div class="field-group"><label>Icon (Lucide name)</label><input type="text" id="mf-icon" value="${item.icon || 'award'}" placeholder="award, shield, brain, flag..." /></div>
-            <div class="field-group"><label>Color (Tailwind class)</label><input type="text" id="mf-color" value="${item.color || 'cosmic-purple'}" placeholder="cosmic-purple, nebula-blue, red-500..." /></div>
-        </div>
-    `;
-    if (section === 'blog') return `
-        <div class="field-group"><label>Post Title *</label><input type="text" id="mf-title" value="${v('title')}" placeholder="OWASP Top 10 Walkthrough" /></div>
-        <div class="form-grid">
-            <div class="field-group"><label>Category</label><input type="text" id="mf-category" value="${v('category')}" placeholder="Cybersecurity, Red Teaming..." /></div>
-            <div class="field-group"><label>Date</label><input type="text" id="mf-date" value="${v('date')}" placeholder="Feb 2026" /></div>
-        </div>
-        <div class="field-group"><label>Read Time (minutes)</label><input type="number" id="mf-readTime" value="${item.readTime || '5'}" min="1" /></div>
-        <div class="field-group"><label>Description / Excerpt</label><textarea id="mf-desc" rows="3">${v('desc')}</textarea></div>
-        <div class="field-group"><label>Post URL</label><input type="url" id="mf-url" value="${item.url || '#'}" placeholder="https://..." /></div>
-        <div class="form-grid">
-            <div class="field-group"><label>Accent Color (Tailwind)</label><input type="text" id="mf-accentColor" value="${item.accentColor || 'cyber-lime'}" placeholder="cyber-lime, cosmic-purple, nebula-blue..." /></div>
-            <div class="field-group"><label>Top Bar Gradient</label><input type="text" id="mf-gradient" value="${item.gradient || 'from-cyber-lime to-teal-500'}" placeholder="from-cyber-lime to-teal-500" /></div>
-        </div>
-    `;
+    var v = function(key) { return escAttr(item[key] || ''); };
+    if (section === 'experience') return '' +
+        '<div class="field-group"><label>Title / Role *</label><input type="text" id="mf-title" value="' + v('title') + '" placeholder="Campus Lead" /></div>' +
+        '<div class="field-group"><label>Organisation *</label><input type="text" id="mf-org" value="' + v('org') + '" placeholder="Open Source Connect" /></div>' +
+        '<div class="field-group"><label>Period</label><input type="text" id="mf-period" value="' + v('period') + '" placeholder="2025 - Present" /></div>' +
+        '<div class="field-group"><label>Description</label><textarea id="mf-desc" rows="3">' + v('desc') + '</textarea></div>' +
+        '<div class="field-group"><label>Tags (comma-separated)</label><input type="text" id="mf-tags" value="' + v('tags') + '" placeholder="Leadership,Open Source" /></div>';
+
+    if (section === 'projects') return '' +
+        '<div class="form-grid"><div class="field-group"><label>Project Name *</label><input type="text" id="mf-name" value="' + v('name') + '" placeholder="My Project" /></div>' +
+        '<div class="field-group"><label>Category</label><input type="text" id="mf-category" value="' + v('category') + '" placeholder="Featured, Security, AI/ML..." /></div></div>' +
+        '<div class="field-group"><label>Description</label><textarea id="mf-desc" rows="3">' + v('desc') + '</textarea></div>' +
+        '<div class="field-group"><label>Tech Stack (comma-separated)</label><input type="text" id="mf-tech" value="' + v('tech') + '" placeholder="React,Node.js,MongoDB" /></div>' +
+        '<div class="form-grid"><div class="field-group"><label>GitHub URL</label><input type="url" id="mf-githubUrl" value="' + v('githubUrl') + '" placeholder="https://github.com/..." /></div>' +
+        '<div class="field-group"><label>Live Demo URL</label><input type="url" id="mf-liveUrl" value="' + v('liveUrl') + '" placeholder="https://..." /></div></div>' +
+        '<div class="form-grid"><div class="field-group"><label>Card Gradient (Tailwind)</label><input type="text" id="mf-gradient" value="' + escAttr(item.gradient || 'from-cosmic-purple/30 to-nebula-blue/30') + '" /></div>' +
+        '<div class="field-group"><label>Icon (Lucide name)</label><input type="text" id="mf-icon" value="' + escAttr(item.icon || 'code') + '" placeholder="globe, bug, lock, brain..." /></div></div>';
+
+    if (section === 'certifications') return '' +
+        '<div class="form-grid"><div class="field-group"><label>Certificate Name *</label><input type="text" id="mf-name" value="' + v('name') + '" placeholder="Python Programming" /></div>' +
+        '<div class="field-group"><label>Issuer</label><input type="text" id="mf-issuer" value="' + v('issuer') + '" placeholder="NIELIT" /></div></div>' +
+        '<div class="field-group"><label>File / Link URL</label><input type="text" id="mf-fileUrl" value="' + v('fileUrl') + '" placeholder="assets/certificates/... or https://..." /></div>' +
+        '<div class="form-grid"><div class="field-group"><label>Icon (Lucide name)</label><input type="text" id="mf-icon" value="' + escAttr(item.icon || 'award') + '" placeholder="award, shield, brain..." /></div>' +
+        '<div class="field-group"><label>Color (Tailwind class)</label><input type="text" id="mf-color" value="' + escAttr(item.color || 'cosmic-purple') + '" placeholder="cosmic-purple, nebula-blue..." /></div></div>';
+
+    if (section === 'blog') return '' +
+        '<div class="field-group"><label>Post Title *</label><input type="text" id="mf-title" value="' + v('title') + '" placeholder="OWASP Top 10 Walkthrough" /></div>' +
+        '<div class="form-grid"><div class="field-group"><label>Category</label><input type="text" id="mf-category" value="' + v('category') + '" placeholder="Cybersecurity, Red Teaming..." /></div>' +
+        '<div class="field-group"><label>Date</label><input type="text" id="mf-date" value="' + v('date') + '" placeholder="Feb 2026" /></div></div>' +
+        '<div class="field-group"><label>Read Time (minutes)</label><input type="number" id="mf-readTime" value="' + escAttr(item.readTime || '5') + '" min="1" /></div>' +
+        '<div class="field-group"><label>Description / Excerpt</label><textarea id="mf-desc" rows="3">' + v('desc') + '</textarea></div>' +
+        '<div class="field-group"><label>Post URL</label><input type="url" id="mf-url" value="' + escAttr(item.url || '#') + '" placeholder="https://..." /></div>' +
+        '<div class="form-grid"><div class="field-group"><label>Accent Color</label><input type="text" id="mf-accentColor" value="' + escAttr(item.accentColor || 'cyber-lime') + '" /></div>' +
+        '<div class="field-group"><label>Top Bar Gradient</label><input type="text" id="mf-gradient" value="' + escAttr(item.gradient || 'from-cyber-lime to-teal-500') + '" /></div></div>';
+
     return '';
 }
 
-const modalTitles = {
-    experience: ['Add Experience Entry', 'Edit Experience Entry'],
-    projects: ['Add Project', 'Edit Project'],
-    certifications: ['Add Certification', 'Edit Certification'],
-    blog: ['Add Blog Post', 'Edit Blog Post']
+var modalTitles = {
+    experience:     ['Add Experience Entry',  'Edit Experience Entry'],
+    projects:       ['Add Project',           'Edit Project'],
+    certifications: ['Add Certification',     'Edit Certification'],
+    blog:           ['Add Blog Post',         'Edit Blog Post']
 };
 
 function openModal(section, idx) {
     modalSection = section;
     modalIdx = (idx !== undefined) ? idx : null;
-    const data = getData();
-    const item = (idx !== undefined) ? (data[section] || DEFAULT_DATA[section])[idx] || {} : {};
+    var data = getData();
+    var item = (idx !== undefined) ? (data[section] || DEFAULT_DATA[section])[idx] || {} : {};
     document.getElementById('modal-title').textContent = modalTitles[section][idx !== undefined ? 1 : 0];
     document.getElementById('modal-body').innerHTML = getModalForm(section, item);
     document.getElementById('modal').style.display = 'flex';
@@ -669,20 +1309,20 @@ function closeModal() {
 }
 
 function getModalValues(section) {
-    const val = (id) => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
-    if (section === 'experience') return { title: val('mf-title'), org: val('mf-org'), period: val('mf-period'), desc: val('mf-desc'), tags: val('mf-tags') };
-    if (section === 'projects') return { name: val('mf-name'), category: val('mf-category'), desc: val('mf-desc'), tech: val('mf-tech'), githubUrl: val('mf-githubUrl'), liveUrl: val('mf-liveUrl'), gradient: val('mf-gradient'), icon: val('mf-icon') };
+    var val = function(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; };
+    if (section === 'experience')     return { title: val('mf-title'), org: val('mf-org'), period: val('mf-period'), desc: val('mf-desc'), tags: val('mf-tags') };
+    if (section === 'projects')       return { name: val('mf-name'), category: val('mf-category'), desc: val('mf-desc'), tech: val('mf-tech'), githubUrl: val('mf-githubUrl'), liveUrl: val('mf-liveUrl'), gradient: val('mf-gradient'), icon: val('mf-icon') };
     if (section === 'certifications') return { name: val('mf-name'), issuer: val('mf-issuer'), fileUrl: val('mf-fileUrl'), icon: val('mf-icon'), color: val('mf-color') };
-    if (section === 'blog') return { title: val('mf-title'), category: val('mf-category'), date: val('mf-date'), readTime: val('mf-readTime'), desc: val('mf-desc'), url: val('mf-url'), accentColor: val('mf-accentColor'), gradient: val('mf-gradient') };
+    if (section === 'blog')           return { title: val('mf-title'), category: val('mf-category'), date: val('mf-date'), readTime: val('mf-readTime'), desc: val('mf-desc'), url: val('mf-url'), accentColor: val('mf-accentColor'), gradient: val('mf-gradient') };
     return {};
 }
 
 function saveModal() {
     if (!modalSection) return;
-    const values = getModalValues(modalSection);
-    const nameField = values.title || values.name;
+    var values = getModalValues(modalSection);
+    var nameField = values.title || values.name;
     if (!nameField) return showToast('Please fill in the required fields (*).', 'error');
-    const data = getData();
+    var data = getData();
     if (!data[modalSection]) data[modalSection] = JSON.parse(JSON.stringify(DEFAULT_DATA[modalSection]));
     if (modalIdx !== null) {
         data[modalSection][modalIdx] = values;
@@ -691,37 +1331,42 @@ function saveModal() {
     }
     saveData(data);
     renderList(modalSection, data[modalSection]);
+    renderDashboard();
     closeModal();
-    showToast('Saved!', 'success');
+    showToast('Entry saved successfully!', 'success');
 }
 
-// ============ EXPORT / IMPORT / RESET ============
+// ══════════════════════════════════
+// EXPORT / IMPORT / RESET
+// ══════════════════════════════════
+
 function exportData() {
-    const data = getData();
-    const json = JSON.stringify(data, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    var data = getData();
+    var json = JSON.stringify(data, null, 2);
+    var blob = new Blob([json], { type: 'application/json' });
+    var url  = URL.createObjectURL(blob);
+    var a    = document.createElement('a');
     a.href = url;
     a.download = 'portfolio-data-' + new Date().toISOString().slice(0,10) + '.json';
     a.click();
     URL.revokeObjectURL(url);
-    showToast('Data exported!', 'success');
+    showToast('Data exported successfully!', 'success');
 }
 
 function importData(event) {
-    const file = event.target.files[0];
+    var file = event.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
+    var reader = new FileReader();
+    reader.onload = function(ev) {
         try {
-            const data = JSON.parse(ev.target.result);
+            var data = JSON.parse(ev.target.result);
             if (!confirm('Replace all current portfolio data with the imported file?\n\nThis cannot be undone.')) return;
             saveData(data);
             loadAllData();
+            renderDashboard();
             showToast('Data imported successfully!', 'success');
-        } catch (err) {
-            showToast('Invalid JSON file.', 'error');
+        } catch(err) {
+            showToast('Invalid JSON file. Please check the format.', 'error');
         }
     };
     reader.readAsText(file);
@@ -732,20 +1377,27 @@ function resetToDefaults() {
     if (!confirm('Reset ALL portfolio data to defaults?\n\nThis cannot be undone.')) return;
     localStorage.removeItem('portfolioData');
     loadAllData();
-    showToast('Reset to defaults.', 'success');
+    renderDashboard();
+    showToast('Data reset to defaults.', 'success');
 }
 
-// ============ TOAST ============
-let toastTimer;
+// ══════════════════════════════════
+// TOAST
+// ══════════════════════════════════
+
+var toastTimer;
 function showToast(msg, type) {
-    const toast = document.getElementById('toast');
-    toast.textContent = msg;
+    var toast  = document.getElementById('toast');
+    var msgEl  = document.getElementById('toast-msg');
+    if (msgEl) msgEl.textContent = msg;
     toast.className = 'toast show ' + (type || 'success');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+    toastTimer = setTimeout(function() { toast.classList.remove('show'); }, 3500);
 }
 
-// ============ INIT ============
+// ══════════════════════════════════
+// INIT
+// ══════════════════════════════════
 window.addEventListener('DOMContentLoaded', checkSession);
 </script>
 </body>
